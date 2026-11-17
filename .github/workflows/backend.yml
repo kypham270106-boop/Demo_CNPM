@@ -1,0 +1,41 @@
+name: Backend CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-bookworm
+        env:
+          POSTGRES_DB: smart_hub_test
+          POSTGRES_USER: smart_hub_test
+          POSTGRES_PASSWORD: ci_fixture_only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U smart_hub_test -d smart_hub_test"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://smart_hub_test:ci_fixture_only@127.0.0.1:5432/smart_hub_test
+      JWT_SECRET: ci-fixture-only-0123456789-abcdef-012345
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run db:deploy
+      - run: npm run test:e2e
+      - run: npm run build
+      - run: docker build --target production .
