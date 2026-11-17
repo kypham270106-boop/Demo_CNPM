@@ -1,0 +1,341 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  OPERATOR
+}
+
+enum VehicleType {
+  E_BIKE
+  E_SCOOTER
+}
+
+enum VehicleStatus {
+  AVAILABLE
+  IN_USE
+  DISPATCHING
+  MAINTENANCE
+}
+
+enum SlotStatus {
+  FREE
+  OCCUPIED
+  UNAVAILABLE
+}
+
+enum PointStatus {
+  AVAILABLE
+  CHARGING
+  FAULTED
+}
+
+enum ReservationStatus {
+  HELD
+  CONFIRMED
+  IN_USE
+  COMPLETED
+  CANCELLED
+  EXPIRED
+}
+
+enum ChargingStatus {
+  PROPOSED
+  CONFIRMED
+  CHARGING
+  COMPLETED
+  CANCELLED
+  NEEDS_REPLAN
+}
+
+enum DispatchStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  FAILED
+}
+
+enum IncidentType {
+  OVERLOAD
+  STALE_DATA
+  CHARGER_FAULT
+  DISPATCH_FAILURE
+  MANUAL
+}
+
+enum IncidentStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+}
+
+model User {
+  id           String @id @default(uuid()) @db.Uuid
+  email        String @unique
+  studentCode  String? @unique
+  name         String
+  passwordHash String?
+  googleSub    String? @unique
+  role         Role @default(STUDENT)
+  active       Boolean @default(true)
+  settings     UserSettings?
+  reservations Reservation[]
+  charging     ChargingRequest[]
+  searches     SearchHistory[]
+  orders       DispatchOrder[]
+  scenarios    SimulationScenario[]
+  createdAt    DateTime @default(now()) @db.Timestamptz
+  updatedAt    DateTime @updatedAt @db.Timestamptz
+}
+
+model UserSettings {
+  userId        String @id @db.Uuid
+  user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  language      String @default("vi")
+  theme         String @default("light")
+  notifications Boolean @default(true)
+  updatedAt     DateTime @updatedAt @db.Timestamptz
+}
+
+model Hub {
+  id                String @id @default(uuid()) @db.Uuid
+  code              String @unique
+  name              String
+  address           String
+  latitude          Float
+  longitude         Float
+  active            Boolean @default(true)
+  telemetryEnabled  Boolean @default(true)
+  lastSeenAt        DateTime? @db.Timestamptz
+  overloadThreshold Int @default(85)
+  vehicles          Vehicle[]
+  parkingSlots      ParkingSlot[]
+  chargingPoints    ChargingPoint[]
+  reservations      Reservation[]
+  chargingRequests  ChargingRequest[]
+  incidents         Incident[]
+  searches          SearchHistory[]
+  outgoing          DispatchOrder[] @relation("SourceHub")
+  incoming          DispatchOrder[] @relation("DestinationHub")
+  createdAt         DateTime @default(now()) @db.Timestamptz
+  updatedAt         DateTime @updatedAt @db.Timestamptz
+}
+
+model Vehicle {
+  id           String @id @default(uuid()) @db.Uuid
+  code         String @unique
+  type         VehicleType
+  status       VehicleStatus @default(AVAILABLE)
+  battery      Int
+  hubId        String @db.Uuid
+  hub          Hub @relation(fields: [hubId], references: [id])
+  slotId       String? @unique @db.Uuid
+  slot         ParkingSlot? @relation(fields: [slotId], references: [id], onDelete: Restrict)
+  reservations Reservation[]
+  charging     ChargingRequest[]
+  dispatches   DispatchOrderItem[]
+  createdAt    DateTime @default(now()) @db.Timestamptz
+  updatedAt    DateTime @updatedAt @db.Timestamptz
+
+  @@index([hubId, status, type, battery])
+}
+
+model ParkingSlot {
+  id           String @id @default(uuid()) @db.Uuid
+  hubId        String @db.Uuid
+  hub          Hub @relation(fields: [hubId], references: [id])
+  code         String
+  status       SlotStatus @default(FREE)
+  vehicle      Vehicle?
+  point        ChargingPoint?
+  reservations Reservation[]
+  destinations DispatchOrderItem[]
+  createdAt    DateTime @default(now()) @db.Timestamptz
+  updatedAt    DateTime @updatedAt @db.Timestamptz
+
+  @@unique([hubId, code])
+}
+
+model ChargingPoint {
+  id        String @id @default(uuid()) @db.Uuid
+  hubId     String @db.Uuid
+  hub       Hub @relation(fields: [hubId], references: [id])
+  slotId    String @unique @db.Uuid
+  slot      ParkingSlot @relation(fields: [slotId], references: [id])
+  code      String
+  status    PointStatus @default(AVAILABLE)
+  powerKw   Float
+  schedules ChargingSchedule[]
+  requests  ChargingRequest[]
+  incidents Incident[]
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
+
+  @@unique([hubId, code])
+}
+
+model Reservation {
+  id             String @id @default(uuid()) @db.Uuid
+  userId         String @db.Uuid
+  user           User @relation(fields: [userId], references: [id])
+  hubId          String @db.Uuid
+  hub            Hub @relation(fields: [hubId], references: [id])
+  vehicleId      String? @db.Uuid
+  vehicle        Vehicle? @relation(fields: [vehicleId], references: [id], onDelete: Restrict)
+  slotId         String? @db.Uuid
+  slot           ParkingSlot? @relation(fields: [slotId], references: [id], onDelete: Restrict)
+  startsAt       DateTime @db.Timestamptz
+  endsAt         DateTime @db.Timestamptz
+  holdExpiresAt  DateTime @db.Timestamptz
+  confirmationCode String? @unique
+  pickupBy       DateTime? @db.Timestamptz
+  pickedUpAt     DateTime? @db.Timestamptz
+  returnedAt     DateTime? @db.Timestamptz
+  returnCondition String?
+  status         ReservationStatus @default(HELD)
+  charging       ChargingRequest?
+  createdAt      DateTime @default(now()) @db.Timestamptz
+  updatedAt      DateTime @updatedAt @db.Timestamptz
+
+  @@index([status, holdExpiresAt])
+  @@index([status, pickupBy])
+  @@index([userId, createdAt])
+}
+
+model ChargingRequest {
+  id          String @id @default(uuid()) @db.Uuid
+  userId      String @db.Uuid
+  user        User @relation(fields: [userId], references: [id])
+  hubId       String @db.Uuid
+  hub         Hub @relation(fields: [hubId], references: [id])
+  vehicleId   String? @db.Uuid
+  vehicle     Vehicle? @relation(fields: [vehicleId], references: [id], onDelete: Restrict)
+  reservationId String? @unique @db.Uuid
+  reservation Reservation? @relation(fields: [reservationId], references: [id], onDelete: Restrict)
+  personalVehicleRef String?
+  pointId     String? @db.Uuid
+  point       ChargingPoint? @relation(fields: [pointId], references: [id], onDelete: Restrict)
+  currentBattery Int
+  targetBattery  Int?
+  durationMinutes Int?
+  capacityKwh Float
+  earliestAt  DateTime @db.Timestamptz
+  latestAt    DateTime @db.Timestamptz
+  status      ChargingStatus @default(PROPOSED)
+  schedules   ChargingSchedule[]
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  updatedAt   DateTime @updatedAt @db.Timestamptz
+
+  @@index([userId, createdAt])
+  @@index([hubId, status])
+}
+
+model ChargingSchedule {
+  id                 String @id @default(uuid()) @db.Uuid
+  requestId          String @db.Uuid
+  request            ChargingRequest @relation(fields: [requestId], references: [id])
+  pointId            String @db.Uuid
+  point              ChargingPoint @relation(fields: [pointId], references: [id])
+  vehicleKey         String
+  startsAt           DateTime @db.Timestamptz
+  endsAt             DateTime @db.Timestamptz
+  adjusted           Boolean @default(false)
+  estimatedBattery   Int
+  expiresAt          DateTime @db.Timestamptz
+  status             ChargingStatus @default(PROPOSED)
+  createdAt          DateTime @default(now()) @db.Timestamptz
+  updatedAt          DateTime @updatedAt @db.Timestamptz
+
+  @@index([requestId, createdAt])
+  @@index([status, expiresAt])
+}
+
+model SearchHistory {
+  id        String @id @default(uuid()) @db.Uuid
+  userId    String @db.Uuid
+  user      User @relation(fields: [userId], references: [id])
+  query     Json
+  hubId     String? @db.Uuid
+  hub       Hub? @relation(fields: [hubId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now()) @db.Timestamptz
+
+  @@index([userId, createdAt])
+}
+
+model Incident {
+  id        String @id @default(uuid()) @db.Uuid
+  hubId     String @db.Uuid
+  hub       Hub @relation(fields: [hubId], references: [id])
+  pointId   String? @db.Uuid
+  point     ChargingPoint? @relation(fields: [pointId], references: [id], onDelete: Restrict)
+  type      IncidentType
+  status    IncidentStatus @default(OPEN)
+  activeKey String? @unique
+  details   Json
+  resolution String?
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
+
+  @@index([status, type, createdAt])
+}
+
+model DispatchOrder {
+  id          String @id @default(uuid()) @db.Uuid
+  operatorId  String @db.Uuid
+  operator    User @relation(fields: [operatorId], references: [id])
+  sourceId    String @db.Uuid
+  source      Hub @relation("SourceHub", fields: [sourceId], references: [id])
+  targetId    String @db.Uuid
+  target      Hub @relation("DestinationHub", fields: [targetId], references: [id])
+  status      DispatchStatus @default(PENDING)
+  failure     String?
+  attemptId   String? @db.Uuid
+  startedAt   DateTime? @db.Timestamptz
+  finishedAt  DateTime? @db.Timestamptz
+  items       DispatchOrderItem[]
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  updatedAt   DateTime @updatedAt @db.Timestamptz
+
+  @@index([status, createdAt])
+}
+
+model DispatchOrderItem {
+  orderId   String @db.Uuid
+  order     DispatchOrder @relation(fields: [orderId], references: [id])
+  vehicleId String @db.Uuid
+  vehicle   Vehicle @relation(fields: [vehicleId], references: [id])
+  targetSlotId String @db.Uuid
+  targetSlot ParkingSlot @relation(fields: [targetSlotId], references: [id])
+
+  @@id([orderId, vehicleId])
+  @@unique([orderId, targetSlotId])
+  @@index([vehicleId])
+  @@index([targetSlotId])
+}
+
+model SimulationScenario {
+  id          String @id @default(uuid()) @db.Uuid
+  operatorId  String @db.Uuid
+  operator    User @relation(fields: [operatorId], references: [id])
+  name        String
+  parameters  Json
+  reports     SimulationReport[]
+  createdAt   DateTime @default(now()) @db.Timestamptz
+}
+
+model SimulationReport {
+  id          String @id @default(uuid()) @db.Uuid
+  scenarioId  String @db.Uuid
+  scenario    SimulationScenario @relation(fields: [scenarioId], references: [id])
+  snapshotAt  DateTime @db.Timestamptz
+  results     Json
+  createdAt   DateTime @default(now()) @db.Timestamptz
+
+  @@index([scenarioId, createdAt])
+}
