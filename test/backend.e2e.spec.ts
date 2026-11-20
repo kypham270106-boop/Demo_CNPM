@@ -174,6 +174,51 @@ it('TC-03 admits one of two overlapping requests and PostgreSQL rejects a direct
   expect(await db.reservation.count({where: {id: {in: [winner.body.id, adjacent.body.id]}, status: 'EXPIRED'}})).toBe(2);
 });
 
+it('rejects cross-Hub resource links when database writes bypass the services', async () => {
+  const startsAt = new Date(iso(180));
+  const endsAt = new Date(iso(210));
+
+  await expect(db.vehicle.create({data: {
+    code: randomUUID(), hubId: target, slotId: slotB, type: 'E_BIKE', battery: 60,
+  }})).rejects.toThrow();
+  await expect(db.chargingPoint.create({data: {
+    hubId: target, slotId: slotA, code: randomUUID(), powerKw: 0.6,
+  }})).rejects.toThrow();
+  await expect(db.reservation.create({data: {
+    userId: student, hubId: target, slotId: slotB, startsAt, endsAt, holdExpiresAt: endsAt,
+  }})).rejects.toThrow();
+  await expect(db.reservation.create({data: {
+    userId: student, hubId: target, vehicleId: vehicle, startsAt, endsAt, holdExpiresAt: endsAt,
+  }})).rejects.toThrow();
+  await expect(db.chargingRequest.create({data: {
+    userId: student, hubId: target, personalVehicleRef: 'wrong-hub-point', pointId: charger,
+    currentBattery: 20, targetBattery: 50, capacityKwh: 0.6,
+    earliestAt: startsAt, latestAt: endsAt,
+  }})).rejects.toThrow();
+  await expect(db.incident.create({data: {
+    hubId: target, pointId: charger, type: 'MANUAL', details: {description: 'cross-Hub point'},
+  }})).rejects.toThrow();
+
+  const request = await db.chargingRequest.create({data: {
+    userId: student, hubId: target, personalVehicleRef: 'schedule-integrity-test',
+    currentBattery: 20, targetBattery: 50, capacityKwh: 0.6,
+    earliestAt: startsAt, latestAt: endsAt,
+  }});
+  await expect(db.chargingSchedule.create({data: {
+    requestId: request.id, pointId: charger, vehicleKey: `personal:${student}:schedule-integrity-test`,
+    startsAt, endsAt, expiresAt: endsAt, estimatedBattery: 50,
+  }})).rejects.toThrow();
+
+  const order = await db.dispatchOrder.create({data: {operatorId: operator, sourceId: source, targetId: target}});
+  await expect(db.dispatchOrderItem.create({data: {
+    orderId: order.id, vehicleId: vehicle, targetSlotId: slotB,
+  }})).rejects.toThrow();
+  const reverseOrder = await db.dispatchOrder.create({data: {operatorId: operator, sourceId: target, targetId: source}});
+  await expect(db.dispatchOrderItem.create({data: {
+    orderId: reverseOrder.id, vehicleId: vehicle, targetSlotId: slotA,
+  }})).rejects.toThrow();
+});
+
 it('TC-04 detects overload and de-duplicates alerts', async () => {
   for (let count = 0; count < 2; count++) {
     const response = await request(app.getHttpServer()).post('/api/monitoring/check').set(bearer(admin)).expect(200);
