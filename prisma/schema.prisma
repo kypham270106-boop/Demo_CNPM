@@ -160,6 +160,7 @@ model ParkingSlot {
   updatedAt    DateTime @updatedAt @db.Timestamptz
 
   @@unique([hubId, code])
+  @@unique([hubId, id])
 }
 
 model ChargingPoint {
@@ -178,6 +179,7 @@ model ChargingPoint {
   updatedAt DateTime @updatedAt @db.Timestamptz
 
   @@unique([hubId, code])
+  @@unique([hubId, id])
 }
 
 model Reservation {
@@ -206,6 +208,7 @@ model Reservation {
   @@index([status, holdExpiresAt])
   @@index([status, pickupBy])
   @@index([userId, createdAt])
+  @@unique([hubId, id])
 }
 
 model ChargingRequest {

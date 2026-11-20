@@ -27,12 +27,15 @@
 
 ## Ràng buộc và đầu mối dữ liệu
 
+- Assumption bổ sung sau review PR #2: Hub là định danh cố định của ChargingRequest; Hub nguồn và Hub đích là tuyến cố định của DispatchOrder ngay từ khi tạo, kể cả trước khi có lịch hoặc item. Trigger từ chối thay đổi thực sự và cho phép ghi lại cùng giá trị. Quy tắc áp dụng cho cả dữ liệu đã hoàn tất/hủy để giữ lịch sử và tránh race giữa thao tác tạo bản ghi con với đổi Hub. Đổi Hub sạc cần hủy đề xuất có thể hủy và tạo yêu cầu mới; yêu cầu đang sạc tuân theo lifecycle hiện có. Lập lại lịch tại cùng Hub được hỗ trợ. Lệnh điều phối lỗi có thể được thay bằng lệnh mới; MVP chưa hỗ trợ hủy lệnh Pending nên lệnh đang giữ tài nguyên cần đi đến trạng thái kết thúc trước khi cấp lại.
+- `202611200002_immutable_operation_hubs` bổ sung hai trigger cho cập nhật Hub ở bản ghi cha. Migration được thêm mới để cập nhật database đã áp dụng migration integrity trước đó. Các thao tác đổi trạng thái, thời gian, ghi nhận hoàn tất và thay vị trí hiện tại của Vehicle vẫn theo luồng nghiệp vụ hiện có.
 - `User`–`UserSettings` là một-một. User–Reservation/ChargingRequest/SearchHistory/DispatchOrder/SimulationScenario là một-nhiều.
 - Hub–Vehicle, ParkingSlot, ChargingPoint và Incident là một-nhiều. Xe đang đỗ và ChargingPoint liên kết từng ParkingSlot bằng khóa duy nhất.
 - Reservation liên kết đúng một Vehicle hoặc ParkingSlot. ChargingRequest có thể liên kết một ParkingSlot Reservation. ChargingRequest–ChargingSchedule là một-nhiều để giữ đề xuất cũ sau khi lập lại.
 - DispatchOrder–Vehicle là nhiều-nhiều qua DispatchOrderItem; mỗi item giữ một chỗ đích riêng. SimulationScenario–SimulationReport là một-nhiều.
 - FK bảo toàn lịch sử. Settings được xóa theo User nếu không có ràng buộc còn giữ User. Hub của SearchHistory được đặt null khi Hub bị xóa hợp lệ. Không có route xóa dữ liệu master. Index bao phủ truy vấn sẵn sàng, lịch sử, trạng thái và công việc định kỳ.
-- `202611170001_init` tạo các bảng, enum, quan hệ và index Prisma. `202611170002_integrity` thêm `btree_gist`, CHECK, exclusion constraints và partial unique indexes. `202611170003_booking_confirmation` thêm mã xác nhận, lưu cờ lịch sạc điều chỉnh và đổi mặc định theme sang light. Kiểm tra migration mới để giữ nguyên SQL ngoài schema Prisma. [Prisma 6 Customizing migrations](https://www.prisma.io/docs/orm/v6/prisma-migrate/workflows/customizing-migrations)
+- Composite foreign keys giữ Vehicle/ChargingPoint/Reservation slot, ChargingRequest reservation/point, và Incident point trong cùng Hub. Trigger kiểm tra Hub cho liên kết tới xe ở thời điểm tạo/cập nhật và kiểm tra Hub nguồn/đích của DispatchOrderItem. Các ràng buộc lịch sử chỉ kiểm tra khi gắn tài nguyên; chuyển Hub xe sau đó không làm mất lịch sử đặt chỗ, sạc hay điều phối.
+- `202611170001_init` tạo các bảng, enum, quan hệ và index Prisma. `202611170002_integrity` thêm `btree_gist`, CHECK, exclusion constraints và partial unique indexes. `202611170003_booking_confirmation` thêm mã xác nhận, lưu cờ lịch sạc điều chỉnh và đổi mặc định theme sang light. `202611200001_hub_resource_integrity` thêm khóa duy nhất tổng hợp, composite foreign keys và trigger Hub/resource. Kiểm tra migration mới để giữ nguyên SQL ngoài schema Prisma. [Prisma 6 Customizing migrations](https://www.prisma.io/docs/orm/v6/prisma-migrate/workflows/customizing-migrations)
 
 ## Planned
 
