@@ -137,6 +137,7 @@ E2e tạo và dọn dữ liệu riêng theo ID ngẫu nhiên. Các ca bao gồm 
 
 ## Database và triển khai
 
+- `202611200002_immutable_operation_hubs` cố định Hub của yêu cầu sạc và Hub nguồn/đích của lệnh điều phối ngay từ khi tạo. Áp dụng bằng `npm run db:deploy`. Khi cần đổi Hub sạc, hủy đề xuất có thể hủy và tạo yêu cầu mới. Với điều phối, xử lý lệnh hiện tại đến trạng thái kết thúc trước khi cấp tài nguyên cho lệnh mới. API lập lại lịch sạc vẫn làm việc tại Hub ban đầu.
 - Schema tại `prisma/schema.prisma`. `202611170001_init` tạo bảng và quan hệ. `202611170002_integrity` thêm `btree_gist`, exclusion constraints cho khoảng thời gian đặt xe/chỗ đỗ/cổng sạc/xe sạc, và các CHECK/partial unique. `202611170003_booking_confirmation` bổ sung mã xác nhận, cờ đề xuất sạc điều chỉnh và mặc định giao diện light. `202611200001_hub_resource_integrity` thêm composite foreign keys và trigger để ngăn liên kết tài nguyên khác Hub.
 - Khi thay đổi schema, chạy `npm run db:migrate -- --create-only --name ten_thay_doi` trên DB dev. Kiểm tra SQL sinh ra và giữ các constraint viết tay trước khi áp dụng. `npm run db:deploy` dùng để cập nhật DB theo migration có sẵn.
 - Một số ràng buộc Hub/resource là SQL tùy chỉnh vì Prisma schema không mô tả trigger hoặc các composite foreign keys bổ sung. Giữ các ràng buộc này khi tạo migration tiếp theo; migration kiểm tra Hub của reservation, charging request và dispatch item tại thời điểm gắn tài nguyên để không làm hỏng lịch sử khi xe được chuyển Hub.

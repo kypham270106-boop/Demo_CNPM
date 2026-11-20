@@ -219,6 +219,54 @@ it('rejects cross-Hub resource links when database writes bypass the services', 
   }})).rejects.toThrow();
 });
 
+it('preserves the charging Hub before scheduling and after a schedule is cancelled', async () => {
+  const startsAt = new Date(iso(240));
+  const endsAt = new Date(iso(250));
+  // No vehicle/point/reservation FK can mask the parent Hub guard in this case.
+  const charging = await db.chargingRequest.create({data: {
+    userId: student, hubId: source, personalVehicleRef: 'immutable-hub-test',
+    currentBattery: 20, targetBattery: 50, capacityKwh: 0.6,
+    earliestAt: startsAt, latestAt: endsAt,
+  }});
+  const changeHub = () => db.chargingRequest.update({where: {id: charging.id}, data: {hubId: target}});
+  await expect(changeHub()).rejects.toThrow(/Charging request Hub is immutable/);
+
+  const schedule = await db.chargingSchedule.create({data: {
+    requestId: charging.id, pointId: charger, vehicleKey: `personal:${student}:immutable-hub-test`,
+    startsAt, endsAt, expiresAt: endsAt, estimatedBattery: 50,
+  }});
+  await expect(changeHub()).rejects.toThrow(/Charging request Hub is immutable/);
+  await db.chargingRequest.update({where: {id: charging.id}, data: {hubId: source, status: 'CONFIRMED'}});
+  await db.chargingSchedule.update({where: {id: schedule.id}, data: {status: 'CANCELLED'}});
+  await expect(changeHub()).rejects.toThrow(/Charging request Hub is immutable/);
+
+  await db.chargingRequest.update({where: {id: charging.id}, data: {status: 'NEEDS_REPLAN'}});
+  const replanned = await request(app.getHttpServer()).post(`/api/charging-requests/${charging.id}/replan`)
+    .set(bearer(alice)).send({startsAt: iso(260), endsAt: iso(280)}).expect(200);
+  expect(replanned.body.request.hubId).toBe(source);
+  await request(app.getHttpServer()).post(`/api/charging-schedules/${replanned.body.proposal.id}/cancel`)
+    .set(bearer(alice)).expect(200);
+  expect((await db.chargingRequest.findUniqueOrThrow({where: {id: charging.id}})).hubId).toBe(source);
+});
+
+it('preserves both dispatch Hubs before and after attaching vehicles', async () => {
+  const order = await db.dispatchOrder.create({data: {operatorId: operator, sourceId: source, targetId: target}});
+  const changeSource = () => db.dispatchOrder.update({where: {id: order.id}, data: {sourceId: full}});
+  const changeTarget = () => db.dispatchOrder.update({where: {id: order.id}, data: {targetId: full}});
+  await expect(changeSource()).rejects.toThrow(/Dispatch order Hubs are immutable/);
+  await expect(changeTarget()).rejects.toThrow(/Dispatch order Hubs are immutable/);
+  await db.dispatchOrderItem.create({data: {orderId: order.id, vehicleId: vehicle, targetSlotId: slotD}});
+  await expect(changeSource()).rejects.toThrow(/Dispatch order Hubs are immutable/);
+  await expect(changeTarget()).rejects.toThrow(/Dispatch order Hubs are immutable/);
+  const unchanged = await db.dispatchOrder.update({where: {id: order.id}, data: {
+    sourceId: source, targetId: target, status: 'FAILED', failure: 'Test fixture completed',
+  }});
+  expect(unchanged).toMatchObject({sourceId: source, targetId: target, status: 'FAILED'});
+  await expect(changeTarget()).rejects.toThrow(/Dispatch order Hubs are immutable/);
+  await db.dispatchOrderItem.deleteMany({where: {orderId: order.id}});
+  await db.dispatchOrder.delete({where: {id: order.id}});
+});
+
 it('TC-04 detects overload and de-duplicates alerts', async () => {
   for (let count = 0; count < 2; count++) {
     const response = await request(app.getHttpServer()).post('/api/monitoring/check').set(bearer(admin)).expect(200);
@@ -283,5 +331,9 @@ it('dispatch checks destination capacity, tracks failure, then moves only on suc
   const second = await create(target).expect(201);
   await run(second.body.id).expect(200).expect(response => expect(response.body.status).toBe('COMPLETED'));
   expect((await db.vehicle.findUniqueOrThrow({where: {id: vehicle}})).hubId).toBe(target);
+  const history = await db.dispatchOrder.update({where: {id: second.body.id}, data: {
+    sourceId: source, targetId: target, status: 'COMPLETED',
+  }});
+  expect(history).toMatchObject({sourceId: source, targetId: target, status: 'COMPLETED'});
   expect(await db.incident.count({where: {hubId: source, type: 'DISPATCH_FAILURE'}})).toBe(1);
 });

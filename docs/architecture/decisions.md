@@ -27,6 +27,8 @@
 
 ## Ràng buộc và đầu mối dữ liệu
 
+- Assumption bổ sung sau review PR #2: Hub là định danh cố định của ChargingRequest; Hub nguồn và Hub đích là tuyến cố định của DispatchOrder ngay từ khi tạo, kể cả trước khi có lịch hoặc item. Trigger từ chối thay đổi thực sự và cho phép ghi lại cùng giá trị. Quy tắc áp dụng cho cả dữ liệu đã hoàn tất/hủy để giữ lịch sử và tránh race giữa thao tác tạo bản ghi con với đổi Hub. Đổi Hub sạc cần hủy đề xuất có thể hủy và tạo yêu cầu mới; yêu cầu đang sạc tuân theo lifecycle hiện có. Lập lại lịch tại cùng Hub được hỗ trợ. Lệnh điều phối lỗi có thể được thay bằng lệnh mới; MVP chưa hỗ trợ hủy lệnh Pending nên lệnh đang giữ tài nguyên cần đi đến trạng thái kết thúc trước khi cấp lại.
+- `202611200002_immutable_operation_hubs` bổ sung hai trigger cho cập nhật Hub ở bản ghi cha. Migration được thêm mới để cập nhật database đã áp dụng migration integrity trước đó. Các thao tác đổi trạng thái, thời gian, ghi nhận hoàn tất và thay vị trí hiện tại của Vehicle vẫn theo luồng nghiệp vụ hiện có.
 - `User`–`UserSettings` là một-một. User–Reservation/ChargingRequest/SearchHistory/DispatchOrder/SimulationScenario là một-nhiều.
 - Hub–Vehicle, ParkingSlot, ChargingPoint và Incident là một-nhiều. Xe đang đỗ và ChargingPoint liên kết từng ParkingSlot bằng khóa duy nhất.
 - Reservation liên kết đúng một Vehicle hoặc ParkingSlot. ChargingRequest có thể liên kết một ParkingSlot Reservation. ChargingRequest–ChargingSchedule là một-nhiều để giữ đề xuất cũ sau khi lập lại.
