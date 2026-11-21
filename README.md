@@ -124,6 +124,27 @@ Dựa trên các route và component hiện có (`/operator/login`, `/operator`,
 - **Styling**: CSS theo từng component/trang (ví dụ `.css` cùng thư mục component) và stylesheet chung (`src/index.css`, `src/App.css`).
 - **Tài nguyên tĩnh**: `public/` và `src/assets/`.
 
+## Cấu trúc toàn bộ dự án
+
+Để chạy đầy đủ hệ thống Smart E-Mobility Hub, cần đặt hai thư mục `frontend/` và `backend/` chung trong một thư mục dự án:
+
+```text
+smart-e-mobility/
+├── frontend/
+│   ├── src/
+│   ├── public/
+│   ├── package.json
+│   ├── package-lock.json
+│   └── ...
+│
+└── backend/
+    ├── src/
+    ├── package.json
+    └── ...
+```
+
+**Lưu ý:** Frontend và Backend được quản lý riêng biệt trên GitHub. Khi tải mã nguồn về, cần đặt hai thư mục này cạnh nhau trong cùng thư mục dự án và cấu hình đầy đủ để hệ thống hoạt động.
+
 ### Cấu trúc thư mục (frontend)
 
 ```text
