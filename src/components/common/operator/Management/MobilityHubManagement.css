@@ -1,0 +1,1314 @@
+/* ========================================
+   MOBILITY HUB MANAGEMENT
+   Integrated with Operator Dashboard
+======================================== */
+
+.hub-management,
+.mobility-hub-management {
+  --hub-primary: #168b78;
+  --hub-primary-dark: #107565;
+  --hub-primary-light: #e7f5f1;
+  --hub-text: #263b3a;
+  --hub-muted: #849493;
+  --hub-border: #e9efee;
+  --hub-background: #f5f8f8;
+
+  display: block;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+  color: var(--hub-text);
+  font-family: inherit;
+}
+
+.hub-management *,
+.mobility-hub-management * {
+  box-sizing: border-box;
+}
+
+/* ========================================
+   REMOVE OLD STANDALONE LAYOUT
+======================================== */
+
+.hub-sidebar,
+.hub-main,
+.hub-header,
+.hub-menu-toggle,
+.hub-account,
+.hub-page-title {
+  display: none;
+}
+
+/* ========================================
+   MANAGEMENT HEADER
+======================================== */
+
+.hub-management-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 22px;
+}
+
+.hub-management-description {
+  min-width: 0;
+}
+
+.hub-management-description h1,
+.hub-management-description h2 {
+  margin: 0;
+  color: var(--hub-text);
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.hub-management-description p {
+  margin: 7px 0 0;
+  color: var(--hub-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.hub-management-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 43px;
+  height: 43px;
+  color: var(--hub-primary);
+  background: var(--hub-primary-light);
+  border-radius: 12px;
+}
+
+/* ========================================
+   ADD HUB BUTTON
+======================================== */
+
+.hub-add-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-shrink: 0;
+
+  min-height: 42px;
+  padding: 0 17px;
+
+  border: none;
+  border-radius: 9px;
+
+  background: var(--hub-primary);
+  color: #fff;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 750;
+
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.hub-add-button:hover {
+  background: var(--hub-primary-dark);
+  box-shadow: 0 5px 13px rgba(22, 139, 120, 0.2);
+  transform: translateY(-2px);
+}
+
+/* ========================================
+   SUMMARY CARDS
+======================================== */
+
+.hub-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 22px;
+}
+
+.hub-summary-card {
+  min-width: 0;
+  padding: 19px;
+
+  background: #fff;
+  border: 1px solid var(--hub-border);
+  border-radius: 14px;
+
+  box-shadow: 0 3px 12px rgba(30, 62, 55, 0.025);
+  transition: 0.2s ease;
+}
+
+.hub-summary-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 9px 22px rgba(30, 62, 55, 0.07);
+}
+
+.hub-summary-card > span {
+  color: var(--hub-muted);
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.hub-summary-card strong {
+  display: block;
+  margin-top: 12px;
+  color: var(--hub-text);
+  font-size: 27px;
+  font-weight: 800;
+}
+
+.hub-summary-card p {
+  margin: 8px 0 0;
+  color: var(--hub-muted);
+  font-size: 10px;
+}
+
+/* ========================================
+   FILTER BAR
+======================================== */
+
+.hub-filter-bar,
+.hub-filter-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  width: 100%;
+  min-width: 0;
+  margin: 0 0 20px;
+  padding: 16px;
+
+  background: #fff;
+  border: 1px solid var(--hub-border);
+  border-radius: 12px;
+}
+
+.hub-search,
+.hub-search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+
+  min-width: 0;
+  min-height: 42px;
+  padding: 0 12px;
+
+  background: #fff;
+  border: 1px solid var(--hub-border);
+  border-radius: 8px;
+  color: var(--hub-muted);
+}
+
+.hub-search input,
+.hub-search-box input {
+  width: 100%;
+  min-width: 0;
+  height: 40px;
+
+  border: none;
+  outline: none;
+  background: transparent;
+
+  color: var(--hub-text);
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.hub-search input::placeholder,
+.hub-search-box input::placeholder {
+  color: #a0aeab;
+}
+
+.hub-filter-bar select,
+.hub-filter-toolbar select {
+  min-width: 145px;
+  max-width: 210px;
+  height: 42px;
+  padding: 0 30px 0 12px;
+
+  border: 1px solid var(--hub-border);
+  border-radius: 8px;
+  outline: none;
+
+  background: #fff;
+  color: var(--hub-text);
+
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.hub-search:focus-within,
+.hub-search-box:focus-within,
+.hub-filter-bar select:focus,
+.hub-filter-toolbar select:focus {
+  border-color: var(--hub-primary);
+  box-shadow: 0 0 0 3px rgba(22, 139, 120, 0.08);
+}
+
+.hub-reset-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  min-height: 40px;
+  padding: 0 13px;
+
+  border: 1px solid var(--hub-border);
+  border-radius: 8px;
+
+  background: #fff;
+  color: #71817f;
+
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.hub-reset-button:hover {
+  color: var(--hub-primary);
+  background: var(--hub-primary-light);
+}
+
+/* ========================================
+   MANAGEMENT PANEL
+======================================== */
+
+.hub-management-panel,
+.hub-table-section {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  margin: 0 0 22px;
+
+  background: #fff;
+  border: 1px solid var(--hub-border);
+  border-radius: 14px;
+
+  box-shadow: 0 3px 12px rgba(30, 62, 55, 0.025);
+  overflow: hidden;
+}
+
+.hub-table-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  min-height: 65px;
+  padding: 17px 20px;
+
+  border-bottom: 1px solid var(--hub-border);
+}
+
+.hub-table-heading h2 {
+  margin: 0;
+  color: var(--hub-text);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.hub-table-heading p {
+  margin: 5px 0 0;
+  color: var(--hub-muted);
+  font-size: 10px;
+}
+
+/* ========================================
+   TABLE
+======================================== */
+
+.hub-table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.hub-table {
+  width: 100%;
+  min-width: 0;
+  table-layout: fixed;
+
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.hub-table thead {
+  background: #f7faf9;
+}
+
+.hub-table th {
+  padding: 13px 10px;
+
+  color: #879592;
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1.5;
+  text-align: left;
+  vertical-align: middle;
+
+  border-bottom: 1px solid var(--hub-border);
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.hub-table td {
+  padding: 14px 10px;
+
+  color: #647471;
+  font-size: 11px;
+  line-height: 1.6;
+  vertical-align: middle;
+
+  border-bottom: 1px solid #f0f3f2;
+
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.hub-table tbody tr {
+  transition: background 0.2s ease;
+}
+
+.hub-table tbody tr:hover {
+  background: #fbfdfc;
+}
+
+.hub-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Column content */
+
+.hub-code {
+  color: var(--hub-primary) !important;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+
+.hub-name-cell {
+  color: var(--hub-text) !important;
+  font-weight: 750;
+}
+
+.hub-address-cell {
+  color: #71817f;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.hub-row-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  width: 34px;
+  height: 34px;
+
+  color: var(--hub-primary);
+  background: var(--hub-primary-light);
+  border-radius: 9px;
+}
+
+/* ========================================
+   STATUS
+======================================== */
+
+.hub-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 9px;
+
+  border-radius: 20px;
+
+  font-size: 9px;
+  font-weight: 750;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.hub-status-active,
+.status-active {
+  color: #21866e;
+  background: #e8f7f0;
+}
+
+.hub-status-inactive,
+.status-inactive {
+  color: #bd6262;
+  background: #fff0f0;
+}
+
+.hub-status-maintenance,
+.status-maintenance {
+  color: #a87b27;
+  background: #fff6e4;
+}
+
+/* ========================================
+   ACTIONS
+======================================== */
+
+.hub-action-cell {
+  position: relative;
+  text-align: center;
+}
+
+.hub-action-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.hub-edit-button,
+.hub-delete-button,
+.hub-more-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+
+  border: 1px solid transparent;
+  border-radius: 8px;
+
+  background: transparent;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.hub-edit-button {
+  color: #4e83c5;
+}
+
+.hub-edit-button:hover {
+  background: #edf4ff;
+}
+
+.hub-delete-button {
+  color: #d85b5b;
+}
+
+.hub-delete-button:hover {
+  background: #fff0f0;
+}
+
+.hub-more-button {
+  color: #71817f;
+}
+
+.hub-more-button:hover {
+  color: var(--hub-primary);
+  background: var(--hub-primary-light);
+}
+
+.hub-action-menu {
+  position: absolute;
+  top: 42px;
+  right: 8px;
+  z-index: 50;
+
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  width: 155px;
+  padding: 6px;
+
+  background: #fff;
+  border: 1px solid var(--hub-border);
+  border-radius: 9px;
+  box-shadow: 0 8px 24px rgba(30, 60, 55, 0.13);
+}
+
+.hub-action-menu button {
+  width: 100%;
+  padding: 10px;
+
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+
+  color: var(--hub-text);
+  font-family: inherit;
+  font-size: 11px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.hub-action-menu button:hover {
+  background: var(--hub-primary-light);
+  color: var(--hub-primary-dark);
+}
+
+/* ========================================
+   TABLE FOOTER / EMPTY STATE
+======================================== */
+
+.hub-table-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  min-height: 50px;
+  padding: 14px 20px;
+
+  border-top: 1px solid var(--hub-border);
+  color: var(--hub-muted);
+  font-size: 10px;
+}
+
+.hub-empty,
+.hub-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  min-height: 150px;
+  padding: 25px;
+
+  color: var(--hub-muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+/* ========================================
+   MODAL
+======================================== */
+
+.hub-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(20, 42, 39, 0.48);
+  backdrop-filter: blur(3px);
+
+  animation: hubFadeIn 0.2s ease;
+}
+
+.hub-modal {
+  width: 100%;
+  max-width: 540px;
+  max-height: 90vh;
+  overflow-y: auto;
+
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 20px 60px rgba(20, 42, 39, 0.2);
+
+  animation: hubModalIn 0.25s ease;
+}
+
+.hub-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 20px 24px;
+
+  border-bottom: 1px solid var(--hub-border);
+}
+
+.hub-modal-header h2 {
+  margin: 0;
+  color: var(--hub-text);
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.hub-modal-header button,
+.hub-modal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  border: none;
+  border-radius: 8px;
+  background: #f1f5f4;
+  color: var(--hub-muted);
+
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.hub-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+
+  padding: 22px 24px 24px;
+}
+
+.hub-modal label,
+.hub-form-grid label {
+  margin-top: 6px;
+  color: #405b56;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.hub-modal input,
+.hub-modal textarea,
+.hub-modal select,
+.hub-form-grid input,
+.hub-form-grid select,
+.hub-form-grid textarea {
+  width: 100%;
+  min-width: 0;
+  min-height: 41px;
+  padding: 10px 12px;
+
+  border: 1px solid var(--hub-border);
+  border-radius: 8px;
+  outline: none;
+
+  background: #fff;
+  color: var(--hub-text);
+
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.hub-modal textarea,
+.hub-form-grid textarea {
+  min-height: 85px;
+  resize: vertical;
+}
+
+.hub-modal input:focus,
+.hub-modal textarea:focus,
+.hub-modal select:focus,
+.hub-form-grid input:focus,
+.hub-form-grid select:focus,
+.hub-form-grid textarea:focus {
+  border-color: var(--hub-primary);
+  box-shadow: 0 0 0 3px rgba(22, 139, 120, 0.08);
+}
+
+.hub-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+
+  margin-top: 8px;
+}
+
+.hub-form-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.hub-form-full {
+  grid-column: 1 / -1;
+}
+
+.hub-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+
+  margin-top: 20px;
+}
+
+.hub-cancel-button,
+.hub-save-button {
+  min-height: 40px;
+  padding: 0 18px;
+
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.hub-cancel-button {
+  border: 1px solid var(--hub-border);
+  background: #fff;
+  color: #647873;
+}
+
+.hub-cancel-button:hover {
+  background: #f3f7f6;
+}
+
+.hub-save-button {
+  border: none;
+  background: var(--hub-primary);
+  color: #fff;
+}
+
+.hub-save-button:hover {
+  background: var(--hub-primary-dark);
+}
+
+/* ========================================
+   DELETE CONFIRMATION
+======================================== */
+
+.hub-confirm-modal {
+  width: 100%;
+  max-width: 420px;
+  padding: 25px;
+
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 20px 60px rgba(20, 42, 39, 0.2);
+  text-align: center;
+}
+
+.hub-confirm-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 55px;
+  height: 55px;
+  margin: 0 auto 15px;
+
+  color: #d85b5b;
+  background: #fff0f0;
+  border-radius: 16px;
+}
+
+.hub-confirm-modal h2 {
+  margin: 0;
+  color: var(--hub-text);
+  font-size: 17px;
+}
+
+.hub-confirm-modal p {
+  margin: 10px 0 20px;
+  color: var(--hub-muted);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.hub-confirm-delete-button {
+  min-height: 40px;
+  padding: 0 17px;
+
+  border: none;
+  border-radius: 8px;
+  background: #d85b5b;
+  color: #fff;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.hub-confirm-delete-button:hover {
+  background: #bd4545;
+}
+
+/* ========================================
+   ANIMATIONS
+======================================== */
+
+@keyframes hubFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes hubModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 1200px) {
+  .hub-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hub-table th,
+  .hub-table td {
+    padding-right: 7px;
+    padding-left: 7px;
+  }
+}
+
+@media (max-width: 850px) {
+  .hub-filter-bar,
+  .hub-filter-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .hub-search,
+  .hub-search-box {
+    flex-basis: 100%;
+  }
+
+  .hub-filter-bar select,
+  .hub-filter-toolbar select {
+    flex: 1;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .hub-table-wrapper {
+    overflow-x: auto;
+  }
+
+  .hub-table {
+    min-width: 760px;
+    table-layout: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .hub-management-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .hub-add-button {
+    width: 100%;
+  }
+
+  .hub-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .hub-summary-card {
+    padding: 14px;
+  }
+
+  .hub-summary-card strong {
+    font-size: 23px;
+  }
+
+  .hub-table-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .hub-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hub-form-full {
+    grid-column: auto;
+  }
+
+  .hub-modal {
+    max-height: 95vh;
+  }
+
+  .hub-modal-header,
+  .hub-modal form {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+
+  .hub-modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .hub-cancel-button,
+  .hub-save-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  .hub-summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========================================
+   HUB SUMMARY CARDS - SOFT FULL COLOR
+======================================== */
+
+.hub-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 17px;
+  margin-bottom: 24px;
+}
+
+.hub-summary-card {
+  position: relative;
+  min-width: 0;
+  padding: 19px 20px 16px;
+  overflow: hidden;
+  background: var(--summary-bg);
+  border: 1px solid var(--summary-border);
+  border-radius: 13px;
+  box-shadow: 0 3px 12px rgba(30, 62, 55, 0.045);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.hub-summary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 9px 23px rgba(30, 62, 55, 0.09);
+}
+
+/* Bỏ họa tiết nhấn góc */
+.hub-summary-card::after {
+  display: none;
+}
+
+/* Màu nền pastel */
+.hub-summary-total {
+  --summary-color: #168b78;
+  --summary-bg: #e7f5f1;
+  --summary-border: #d5ebe5;
+  --summary-soft: #d5eee7;
+}
+
+.hub-summary-active {
+  --summary-color: #168b78;
+  --summary-bg: #e7f5f1;
+  --summary-border: #d5ebe5;
+  --summary-soft: #d5eee7;
+}
+
+.hub-summary-inactive {
+  --summary-color: #c16f60;
+  --summary-bg: #fff0ec;
+  --summary-border: #f5dfd9;
+  --summary-soft: #f9e1da;
+}
+
+.hub-summary-maintenance {
+  --summary-color: #bd892e;
+  --summary-bg: #fff6e5;
+  --summary-border: #f2e7ce;
+  --summary-soft: #f8ebcf;
+}
+
+/* Top */
+.hub-summary-top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.hub-summary-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 43px;
+  height: 43px;
+  color: var(--summary-color);
+  background: var(--summary-soft);
+  border-radius: 12px;
+}
+
+.hub-summary-label {
+  color: var(--summary-color);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.5px;
+  text-align: right;
+}
+
+/* Value */
+.hub-summary-value-row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 17px;
+}
+
+.hub-summary-value-row strong {
+  color: #263b3a;
+  font-size: 31px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.hub-summary-unit {
+  color: #788c87;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Progress */
+.hub-summary-progress {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 6px;
+  margin-top: 17px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+}
+
+.hub-summary-progress-fill {
+  height: 100%;
+  background: var(--summary-color);
+  border-radius: inherit;
+  transition: width 0.35s ease;
+}
+
+/* Footer */
+.hub-summary-footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 20px;
+  margin-top: 11px;
+  color: #788c87;
+  font-size: 10px;
+}
+
+.hub-summary-footer > strong {
+  color: var(--summary-color);
+  font-size: 11px;
+  font-weight: 750;
+}
+
+/* Màu nền pastel */
+.hub-summary-total {
+  /* Xanh ngọc */
+  --summary-color: #168b78;
+  --summary-bg: #e7f5f1;
+  --summary-border: #d5ebe5;
+  --summary-soft: #d5eee7;
+}
+
+.hub-summary-active {
+  /* Xanh dương nhạt */
+  --summary-color: #4f75b8;
+  --summary-bg: #edf2fb;
+  --summary-border: #dce5f5;
+  --summary-soft: #dce7f8;
+}
+
+.hub-summary-inactive {
+  /* Đỏ san hô */
+  --summary-color: #c16f60;
+  --summary-bg: #fff0ec;
+  --summary-border: #f5dfd9;
+  --summary-soft: #f9e1da;
+}
+
+.hub-summary-maintenance {
+  /* Vàng cam */
+  --summary-color: #bd892e;
+  --summary-bg: #fff6e5;
+  --summary-border: #f2e7ce;
+  --summary-soft: #f8ebcf;
+}
+
+
+/* ========================================
+   MOBILITY HUB - INPUT & SELECT DESIGN
+   Đồng bộ với Vehicle Management
+======================================== */
+
+/* Ô tìm kiếm */
+.mobility-hub-management .hub-search-box {
+  min-height: 43px;
+  padding: 0 13px;
+  border: 1.5px solid #cbd9d6;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(30, 62, 55, 0.045);
+  transition: all 0.2s ease;
+}
+
+.mobility-hub-management .hub-search-box:hover {
+  border-color: #8bb8ae;
+  box-shadow: 0 3px 9px rgba(15, 118, 110, 0.08);
+}
+
+.mobility-hub-management .hub-search-box:focus-within {
+  border-color: #0f8b7d;
+  box-shadow: 0 0 0 3px rgba(15, 139, 125, 0.13);
+}
+
+.mobility-hub-management .hub-search-box > svg {
+  color: #0f8b7d;
+  flex-shrink: 0;
+}
+
+/* Input tìm kiếm */
+.mobility-hub-management .hub-search-box input {
+  border: none;
+  outline: none;
+  background: transparent;
+  box-shadow: none;
+  color: #263b3a;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.mobility-hub-management .hub-search-box input::placeholder {
+  color: #9aa9a5;
+  font-weight: 400;
+}
+
+/* Select bộ lọc */
+.mobility-hub-management .hub-filter-toolbar > select {
+  min-height: 43px;
+  padding: 10px 35px 10px 13px;
+  border: 1.5px solid #cbd9d6;
+  border-radius: 9px;
+  background-color: #ffffff;
+  color: #36524e;
+  font-size: 13px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(30, 62, 55, 0.045);
+  transition: all 0.2s ease;
+}
+
+.mobility-hub-management .hub-filter-toolbar > select:hover {
+  border-color: #8bb8ae;
+  background-color: #f8fcfb;
+}
+
+.mobility-hub-management .hub-filter-toolbar > select:focus {
+  border-color: #0f8b7d;
+  box-shadow: 0 0 0 3px rgba(15, 139, 125, 0.13);
+}
+
+/* Input, Select, Textarea trong modal */
+.mobility-hub-management .hub-form-grid input,
+.mobility-hub-management .hub-form-grid select,
+.mobility-hub-management .hub-form-grid textarea {
+  width: 100%;
+  min-height: 43px;
+  padding: 10px 13px;
+  border: 1.5px solid #cbd9d6;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #263b3a;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+  box-shadow: 0 2px 5px rgba(30, 62, 55, 0.04);
+  transition: all 0.2s ease;
+}
+
+/* Textarea */
+.mobility-hub-management .hub-form-grid textarea {
+  min-height: 90px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+/* Placeholder */
+.mobility-hub-management .hub-form-grid input::placeholder,
+.mobility-hub-management .hub-form-grid textarea::placeholder {
+  color: #9aa9a5;
+  font-weight: 400;
+}
+
+/* Hover */
+.mobility-hub-management .hub-form-grid input:hover,
+.mobility-hub-management .hub-form-grid select:hover,
+.mobility-hub-management .hub-form-grid textarea:hover {
+  border-color: #8bb8ae;
+  background: #fcfefd;
+}
+
+/* Focus */
+.mobility-hub-management .hub-form-grid input:focus,
+.mobility-hub-management .hub-form-grid select:focus,
+.mobility-hub-management .hub-form-grid textarea:focus {
+  border-color: #0f8b7d;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(15, 139, 125, 0.13);
+}
+
+/* Select trong modal */
+.mobility-hub-management .hub-form-grid select {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.mobility-hub-management select option {
+  padding: 10px;
+  background: #ffffff;
+  color: #263b3a;
+}
+
+/* Mã Hub bị khóa */
+.mobility-hub-management .hub-form-grid input:disabled,
+.mobility-hub-management .hub-form-grid select:disabled {
+  background: #edf3f1;
+  border-color: #dce6e3;
+  color: #84938f;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Nút đặt lại bộ lọc */
+.mobility-hub-management .hub-reset-button {
+  transition: all 0.2s ease;
+}
+
+.mobility-hub-management .hub-reset-button:hover {
+  color: #0f766e;
+  background: #e7f5f1;
+  border-color: #a7d3c8;
+}

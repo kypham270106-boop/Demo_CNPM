@@ -1,0 +1,463 @@
+
+/* Nút thêm mới */
+.hub-add-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 18px;
+  border: none;
+  border-radius: 8px;
+  background: #0f766e;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hub-add-button:hover {
+  background: #115e59;
+  box-shadow: 0 4px 10px rgba(15, 118, 110, 0.2);
+}
+
+.hub-add-button:active {
+  transform: translateY(1px);
+}
+
+
+/* ========================================
+   VEHICLE MANAGEMENT - INPUT & SELECT
+======================================== */
+
+/* Ô tìm kiếm */
+.vehicle-management .hub-search-box {
+  border: 1.5px solid #cbd9d6;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(30, 62, 55, 0.045);
+  transition: all 0.2s ease;
+}
+
+.vehicle-management .hub-search-box:hover {
+  border-color: #8bb8ae;
+  box-shadow: 0 3px 9px rgba(15, 118, 110, 0.08);
+}
+
+.vehicle-management .hub-search-box:focus-within {
+  border-color: #0f8b7d;
+  box-shadow: 0 0 0 3px rgba(15, 139, 125, 0.13);
+}
+
+.vehicle-management .hub-search-box > svg {
+  color: #0f8b7d;
+  flex-shrink: 0;
+}
+
+/* Input và Select trong khu vực lọc */
+.vehicle-management .hub-filter-toolbar > select {
+  min-height: 43px;
+  padding: 10px 35px 10px 13px;
+  border: 1.5px solid #cbd9d6;
+  border-radius: 9px;
+  background-color: #ffffff;
+  color: #36524e;
+  font-size: 13px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(30, 62, 55, 0.045);
+  transition: all 0.2s ease;
+}
+
+.vehicle-management .hub-filter-toolbar > select:hover {
+  border-color: #8bb8ae;
+  background-color: #f8fcfb;
+}
+
+.vehicle-management .hub-filter-toolbar > select:focus {
+  border-color: #0f8b7d;
+  box-shadow: 0 0 0 3px rgba(15, 139, 125, 0.13);
+}
+
+/* Input và Select trong form modal */
+.vehicle-management .hub-form-grid input,
+.vehicle-management .hub-form-grid select {
+  width: 100%;
+  min-height: 43px;
+  padding: 10px 13px;
+  border: 1.5px solid #cbd9d6;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #263b3a;
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+  box-shadow: 0 2px 5px rgba(30, 62, 55, 0.04);
+  transition: all 0.2s ease;
+}
+
+/* Placeholder */
+.vehicle-management .hub-form-grid input::placeholder,
+.vehicle-management .hub-search-box input::placeholder {
+  color: #9aa9a5;
+  font-weight: 400;
+}
+
+/* Hover */
+.vehicle-management .hub-form-grid input:hover,
+.vehicle-management .hub-form-grid select:hover {
+  border-color: #8bb8ae;
+  background: #fcfefd;
+}
+
+/* Focus */
+.vehicle-management .hub-form-grid input:focus,
+.vehicle-management .hub-form-grid select:focus,
+.vehicle-management .hub-search-box input:focus {
+  border-color: #0f8b7d;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(15, 139, 125, 0.13);
+}
+
+/* Select trong modal */
+.vehicle-management .hub-form-grid select {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Option */
+.vehicle-management select option {
+  padding: 10px;
+  background: #ffffff;
+  color: #263b3a;
+}
+
+/* Input bị khóa khi chỉnh sửa */
+.vehicle-management .hub-form-grid input:disabled,
+.vehicle-management .hub-form-grid select:disabled {
+  background: #edf3f1;
+  border-color: #dce6e3;
+  color: #84938f;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Nút reset và tải lại */
+.vehicle-management .hub-reset-button {
+  transition: all 0.2s ease;
+}
+
+.vehicle-management .hub-reset-button:hover {
+  color: #0f766e;
+  background: #e7f5f1;
+  border-color: #a7d3c8;
+}
+
+/* Đảm bảo checkbox nếu có */
+.vehicle-management input[type="checkbox"] {
+  accent-color: #0f8b7d;
+  cursor: pointer;
+}
+
+
+/* ========================================
+   VEHICLE SUMMARY CARDS - SOFT FULL COLOR
+======================================== */
+
+.vehicle-management .vehicle-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 17px;
+  margin-bottom: 24px;
+}
+
+.vehicle-management .hub-summary-card {
+  position: relative;
+  min-width: 0;
+  padding: 19px 20px 16px;
+  overflow: hidden;
+
+  background: var(--summary-bg);
+  border: 1px solid var(--summary-border);
+  border-radius: 13px;
+
+  box-shadow: 0 3px 12px rgba(30, 62, 55, 0.045);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+/* Bỏ họa tiết nhấn góc */
+.vehicle-management .hub-summary-card::after {
+  display: none;
+}
+
+.vehicle-management .hub-summary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 9px 23px rgba(30, 62, 55, 0.09);
+}
+
+/* Màu pastel từng loại */
+.vehicle-summary-total {
+  --summary-color: #168b78;
+  --summary-bg: #e7f5f1;
+  --summary-border: #d5ebe5;
+  --summary-soft: #d5eee7;
+}
+
+.vehicle-summary-bike {
+  --summary-color: #4f75b8;
+  --summary-bg: #edf2fb;
+  --summary-border: #dce5f5;
+  --summary-soft: #dce7f8;
+}
+
+.vehicle-summary-scooter {
+  --summary-color: #8b70c9;
+  --summary-bg: #f2edff;
+  --summary-border: #e5dcf8;
+  --summary-soft: #e8dfff;
+}
+
+.vehicle-summary-available {
+  --summary-color: #bd892e;
+  --summary-bg: #fff6e5;
+  --summary-border: #f2e7ce;
+  --summary-soft: #f8ebcf;
+}
+
+/* Phần icon và tiêu đề */
+.vehicle-management .hub-summary-top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.vehicle-management .hub-summary-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 43px;
+  height: 43px;
+
+  color: var(--summary-color);
+  background: var(--summary-soft);
+  border-radius: 12px;
+}
+
+.vehicle-management .hub-summary-label {
+  color: var(--summary-color);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.4px;
+  text-align: right;
+}
+
+/* Số liệu */
+.vehicle-management .hub-summary-value-row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 17px;
+}
+
+.vehicle-management .hub-summary-value-row strong {
+  color: #263b3a;
+  font-size: 31px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.vehicle-management .hub-summary-unit {
+  color: #788c87;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Thanh tỷ lệ */
+.vehicle-management .hub-summary-progress {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 6px;
+  margin-top: 17px;
+  overflow: hidden;
+
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+}
+
+.vehicle-management .hub-summary-progress-fill {
+  height: 100%;
+  background: var(--summary-color);
+  border-radius: inherit;
+  transition: width 0.35s ease;
+}
+
+/* Chân thẻ */
+.vehicle-management .hub-summary-footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 20px;
+  margin-top: 11px;
+
+  color: #788c87;
+  font-size: 10px;
+}
+
+.vehicle-management .hub-summary-footer > strong {
+  color: var(--summary-color);
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.vehicle-management .hub-summary-badge {
+  padding: 4px 9px;
+  color: var(--summary-color);
+  background: var(--summary-soft);
+  border-radius: 20px;
+  font-size: 9px;
+  font-weight: 750;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 1100px) {
+  .vehicle-management .vehicle-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 550px) {
+  .vehicle-management .vehicle-summary-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .vehicle-management .hub-summary-card {
+    padding: 16px;
+  }
+}
+
+
+/* ========================================
+   VEHICLE MANAGEMENT
+   Đồng bộ hình thức và hiệu ứng với Hub
+   Giữ nguyên màu sắc Vehicle
+======================================== */
+
+/* Ô tìm kiếm */
+.vehicle-management .hub-search-box {
+  min-height: 43px;
+  padding: 0 13px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(30, 62, 55, 0.045);
+  transition: all 0.2s ease;
+}
+
+.vehicle-management .hub-search-box:hover {
+  box-shadow: 0 3px 9px rgba(15, 118, 110, 0.08);
+}
+
+.vehicle-management .hub-search-box:focus-within {
+  box-shadow: 0 0 0 3px rgba(15, 139, 125, 0.13);
+}
+
+.vehicle-management .hub-search-box input {
+  min-height: 40px;
+  padding: 8px 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+.vehicle-management .hub-search-box input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Bộ lọc */
+.vehicle-management .hub-filter-toolbar > select {
+  min-height: 43px;
+  padding: 10px 35px 10px 13px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(30, 62, 55, 0.045);
+  transition: all 0.2s ease;
+}
+
+.vehicle-management .hub-filter-toolbar > select:hover {
+  background-color: #f8fcfb;
+}
+
+.vehicle-management .hub-filter-toolbar > select:focus {
+  box-shadow: 0 0 0 3px rgba(15, 139, 125, 0.13);
+}
+
+/* Input, select, textarea trong modal */
+.vehicle-management .hub-form-grid input,
+.vehicle-management .hub-form-grid select,
+.vehicle-management .hub-form-grid textarea {
+  width: 100%;
+  min-height: 43px;
+  padding: 10px 13px;
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+  box-shadow: 0 2px 5px rgba(30, 62, 55, 0.04);
+  transition: all 0.2s ease;
+}
+
+.vehicle-management .hub-form-grid input:hover,
+.vehicle-management .hub-form-grid select:hover,
+.vehicle-management .hub-form-grid textarea:hover {
+  background: #fcfefd;
+}
+
+.vehicle-management .hub-form-grid input:focus,
+.vehicle-management .hub-form-grid select:focus,
+.vehicle-management .hub-form-grid textarea:focus {
+  box-shadow: 0 0 0 3px rgba(15, 139, 125, 0.13);
+}
+
+/* Textarea */
+.vehicle-management .hub-form-grid textarea {
+  min-height: 90px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+/* Select */
+.vehicle-management .hub-form-grid select {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* Trường bị khóa */
+.vehicle-management .hub-form-grid input:disabled,
+.vehicle-management .hub-form-grid select:disabled {
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Nút đặt lại */
+.vehicle-management .hub-reset-button {
+  transition: all 0.2s ease;
+}
+

@@ -1,0 +1,691 @@
+
+/* ========================================
+   NÚT THÊM MỚI
+======================================== */
+
+.hub-add-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 18px;
+  border: none;
+  border-radius: 8px;
+  background: #0f766e;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hub-add-button:hover {
+  background: #115e59;
+  box-shadow: 0 4px 10px rgba(15, 118, 110, 0.2);
+}
+
+.hub-add-button:active {
+  transform: translateY(1px);
+}
+
+
+/* ========================================
+   RESERVATION SUMMARY - SOFT FULL COLOR
+======================================== */
+
+.reservation-management .reservation-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 15px;
+  margin-bottom: 24px;
+}
+
+/* Khung thẻ */
+.reservation-management .hub-summary-card {
+  position: relative;
+  min-width: 0;
+  padding: 17px 16px 15px;
+  overflow: hidden;
+
+  background: var(--summary-bg);
+  border: 1px solid var(--summary-border);
+  border-radius: 13px;
+
+  box-shadow: 0 3px 12px rgba(30, 62, 55, 0.045);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+/* Bỏ họa tiết hình tròn */
+.reservation-management .hub-summary-card::after {
+  display: none;
+}
+
+/* Hiệu ứng hover */
+.reservation-management .hub-summary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 9px 23px rgba(30, 62, 55, 0.09);
+}
+
+
+/* ========================================
+   MÀU PASTEL TỪNG TRẠNG THÁI
+======================================== */
+
+/* Tổng số */
+.reservation-summary-total {
+  --summary-color: #168b78;
+  --summary-bg: #e7f5f1;
+  --summary-border: #d5ebe5;
+  --summary-soft: #d5eee7;
+}
+
+/* Đang giữ chỗ */
+.reservation-summary-held {
+  --summary-color: #bd892e;
+  --summary-bg: #fff6e5;
+  --summary-border: #f2e7ce;
+  --summary-soft: #f8ebcf;
+}
+
+/* Đã xác nhận */
+.reservation-summary-confirmed {
+  --summary-color: #4f75b8;
+  --summary-bg: #edf2fb;
+  --summary-border: #dce5f5;
+  --summary-soft: #dce7f8;
+}
+
+/* Đang sử dụng */
+.reservation-summary-in-use {
+  --summary-color: #8b70c9;
+  --summary-bg: #f2edff;
+  --summary-border: #e5dcf8;
+  --summary-soft: #e8dfff;
+}
+
+/* Hoàn thành */
+.reservation-summary-completed {
+  --summary-color: #219b79;
+  --summary-bg: #e7f7ef;
+  --summary-border: #d4eddf;
+  --summary-soft: #d7f0e3;
+}
+
+
+/* ========================================
+   ICON VÀ TIÊU ĐỀ
+======================================== */
+
+.reservation-management .hub-summary-top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.reservation-management .hub-summary-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 39px;
+  height: 39px;
+
+  color: var(--summary-color);
+  background: var(--summary-soft);
+  border-radius: 11px;
+}
+
+.reservation-management .hub-summary-label {
+  color: var(--summary-color);
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.25px;
+  text-align: right;
+}
+
+
+/* ========================================
+   SỐ LIỆU
+======================================== */
+
+.reservation-management .hub-summary-value-row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  margin-top: 17px;
+}
+
+.reservation-management .hub-summary-value-row strong {
+  color: #263b3a;
+  font-size: 29px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.reservation-management .hub-summary-unit {
+  color: #788c87;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+
+/* ========================================
+   THANH TỶ LỆ
+======================================== */
+
+.reservation-management .hub-summary-progress {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 6px;
+  margin-top: 16px;
+  overflow: hidden;
+
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+}
+
+.reservation-management .hub-summary-progress-fill {
+  height: 100%;
+  background: var(--summary-color);
+  border-radius: inherit;
+  transition: width 0.35s ease;
+}
+
+
+/* ========================================
+   CHÂN THẺ
+======================================== */
+
+.reservation-management .hub-summary-footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  min-height: 20px;
+  margin-top: 11px;
+
+  color: #788c87;
+  font-size: 9px;
+}
+
+.reservation-management .hub-summary-footer > strong {
+  color: var(--summary-color);
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.reservation-management .hub-summary-badge {
+  padding: 4px 8px;
+  color: var(--summary-color);
+  background: var(--summary-soft);
+  border-radius: 20px;
+  font-size: 9px;
+  font-weight: 750;
+}
+
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 1200px) {
+  .reservation-management .reservation-summary-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 750px) {
+  .reservation-management .reservation-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .reservation-management .reservation-summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ========================================
+   NÚT THÊM MỚI
+======================================== */
+
+.reservation-management .hub-add-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 17px;
+
+  border: none;
+  border-radius: 9px;
+
+  background: #168b78;
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 750;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reservation-management .hub-add-button:hover {
+  background: #107565;
+  box-shadow: 0 5px 13px rgba(22, 139, 120, 0.2);
+  transform: translateY(-2px);
+}
+
+.reservation-management .hub-add-button:active {
+  transform: translateY(0);
+}
+
+/* ========================================
+   RESERVATION SUMMARY
+======================================== */
+
+.reservation-management .reservation-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 24px;
+}
+
+/* Khung thẻ */
+.reservation-management .hub-summary-card {
+  position: relative;
+  min-width: 0;
+  padding: 19px 17px 16px;
+  overflow: hidden;
+
+  background: var(--summary-bg);
+  border: 1px solid var(--summary-border);
+  border-radius: 13px;
+
+  box-shadow: 0 3px 12px rgba(30, 62, 55, 0.045);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+/* Bỏ họa tiết trang trí */
+.reservation-management .hub-summary-card::after {
+  display: none;
+}
+
+/* Hover */
+.reservation-management .hub-summary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 9px 23px rgba(30, 62, 55, 0.09);
+}
+
+/* ========================================
+   MÀU PASTEL TỪNG TRẠNG THÁI
+======================================== */
+
+/* Tổng số */
+.reservation-management .reservation-summary-total {
+  --summary-color: #168b78;
+  --summary-bg: #e7f5f1;
+  --summary-border: #d5ebe5;
+  --summary-soft: #d5eee7;
+}
+
+/* Đang giữ chỗ */
+.reservation-management .reservation-summary-held {
+  --summary-color: #bd892e;
+  --summary-bg: #fff6e5;
+  --summary-border: #f2e7ce;
+  --summary-soft: #f8ebcf;
+}
+
+/* Đã xác nhận */
+.reservation-management .reservation-summary-confirmed {
+  --summary-color: #4f75b8;
+  --summary-bg: #edf2fb;
+  --summary-border: #dce5f5;
+  --summary-soft: #dce7f8;
+}
+
+/* Đang sử dụng */
+.reservation-management .reservation-summary-in-use {
+  --summary-color: #8b70c9;
+  --summary-bg: #f2edff;
+  --summary-border: #e5dcf8;
+  --summary-soft: #e8dfff;
+}
+
+/* Hoàn thành */
+.reservation-management .reservation-summary-completed {
+  --summary-color: #219b79;
+  --summary-bg: #e7f7ef;
+  --summary-border: #d4eddf;
+  --summary-soft: #d7f0e3;
+}
+
+/* ========================================
+   ICON VÀ TIÊU ĐỀ
+======================================== */
+
+.reservation-management .hub-summary-top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.reservation-management .hub-summary-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  width: 43px;
+  height: 43px;
+
+  color: var(--summary-color);
+  background: var(--summary-soft);
+  border-radius: 12px;
+}
+
+.reservation-management .hub-summary-label {
+  color: var(--summary-color);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.4px;
+  text-align: right;
+}
+
+/* ========================================
+   SỐ LIỆU
+======================================== */
+
+.reservation-management .hub-summary-value-row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 17px;
+}
+
+.reservation-management .hub-summary-value-row strong {
+  color: #263b3a;
+  font-size: 31px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.reservation-management .hub-summary-unit {
+  color: #788c87;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ========================================
+   THANH TỶ LỆ
+======================================== */
+
+.reservation-management .hub-summary-progress {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 6px;
+  margin-top: 17px;
+  overflow: hidden;
+
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+}
+
+.reservation-management .hub-summary-progress-fill {
+  height: 100%;
+  background: var(--summary-color);
+  border-radius: inherit;
+  transition: width 0.35s ease;
+}
+
+/* ========================================
+   CHÂN THẺ
+======================================== */
+
+.reservation-management .hub-summary-footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+
+  min-height: 20px;
+  margin-top: 11px;
+
+  color: #788c87;
+  font-size: 10px;
+}
+
+.reservation-management .hub-summary-footer > strong {
+  color: var(--summary-color);
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.reservation-management .hub-summary-badge {
+  padding: 4px 9px;
+  color: var(--summary-color);
+  background: var(--summary-soft);
+  border-radius: 20px;
+  font-size: 9px;
+  font-weight: 750;
+}
+
+/* ========================================
+   INPUT VÀ SELECT
+======================================== */
+
+/* Ô tìm kiếm */
+.reservation-management .hub-search-box {
+  min-height: 43px;
+  padding: 0 13px;
+
+  border: 1.5px solid #cbd9d6;
+  border-radius: 10px;
+
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(30, 62, 55, 0.045);
+  transition: all 0.2s ease;
+}
+
+.reservation-management .hub-search-box:hover {
+  border-color: #8bb8ae;
+  box-shadow: 0 3px 9px rgba(15, 118, 110, 0.08);
+}
+
+.reservation-management .hub-search-box:focus-within {
+  border-color: #0f8b7d;
+  box-shadow: 0 0 0 3px rgba(15, 139, 125, 0.13);
+}
+
+.reservation-management .hub-search-box > svg {
+  color: #0f8b7d;
+  flex-shrink: 0;
+}
+
+.reservation-management .hub-search-box input {
+  min-height: 40px;
+  padding: 8px 0;
+
+  border: none;
+  outline: none;
+  background: transparent;
+  box-shadow: none;
+
+  color: #263b3a;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.reservation-management .hub-search-box input::placeholder {
+  color: #9aa9a5;
+  font-weight: 400;
+}
+
+/* Select bộ lọc */
+.reservation-management .hub-filter-toolbar > select {
+  min-height: 43px;
+  padding: 10px 35px 10px 13px;
+
+  border: 1.5px solid #cbd9d6;
+  border-radius: 9px;
+
+  background: #ffffff;
+  color: #36524e;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+
+  outline: none;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(30, 62, 55, 0.045);
+  transition: all 0.2s ease;
+}
+
+.reservation-management .hub-filter-toolbar > select:hover {
+  border-color: #8bb8ae;
+  background: #f8fcfb;
+}
+
+.reservation-management .hub-filter-toolbar > select:focus {
+  border-color: #0f8b7d;
+  box-shadow: 0 0 0 3px rgba(15, 139, 125, 0.13);
+}
+
+/* Select trong bảng nếu có */
+.reservation-management .hub-table select {
+  min-height: 38px;
+  padding: 8px 30px 8px 11px;
+
+  border: 1.5px solid #cbd9d6;
+  border-radius: 9px;
+
+  background: #ffffff;
+  color: #36524e;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reservation-management .hub-table select:hover {
+  border-color: #8bb8ae;
+  background: #f8fcfb;
+}
+
+.reservation-management .hub-table select:focus {
+  border-color: #0f8b7d;
+  box-shadow: 0 0 0 3px rgba(15, 139, 125, 0.13);
+}
+
+/* Input và select trong modal */
+.reservation-management .hub-form-grid input,
+.reservation-management .hub-form-grid select,
+.reservation-management .hub-form-grid textarea {
+  width: 100%;
+  min-height: 43px;
+  padding: 10px 13px;
+
+  border: 1.5px solid #cbd9d6;
+  border-radius: 9px;
+
+  background: #ffffff;
+  color: #263b3a;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+
+  outline: none;
+  box-shadow: 0 2px 5px rgba(30, 62, 55, 0.04);
+  transition: all 0.2s ease;
+}
+
+.reservation-management .hub-form-grid input::placeholder,
+.reservation-management .hub-form-grid textarea::placeholder {
+  color: #9aa9a5;
+  font-weight: 400;
+}
+
+.reservation-management .hub-form-grid input:hover,
+.reservation-management .hub-form-grid select:hover,
+.reservation-management .hub-form-grid textarea:hover {
+  border-color: #8bb8ae;
+  background: #fcfefd;
+}
+
+.reservation-management .hub-form-grid input:focus,
+.reservation-management .hub-form-grid select:focus,
+.reservation-management .hub-form-grid textarea:focus {
+  border-color: #0f8b7d;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(15, 139, 125, 0.13);
+}
+
+.reservation-management .hub-form-grid textarea {
+  min-height: 90px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+/* Nút reset */
+.reservation-management .hub-reset-button {
+  transition: all 0.2s ease;
+}
+
+.reservation-management .hub-reset-button:hover {
+  color: #0f766e;
+  background: #e7f5f1;
+  border-color: #a7d3c8;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 1200px) {
+  .reservation-management .reservation-summary-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 750px) {
+  .reservation-management .reservation-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .reservation-management .reservation-summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

@@ -1,0 +1,646 @@
+@import "./StudentServiceSelection.css";
+
+/* =========================================
+   Confirmation Page
+========================================= */
+
+.confirmation-page {
+  background:
+    radial-gradient(circle at 10% 0%, rgba(0, 150, 136, 0.07), transparent 30%),
+    #f5f7fb;
+}
+
+.confirmation-container {
+  max-width: 920px;
+  padding-bottom: 60px;
+}
+
+.reservation-confirm-heading {
+  text-align: center;
+  margin: 42px auto 32px;
+  max-width: 650px;
+}
+
+.confirmation-status-icon {
+  width: 68px;
+  height: 68px;
+  margin: 0 auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #009688;
+  background: #e0f2f1;
+  border-radius: 22px;
+  box-shadow: 0 8px 24px rgba(0, 150, 136, 0.10);
+}
+
+.confirmation-status-icon.is-success {
+  color: #16865f;
+  background: #e2f6ed;
+}
+
+.reservation-confirm-heading h1 {
+  margin: 10px 0;
+  color: #1d3434;
+  font-size: 30px;
+  font-weight: 750;
+  letter-spacing: -0.7px;
+}
+
+.reservation-confirm-heading p {
+  color: #74818a;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+/* =========================================
+   Main Content
+========================================= */
+
+.confirmation-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* =========================================
+   Resource Highlight Card
+========================================= */
+
+.confirmation-resource-card {
+  position: relative;
+  overflow: hidden;
+  padding: 26px;
+  border-radius: 20px;
+  border: 1px solid #dcece9;
+  background: linear-gradient(125deg, #ffffff 0%, #f0faf8 100%);
+  box-shadow: 0 8px 28px rgba(31, 70, 67, 0.06);
+}
+
+.confirmation-resource-card::before {
+  content: "";
+  position: absolute;
+  top: -75px;
+  right: -55px;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  background: rgba(0, 150, 136, 0.06);
+}
+
+.confirmation-resource-card.parking-card {
+  border-color: #dfe6f5;
+  background: linear-gradient(125deg, #ffffff 0%, #f3f6fd 100%);
+}
+
+.confirmation-resource-card.parking-card::before {
+  background: rgba(79, 109, 190, 0.07);
+}
+
+.confirmation-resource-top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 17px;
+}
+
+.confirmation-resource-icon {
+  width: 66px;
+  height: 66px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #008f83;
+  background: #dff3ef;
+  border-radius: 18px;
+}
+
+.parking-card .confirmation-resource-icon {
+  color: #526bb3;
+  background: #e7ecfa;
+}
+
+.confirmation-resource-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.confirmation-resource-title > span {
+  color: #008f83;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 1.1px;
+}
+
+.parking-card .confirmation-resource-title > span {
+  color: #526bb3;
+}
+
+.confirmation-resource-title h2 {
+  margin: 5px 0;
+  color: #243b3a;
+  font-size: 21px;
+  font-weight: 750;
+}
+
+.confirmation-resource-title p {
+  margin: 0;
+  color: #7a898c;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.confirmation-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+  padding: 8px 12px;
+  border-radius: 30px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.confirmation-status-badge > span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.confirmation-status-badge.pending {
+  color: #a66a13;
+  background: #fff4df;
+}
+
+.confirmation-status-badge.pending > span {
+  background: #e8a32b;
+}
+
+.confirmation-status-badge.confirmed {
+  color: #16865f;
+  background: #e2f6ed;
+}
+
+.confirmation-status-badge.confirmed > span {
+  background: #22a66f;
+}
+
+.confirmation-resource-divider {
+  height: 1px;
+  margin: 23px 0 19px;
+  background: #dceae7;
+}
+
+.confirmation-resource-location {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.confirmation-location-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #008f83;
+  background: #e1f3ef;
+  border-radius: 12px;
+}
+
+.confirmation-resource-location div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.confirmation-resource-location span {
+  color: #849194;
+  font-size: 11px;
+}
+
+.confirmation-resource-location strong {
+  color: #2b4543;
+  font-size: 14px;
+}
+
+.confirmation-resource-location small {
+  color: #879394;
+  font-size: 11px;
+}
+
+/* =========================================
+   Detail Panels
+========================================= */
+
+.confirmation-detail-panel {
+  padding: 25px;
+  background: #ffffff;
+  border: 1px solid #e8edef;
+  border-radius: 18px;
+  box-shadow: 0 5px 20px rgba(31, 50, 56, 0.035);
+}
+
+.confirmation-panel-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 23px;
+}
+
+.confirmation-panel-icon {
+  width: 43px;
+  height: 43px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #008f83;
+  background: #e5f5f1;
+  border-radius: 13px;
+}
+
+.confirmation-panel-icon.charging-icon {
+  color: #d58a20;
+  background: #fff4df;
+}
+
+.confirmation-panel-heading h2 {
+  margin: 0 0 4px;
+  color: #293e40;
+  font-size: 16px;
+  font-weight: 750;
+}
+
+.confirmation-panel-heading p {
+  margin: 0;
+  color: #899497;
+  font-size: 12px;
+}
+
+.confirmation-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.confirmation-detail-item {
+  min-width: 0;
+  padding: 16px;
+  background: #f7f9fa;
+  border: 1px solid #edf0f1;
+  border-radius: 13px;
+}
+
+.confirmation-detail-item.full {
+  grid-column: 1 / -1;
+}
+
+.confirmation-detail-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 10px;
+  color: #849093;
+  font-size: 12px;
+  font-weight: 550;
+}
+
+.confirmation-detail-label svg {
+  color: #009688;
+}
+
+.confirmation-detail-item > strong {
+  display: block;
+  color: #2b4142;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.confirmation-code-value {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.confirmation-code-value strong {
+  color: #007f74;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.confirmation-code-value span {
+  flex-shrink: 0;
+  padding: 5px 8px;
+  color: #008f83;
+  background: #e3f3ef;
+  border-radius: 6px;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.5px;
+}
+
+/* =========================================
+   Parking Details
+========================================= */
+
+.confirmation-parking-type {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px;
+  background: #f7f9fc;
+  border: 1px solid #edf0f5;
+  border-radius: 13px;
+}
+
+.confirmation-parking-type-icon {
+  width: 43px;
+  height: 43px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #d18b23;
+  background: #fff2db;
+  border-radius: 12px;
+}
+
+.confirmation-parking-type div:nth-child(2) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.confirmation-parking-type div:nth-child(2) span {
+  color: #879294;
+  font-size: 11px;
+}
+
+.confirmation-parking-type div:nth-child(2) strong {
+  color: #304346;
+  font-size: 14px;
+}
+
+.confirmation-type-tag {
+  padding: 6px 9px;
+  color: #6477ad;
+  background: #e9eefb;
+  border-radius: 6px;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.4px;
+}
+
+/* =========================================
+   Battery Information
+========================================= */
+
+.confirmation-battery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.confirmation-battery-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  color: #b67b1e;
+  background: #fff8ec;
+  border: 1px solid #f8ebd3;
+  border-radius: 13px;
+}
+
+.confirmation-battery-item.target {
+  color: #008b7e;
+  background: #edf8f5;
+  border-color: #d9eee8;
+}
+
+.confirmation-battery-item span {
+  color: #8c9290;
+  font-size: 11px;
+}
+
+.confirmation-battery-item strong {
+  color: #354545;
+  font-size: 23px;
+  font-weight: 750;
+}
+
+.confirmation-charging-schedule {
+  margin-top: 14px;
+  padding: 16px;
+  background: #f7f9fa;
+  border: 1px solid #edf0f1;
+  border-radius: 13px;
+}
+
+.confirmation-charging-schedule > strong {
+  display: block;
+  margin-bottom: 8px;
+  color: #304346;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.confirmation-charging-schedule > small {
+  color: #899497;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================
+   Notice
+========================================= */
+
+.confirmation-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 17px 19px;
+  background: #eef7f6;
+  border: 1px solid #dceeea;
+  border-radius: 14px;
+}
+
+.confirmation-notice-icon {
+  flex-shrink: 0;
+  color: #008f83;
+}
+
+.confirmation-notice strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #28635c;
+  font-size: 13px;
+}
+
+.confirmation-notice p {
+  margin: 0;
+  color: #66817d;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+/* =========================================
+   Success Message
+========================================= */
+
+.confirmation-success-message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  color: #16865f;
+  background: #e8f7ef;
+  border: 1px solid #ccebd9;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* =========================================
+   Actions
+========================================= */
+
+.confirmation-actions {
+  margin-top: 5px;
+}
+
+.confirmation-actions button {
+  min-height: 48px;
+  border-radius: 12px;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.confirmation-actions button:not(:disabled):hover {
+  transform: translateY(-2px);
+}
+
+.confirmation-actions .service-primary-button {
+  box-shadow: 0 6px 15px rgba(0, 150, 136, 0.16);
+}
+
+.confirmation-actions .service-primary-button:not(:disabled):hover {
+  box-shadow: 0 9px 20px rgba(0, 150, 136, 0.23);
+}
+
+.confirmation-spinner {
+  animation: confirmation-spin 1s linear infinite;
+}
+
+@keyframes confirmation-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================
+   Responsive
+========================================= */
+
+@media (max-width: 640px) {
+  .confirmation-container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .reservation-confirm-heading {
+    margin-top: 28px;
+  }
+
+  .reservation-confirm-heading h1 {
+    font-size: 24px;
+  }
+
+  .confirmation-resource-card,
+  .confirmation-detail-panel {
+    padding: 19px;
+  }
+
+  .confirmation-resource-top {
+    flex-wrap: wrap;
+  }
+
+  .confirmation-resource-title {
+    flex-basis: calc(100% - 85px);
+  }
+
+  .confirmation-status-badge {
+    margin-left: 82px;
+  }
+
+  .confirmation-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .confirmation-detail-item.full {
+    grid-column: auto;
+  }
+
+  .confirmation-code-value {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .confirmation-parking-type {
+    flex-wrap: wrap;
+  }
+
+  .confirmation-type-tag {
+    margin-left: 55px;
+  }
+}
+
+@media (max-width: 420px) {
+  .confirmation-battery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .confirmation-actions {
+    flex-direction: column-reverse;
+  }
+
+  .confirmation-actions button {
+    width: 100%;
+  }
+
+  .confirmation-resource-title h2 {
+    font-size: 18px;
+  }
+}
+
+
+.confirmation-notice-list {
+  margin: 10px 0 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #526565;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.confirmation-notice-list li {
+  padding-left: 3px;
+}
+
+.confirmation-notice-list strong {
+  color: #0f766e;
+  font-weight: 700;
+}
