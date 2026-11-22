@@ -1,0 +1,418 @@
+
+/* ===== Global ===== */
+* {
+  box-sizing: border-box;
+}
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  background: #f4f8f8;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: #263238;
+}
+
+/* ===== Top and Bottom Bars ===== */
+.top-bar {
+  width: 100%;
+  height: 10px;
+  background: #009688;
+}
+
+.bottom-bar {
+  width: 100%;
+  height: 7px;
+  background: #009688;
+}
+
+/* ===== Main Login Container ===== */
+.login-container {
+  width: calc(100% - 64px);
+  max-width: 1050px;
+  min-height: 570px;
+  margin: 35px auto;
+  padding: 65px 70px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
+  column-gap: 75px;
+  align-items: center;
+
+  background: linear-gradient(
+    to right,
+    #e8f5f3 0%,
+    #e8f5f3 48%,
+    #ffffff 48%,
+    #ffffff 100%
+  );
+
+  border-radius: 18px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== Brand ===== */
+.brand {
+  grid-column: 1;
+  grid-row: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.brand-icon {
+  width: 55px;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+  background: #ffffff;
+  color: #009688;
+  font-size: 30px;
+
+  box-shadow: 0 4px 12px rgba(0, 150, 136, 0.1);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.brand-text span {
+  font-size: 14px;
+  color: #607d80;
+}
+
+.brand-text strong {
+  font-size: 21px;
+  color: #00796b;
+  font-weight: 700;
+}
+
+/* ===== Bike Illustration ===== */
+.bike-icon {
+  grid-column: 1;
+  grid-row: 2;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 280px;
+}
+
+.bike-icon svg {
+  width: 220px;
+  height: 185px;
+  filter: drop-shadow(0 5px 5px rgba(0, 150, 136, 0.08));
+}
+
+/* ===== Login Form ===== */
+.login-form {
+  grid-column: 2;
+  grid-row: 1 / 3;
+
+  width: 100%;
+  max-width: 390px;
+  justify-self: center;
+}
+
+/* ===== Login Description ===== */
+.login-form h2 {
+  margin: 0 0 8px;
+  font-size: 25px;
+  font-weight: 700;
+  color: #183451;
+}
+
+.login-description {
+  margin: 0 0 25px;
+  color: #78909c;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ===== Form Groups ===== */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: 24px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #37474f;
+}
+
+.form-group input {
+  width: 100%;
+  height: 49px;
+  padding: 0 15px;
+
+  border: 1px solid #d5dddd;
+  border-radius: 8px;
+  outline: none;
+
+  background: #fafcfc;
+  color: #263238;
+  font-size: 14px;
+
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input::placeholder {
+  color: #a0aeb0;
+}
+
+.form-group input:focus {
+  border-color: #009688;
+  box-shadow: 0 0 0 3px rgba(0, 150, 136, 0.12);
+}
+
+/* ===== Password Visibility ===== */
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 45px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 28px;
+  height: 28px;
+  padding: 0;
+
+  border: none;
+  background: transparent;
+  color: #666;
+  cursor: pointer;
+}
+
+.toggle-password svg {
+  width: 17px;
+  height: 17px;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.toggle-password:hover {
+  color: #009688;
+}
+
+/* ===== Form Options ===== */
+.form-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  margin: 5px 0 25px;
+  font-size: 13px;
+}
+
+.remember {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  color: #546e7a;
+  cursor: pointer;
+}
+
+.remember input {
+  width: 15px;
+  height: 15px;
+  accent-color: #009688;
+  cursor: pointer;
+}
+
+.form-options a,
+.signup-text a {
+  color: #009688;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.form-options a:hover,
+.signup-text a:hover {
+  color: #00695c;
+  text-decoration: underline;
+}
+
+/* ===== Error Message ===== */
+.error-message {
+  margin: 0 0 16px;
+  padding: 11px 13px;
+
+  border-radius: 7px;
+  background: #ffebee;
+  color: #c62828;
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ===== Login Button ===== */
+.login-button {
+  width: 100%;
+  height: 49px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: #009688;
+  color: #ffffff;
+
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+
+  transition: background 0.2s, transform 0.2s;
+}
+
+.login-button:hover:not(:disabled) {
+  background: #00796b;
+  transform: translateY(-1px);
+}
+
+.login-button:disabled {
+  background: #80cbc4;
+  cursor: not-allowed;
+}
+
+/* ===== Sign Up ===== */
+.signup-text {
+  margin: 25px 0 0;
+  text-align: center;
+  color: #78909c;
+  font-size: 13px;
+}
+
+.signup-text a {
+  margin-left: 4px;
+}
+
+/* ===== Operator Login Link ===== */
+.operator-login-link {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid #e5ebeb;
+  text-align: center;
+  font-size: 12px;
+  color: #78909c;
+}
+
+.operator-login-link p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.operator-login-link button {
+  margin-top: 7px;
+  padding: 4px 0;
+
+  border: none;
+  background: transparent;
+  color: #009688;
+
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.operator-login-link button:hover {
+  color: #00695c;
+  text-decoration: underline;
+}
+
+/* ===== Tablet ===== */
+@media (max-width: 850px) {
+  .login-container {
+    width: calc(100% - 40px);
+    padding: 45px 35px;
+    column-gap: 35px;
+    min-height: 520px;
+  }
+
+  .brand-text strong {
+    font-size: 18px;
+  }
+
+  .bike-icon svg {
+    width: 180px;
+    height: 155px;
+  }
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 600px) {
+  .login-page {
+    justify-content: center;
+  }
+
+  .login-container {
+    width: calc(100% - 32px);
+    min-height: auto;
+    margin: 25px 16px;
+    padding: 35px 25px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+
+    background: #ffffff;
+    border-radius: 14px;
+  }
+
+  .brand {
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
+  .brand-text strong {
+    font-size: 18px;
+  }
+
+  .bike-icon {
+    min-height: auto;
+    margin: 10px 0 25px;
+  }
+
+  .bike-icon svg {
+    width: 125px;
+    height: 105px;
+  }
+
+  .login-form {
+    max-width: none;
+  }
+
+  .form-options {
+    font-size: 12px;
+  }
+}
