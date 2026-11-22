@@ -23,7 +23,7 @@ Backend quản lý xe điện dùng chung, chỗ đỗ và cổng sạc tại c�
 | Jest / Supertest | 30.5.2 / 7.3.2 | Unit test và test HTTP qua PostgreSQL |
 | ESLint / Docker Compose | 9.39.5 / Compose v2 | Kiểm tra code và môi trường chạy tái lập |
 
-Phiên bản đầy đủ và phụ thuộc gián tiếp được khóa trong `package-lock.json`. Phần mềm dùng Node crypto scrypt với salt ngẫu nhiên cho password.
+Phiên bản đầy đủ và phụ thuộc gián tiếp được khóa trong `apps/backend/package-lock.json`. Phần mềm dùng Node crypto scrypt với salt ngẫu nhiên cho password.
 
 ## Kiến trúc và thư mục
 
@@ -36,21 +36,34 @@ Next.js / React (frontend dự kiến)
 ```
 
 ```text
-src/
-  auth/           Local credentials, Google OAuth, JWT guard
-  users/          Hồ sơ, cài đặt, quản trị tài khoản
-  hubs/           GPS/polyline, lịch sử tìm kiếm, tài nguyên
-  reservations/   Hold, confirm, cancel, pickup, return
-  charging/       Nhu cầu sạc, tính lịch, xác nhận, lập lại
-  operations/     Mock telemetry, monitoring, incident, dispatch, dashboard
-  simulations/    Engine và báo cáo What-if
-  common/         Cấu hình, DTO, Prisma, lỗi HTTP, OpenAPI
-  jobs.ts         Job đồng bộ trạng thái dựa trên database
-prisma/            Schema, migrations, demo seed, khởi tạo Operator
-test/              Unit, e2e HTTP trên PostgreSQL
-docs/              Hợp đồng frontend và quyết định kiến trúc
-.github/workflows/ CI cho backend
+apps/
+  backend/
+    src/
+      auth/           Local credentials, Google OAuth, JWT guard
+      users/          Hồ sơ, cài đặt, quản trị tài khoản
+      hubs/           GPS/polyline, lịch sử tìm kiếm, tài nguyên
+      reservations/   Hold, confirm, cancel, pickup, return
+      charging/       Nhu cầu sạc, tính lịch, xác nhận, lập lại
+      operations/     Mock telemetry, monitoring, incident, dispatch, dashboard
+      simulations/    Engine và báo cáo What-if
+      common/         Cấu hình, DTO, Prisma, lỗi HTTP, OpenAPI
+      jobs.ts         Job đồng bộ trạng thái dựa trên database
+    prisma/            Schema, migrations, demo seed, khởi tạo Operator
+    test/              Unit, e2e HTTP trên PostgreSQL
+    package.json       Lệnh npm và dependency của backend
+    package-lock.json  Khóa phiên bản dependency của backend
+    tsconfig*.json     Cấu hình TypeScript của backend
+    eslint.config.mjs  Cấu hình lint của backend
+    Dockerfile         Image backend
+    compose.yaml       PostgreSQL và API cho môi trường local
+    .env.example       Mẫu biến môi trường backend
+  frontend/
+    README.md          Dành chỗ cho frontend, chưa có mã triển khai
+docs/                  Hợp đồng frontend và quyết định kiến trúc dùng chung
+.github/workflows/     CI cho backend
 ```
+
+Mỗi ứng dụng quản lý mã nguồn và cấu hình trong thư mục riêng. `apps/frontend` hiện chỉ có tài liệu giữ chỗ. Các lệnh npm và Docker bên dưới đều chạy từ `apps/backend`; thư mục `docs` được tính từ gốc repository.
 
 Backend là modular monolith. Controller nhận/kiểm tra HTTP, Service áp dụng business rule, Prisma thực hiện data access. MockHubDataProvider cung cấp telemetry và DispatchExecutor mô phỏng thực thi lệnh. Engine What-if đọc snapshot PostgreSQL và lưu scenario/report.
 
@@ -61,12 +74,13 @@ Với Node.js, Docker Engine và Docker Compose v2:
 ```bash
 git clone https://github.com/kypham270106-boop/Demo_CNPM.git
 cd Demo_CNPM
+cd apps/backend
 npm ci
 cp .env.example .env
 node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 ```
 
-Nếu backend đang trong PR, chuyển sang nhánh backend sau khi clone và trước khi chạy `npm ci`. Trên PowerShell dùng `Copy-Item .env.example .env`. Điền chuỗi vừa sinh vào `JWT_SECRET`. Để seed, đặt `ALLOW_DEMO_SEED=true` và tự chọn `DEMO_PASSWORD` dài ít nhất 12 ký tự.
+Trên PowerShell dùng `Copy-Item .env.example .env`. File cấu hình local nằm tại `apps/backend/.env`. Điền chuỗi vừa sinh vào `JWT_SECRET`. Để seed, đặt `ALLOW_DEMO_SEED=true` và tự chọn `DEMO_PASSWORD` dài ít nhất 12 ký tự.
 
 ```bash
 docker compose up -d --wait db
@@ -89,7 +103,7 @@ curl -X POST http://localhost:3000/api/auth/login \
 curl http://localhost:3000/api/hubs -H "Authorization: Bearer <accessToken>"
 ```
 
-Swagger có nút **Authorize** để nhập access token. Nếu backend đang trong PR, chuyển sang nhánh backend sau khi clone và trước khi chạy `npm ci`. Trên PowerShell dùng `curl.exe` hoặc `Invoke-RestMethod`. API trả thành công dưới dạng object, array hoặc `{items,total,page,limit}` với danh sách phân trang. Lỗi ví dụ:
+Swagger có nút **Authorize** để nhập access token. Trên PowerShell dùng `curl.exe` hoặc `Invoke-RestMethod`. API trả thành công dưới dạng object, array hoặc `{items,total,page,limit}` với danh sách phân trang. Lỗi ví dụ:
 
 ```json
 {"statusCode":409,"code":"RESOURCE_UNAVAILABLE","message":"The selected resource is unavailable for this window","path":"/api/reservations","timestamp":"2026-11-17T08:00:00.000Z"}
@@ -138,7 +152,7 @@ E2e tạo và dọn dữ liệu riêng theo ID ngẫu nhiên. Các ca bao gồm 
 ## Database và triển khai
 
 - `202611200002_immutable_operation_hubs` cố định Hub của yêu cầu sạc và Hub nguồn/đích của lệnh điều phối ngay từ khi tạo. Áp dụng bằng `npm run db:deploy`. Khi cần đổi Hub sạc, hủy đề xuất có thể hủy và tạo yêu cầu mới. Với điều phối, xử lý lệnh hiện tại đến trạng thái kết thúc trước khi cấp tài nguyên cho lệnh mới. API lập lại lịch sạc vẫn làm việc tại Hub ban đầu.
-- Schema tại `prisma/schema.prisma`. `202611170001_init` tạo bảng và quan hệ. `202611170002_integrity` thêm `btree_gist`, exclusion constraints cho khoảng thời gian đặt xe/chỗ đỗ/cổng sạc/xe sạc, và các CHECK/partial unique. `202611170003_booking_confirmation` bổ sung mã xác nhận, cờ đề xuất sạc điều chỉnh và mặc định giao diện light. `202611200001_hub_resource_integrity` thêm composite foreign keys và trigger để ngăn liên kết tài nguyên khác Hub.
+- Schema tại `apps/backend/prisma/schema.prisma`. `202611170001_init` tạo bảng và quan hệ. `202611170002_integrity` thêm `btree_gist`, exclusion constraints cho khoảng thời gian đặt xe/chỗ đỗ/cổng sạc/xe sạc, và các CHECK/partial unique. `202611170003_booking_confirmation` bổ sung mã xác nhận, cờ đề xuất sạc điều chỉnh và mặc định giao diện light. `202611200001_hub_resource_integrity` thêm composite foreign keys và trigger để ngăn liên kết tài nguyên khác Hub.
 - Khi thay đổi schema, chạy `npm run db:migrate -- --create-only --name ten_thay_doi` trên DB dev. Kiểm tra SQL sinh ra và giữ các constraint viết tay trước khi áp dụng. `npm run db:deploy` dùng để cập nhật DB theo migration có sẵn.
 - Một số ràng buộc Hub/resource là SQL tùy chỉnh vì Prisma schema không mô tả trigger hoặc các composite foreign keys bổ sung. Giữ các ràng buộc này khi tạo migration tiếp theo; migration kiểm tra Hub của reservation, charging request và dispatch item tại thời điểm gắn tài nguyên để không làm hỏng lịch sử khi xe được chuyển Hub.
 - `npm run db:seed` có thể chạy lại và giữ dữ liệu đã sửa. Để có dữ liệu demo mới từ đầu, tạo database/Compose project mới, áp dụng migrations và seed lại. Sử dụng DB hiện tại mà không yêu cầu reset.
