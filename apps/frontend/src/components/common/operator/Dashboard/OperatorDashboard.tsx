@@ -1,6 +1,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import MobilityHubManagement from "../Management/MobilityHubManagement";
 import VehicleManagement from "../Management/VehicleManagement";
 import ParkingManagement from "../Management/ParkingChargingManagement";
@@ -37,6 +37,9 @@ import operatorDashboardService, {
 } from "../../../../services/operator.service";
 
 import "./OperatorDashboard.css";
+import SettingsPanel from "../../../../preferences/SettingsPanel";
+import { usePreferences } from "../../../../preferences/PreferencesContext";
+import { translate, type Language } from "../../../../preferences/translations";
 
 interface OperatorDashboardProps {
   operatorName?: string;
@@ -76,27 +79,27 @@ const pageTitles: Record<DashboardPage, string> = {
   settings: "Cài đặt hệ thống",
 };
 
-const formatTime = (date?: string) => {
+const formatTime = (date: string | undefined, language: Language) => {
   if (!date) return "--:--";
 
   const parsedDate = new Date(date);
 
   if (Number.isNaN(parsedDate.getTime())) return "--:--";
 
-  return parsedDate.toLocaleTimeString("vi-VN", {
+  return parsedDate.toLocaleTimeString(language === "en" ? "en-US" : "vi-VN", {
     hour: "2-digit",
     minute: "2-digit",
   });
 };
 
-const formatDate = (date?: string) => {
+const formatDate = (date: string | undefined, language: Language) => {
   if (!date) return "";
 
   const parsedDate = new Date(date);
 
   if (Number.isNaN(parsedDate.getTime())) return "";
 
-  return parsedDate.toLocaleDateString("vi-VN");
+  return parsedDate.toLocaleDateString(language === "en" ? "en-US" : "vi-VN");
 };
 
 const getReservationStatus = (status: string) => {
@@ -126,8 +129,10 @@ interface ActivityItem {
 const buildActivities = (
   reservations: OperatorReservation[],
   hubMap: Map<string, OperatorHub>,
-  vehicleMap: Map<string, string>
+  vehicleMap: Map<string, string>,
+  language: Language
 ): ActivityItem[] => {
+  const t = (text: string) => translate(text, language);
   const activities: ActivityItem[] = [];
 
   reservations.forEach((reservation) => {
@@ -135,8 +140,8 @@ const buildActivities = (
       hubMap.get(reservation.hubId)?.name ?? "Mobility Hub";
 
     const vehicleCode = reservation.vehicleId
-      ? vehicleMap.get(reservation.vehicleId) ?? "Phương tiện"
-      : "Chỗ đỗ";
+      ? vehicleMap.get(reservation.vehicleId) ?? t("Phương tiện")
+      : t("Chỗ đỗ");
 
     const addActivity = (
       eventDate: string | undefined,
@@ -154,7 +159,7 @@ const buildActivities = (
         id: `${reservation.id}-${type}`,
         title,
         description,
-        time: formatTime(eventDate),
+        time: formatTime(eventDate, language),
         timestamp,
         type,
       });
@@ -164,21 +169,21 @@ const buildActivities = (
       reservation.createdAt,
       "booking",
       "Có lượt đặt chỗ mới",
-      `${vehicleCode} tại ${hubName}`
+      `${vehicleCode} ${t("tại")} ${hubName}`
     );
 
     addActivity(
       reservation.pickedUpAt,
       "pickup",
       "Phương tiện đã được nhận",
-      `${vehicleCode} tại ${hubName}`
+      `${vehicleCode} ${t("tại")} ${hubName}`
     );
 
     addActivity(
       reservation.returnedAt,
       "return",
       "Phương tiện đã được trả",
-      `${vehicleCode} tại ${hubName}`
+      `${vehicleCode} ${t("tại")} ${hubName}`
     );
   });
 
@@ -233,10 +238,11 @@ const OperatorDashboard = ({
   operatorName = "Operator",
   onNavigate,
 }: OperatorDashboardProps) => {
+  const { t, preferences: { language }, reload, loading: preferencesLoading } = usePreferences();
   const navigate = useNavigate();
-
-  const [activePage, setActivePage] =
-    useState<DashboardPage>("overview");
+  const { page } = useParams();
+  const activePage: DashboardPage = menuItems.some(item => item.id === page)
+    ? page as DashboardPage : "overview";
 
   const [sidebarCollapsed, setSidebarCollapsed] =
     useState(false);
@@ -273,7 +279,7 @@ const OperatorDashboard = ({
       setError(
         err?.response?.data?.message ||
           err?.message ||
-          "Không thể tải dữ liệu Dashboard."
+          t("Không thể tải dữ liệu Dashboard.")
       );
     } finally {
       setLoading(false);
@@ -352,8 +358,8 @@ const OperatorDashboard = ({
   );
 
   const activities = useMemo(
-    () => buildActivities(reservations, hubMap, vehicleMap),
-    [reservations, hubMap, vehicleMap]
+    () => buildActivities(reservations, hubMap, vehicleMap, language),
+    [reservations, hubMap, vehicleMap, language]
   );
 
   const notifications = useMemo(
@@ -369,7 +375,7 @@ const OperatorDashboard = ({
   );
 
   const handleNavigate = (page: DashboardPage) => {
-    setActivePage(page);
+    navigate(page === "overview" ? "/operator" : `/operator/${page}`);
     setShowNotifications(false);
     setShowProfile(false);
     onNavigate?.(page);
@@ -378,7 +384,9 @@ const OperatorDashboard = ({
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
     sessionStorage.removeItem("accessToken");
-    navigate("/login");
+    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
+    navigate("/operator/login");
   };
 
   const renderOverview = () => (
@@ -388,11 +396,8 @@ const OperatorDashboard = ({
           <span className="operator-welcome-label">
             OPERATOR DASHBOARD
           </span>
-          <h1>Xin chào, {operatorName}!</h1>
-          <p>
-            Theo dõi và quản lý hoạt động của hệ thống
-            Smart E-Mobility Hub.
-          </p>
+          <h1>{t("Xin chào, ")}{operatorName}!</h1>
+          <p>{t("Theo dõi và quản lý hoạt động của hệ thống Smart E-Mobility Hub.")}</p>
         </div>
 
         <div className="operator-welcome-icon">
@@ -403,10 +408,8 @@ const OperatorDashboard = ({
       {error && (
         <div className="operator-error">
           <AlertCircle size={19} />
-          <span>{error}</span>
-          <button onClick={() => loadDashboard()}>
-            Thử lại
-          </button>
+          <span>{t(error)}</span>
+          <button onClick={() => loadDashboard()}>{t("Thử lại")}</button>
         </div>
       )}
 
@@ -428,12 +431,10 @@ const OperatorDashboard = ({
           <div className="operator-stat-footer">
             <span className="operator-stat-positive">
               <CheckCircle2 size={14} />
-              {stats.activeHubs} đang hoạt động
-            </span>
+              {stats.activeHubs}{t(" đang hoạt động")}</span>
             {stats.staleHubs > 0 && (
               <span className="operator-stat-warning">
-                {stats.staleHubs} dữ liệu cũ
-              </span>
+                {stats.staleHubs}{t(" dữ liệu cũ")}</span>
             )}
           </div>
         </div>
@@ -443,9 +444,7 @@ const OperatorDashboard = ({
             <div className="operator-stat-icon vehicle-icon">
               <CarFront size={22} />
             </div>
-            <span className="operator-stat-caption">
-              Phương tiện
-            </span>
+            <span className="operator-stat-caption">{t("Phương tiện")}</span>
           </div>
 
           <div className="operator-stat-value">
@@ -455,12 +454,10 @@ const OperatorDashboard = ({
           <div className="operator-stat-footer">
             <span>
               <Zap size={14} />
-              {stats.totalScooters} xe máy điện
-            </span>
+              {stats.totalScooters}{t(" xe máy điện")}</span>
             <span>
               <Bike size={14} />
-              {stats.totalBikes} xe đạp điện
-            </span>
+              {stats.totalBikes}{t(" xe đạp điện")}</span>
           </div>
         </div>
 
@@ -469,9 +466,7 @@ const OperatorDashboard = ({
             <div className="operator-stat-icon parking-icon">
               <ParkingSquare size={22} />
             </div>
-            <span className="operator-stat-caption">
-              Chỗ đỗ xe
-            </span>
+            <span className="operator-stat-caption">{t("Chỗ đỗ xe")}</span>
           </div>
 
           <div className="operator-stat-value">
@@ -481,11 +476,9 @@ const OperatorDashboard = ({
           <div className="operator-stat-footer">
             <span className="operator-stat-positive">
               <CheckCircle2 size={14} />
-              {stats.availableParking} còn trống
-            </span>
+              {stats.availableParking}{t(" còn trống")}</span>
             <span>
-              {stats.occupiedParking} không trống
-            </span>
+              {stats.occupiedParking}{t(" không trống")}</span>
           </div>
         </div>
 
@@ -494,9 +487,7 @@ const OperatorDashboard = ({
             <div className="operator-stat-icon charging-icon">
               <PlugZap size={22} />
             </div>
-            <span className="operator-stat-caption">
-              Cổng sạc
-            </span>
+            <span className="operator-stat-caption">{t("Cổng sạc")}</span>
           </div>
 
           <div className="operator-stat-value">
@@ -506,11 +497,9 @@ const OperatorDashboard = ({
           <div className="operator-stat-footer">
             <span className="operator-stat-positive">
               <CheckCircle2 size={14} />
-              {stats.availableChargers} khả dụng
-            </span>
+              {stats.availableChargers}{t(" khả dụng")}</span>
             <span>
-              {stats.unavailableChargers} không khả dụng
-            </span>
+              {stats.unavailableChargers}{t(" không khả dụng")}</span>
           </div>
         </div>
       </div>
@@ -519,16 +508,14 @@ const OperatorDashboard = ({
         <section className="operator-panel operator-map-panel">
           <div className="operator-panel-header">
             <div>
-              <h2>Vị trí Mobility Hub</h2>
-              <p>Theo dõi trạng thái các Hub trong hệ thống</p>
+              <h2>{t("Vị trí Mobility Hub")}</h2>
+              <p>{t("Theo dõi trạng thái các Hub trong hệ thống")}</p>
             </div>
 
             <button
               className="operator-text-button"
               onClick={() => handleNavigate("hubs")}
-            >
-              Xem tất cả
-              <ChevronRight size={16} />
+            >{t("Xem tất cả")}<ChevronRight size={16} />
             </button>
           </div>
 
@@ -561,10 +548,10 @@ const OperatorDashboard = ({
                   }}
                   title={`${hub.name} - ${
                     hub.stale
-                      ? "Dữ liệu cũ"
+                      ? t("Dữ liệu cũ")
                       : hub.active
-                      ? "Đang hoạt động"
-                      : "Ngừng hoạt động"
+                      ? t("Đang hoạt động")
+                      : t("Ngừng hoạt động")
                   }`}
                   onClick={() => handleNavigate("hubs")}
                 >
@@ -575,9 +562,7 @@ const OperatorDashboard = ({
             })}
 
             {!loading && hubs.length === 0 && (
-              <div className="operator-map-empty">
-                Chưa có Mobility Hub
-              </div>
+              <div className="operator-map-empty">{t("Chưa có Mobility Hub")}</div>
             )}
 
             {!loading &&
@@ -587,33 +572,25 @@ const OperatorDashboard = ({
                   typeof hub.latitude !== "number" ||
                   typeof hub.longitude !== "number"
               ) && (
-                <div className="operator-map-empty">
-                  Các Hub chưa có tọa độ để hiển thị
-                </div>
+                <div className="operator-map-empty">{t("Các Hub chưa có tọa độ để hiển thị")}</div>
               )}
           </div>
 
           <div className="operator-map-legend">
             <span>
-              <i className="legend-dot legend-green" />
-              Đang hoạt động
-            </span>
+              <i className="legend-dot legend-green" />{t("Đang hoạt động")}</span>
             <span>
-              <i className="legend-dot legend-yellow" />
-              Dữ liệu cũ
-            </span>
+              <i className="legend-dot legend-yellow" />{t("Dữ liệu cũ")}</span>
             <span>
-              <i className="legend-dot legend-gray" />
-              Ngừng hoạt động
-            </span>
+              <i className="legend-dot legend-gray" />{t("Ngừng hoạt động")}</span>
           </div>
         </section>
 
         <section className="operator-panel operator-activity-panel">
           <div className="operator-panel-header">
             <div>
-              <h2>Hoạt động gần đây</h2>
-              <p>Cập nhật từ dữ liệu đặt chỗ</p>
+              <h2>{t("Hoạt động gần đây")}</h2>
+              <p>{t("Cập nhật từ dữ liệu đặt chỗ")}</p>
             </div>
 
             <Activity size={20} className="operator-muted-icon" />
@@ -621,13 +598,9 @@ const OperatorDashboard = ({
 
           <div className="operator-activity-list">
             {loading ? (
-              <div className="operator-empty-state">
-                Đang tải hoạt động...
-              </div>
+              <div className="operator-empty-state">{t("Đang tải hoạt động...")}</div>
             ) : activities.length === 0 ? (
-              <div className="operator-empty-state">
-                Chưa có hoạt động để hiển thị
-              </div>
+              <div className="operator-empty-state">{t("Chưa có hoạt động để hiển thị")}</div>
             ) : (
               activities.map((activity) => (
                 <div
@@ -647,7 +620,7 @@ const OperatorDashboard = ({
                   </div>
 
                   <div className="operator-activity-info">
-                    <strong>{activity.title}</strong>
+                    <strong>{t(activity.title)}</strong>
                     <p>{activity.description}</p>
                     <span>{activity.time}</span>
                   </div>
@@ -659,9 +632,7 @@ const OperatorDashboard = ({
           <button
             className="operator-activity-more"
             onClick={() => handleNavigate("reservations")}
-          >
-            Xem quản lý đặt chỗ
-            <ChevronRight size={16} />
+          >{t("Xem quản lý đặt chỗ")}<ChevronRight size={16} />
           </button>
         </section>
       </div>
@@ -669,16 +640,14 @@ const OperatorDashboard = ({
       <section className="operator-panel operator-reservation-panel">
         <div className="operator-panel-header">
           <div>
-            <h2>Đặt chỗ gần đây</h2>
-            <p>Theo dõi các lượt đặt chỗ mới nhất</p>
+            <h2>{t("Đặt chỗ gần đây")}</h2>
+            <p>{t("Theo dõi các lượt đặt chỗ mới nhất")}</p>
           </div>
 
           <button
             className="operator-text-button"
             onClick={() => handleNavigate("reservations")}
-          >
-            Xem tất cả
-            <ChevronRight size={16} />
+          >{t("Xem tất cả")}<ChevronRight size={16} />
           </button>
         </div>
 
@@ -686,26 +655,22 @@ const OperatorDashboard = ({
           <table className="operator-table">
             <thead>
               <tr>
-                <th>Mã xác nhận</th>
+                <th>{t("Mã xác nhận")}</th>
                 <th>Mobility Hub</th>
-                <th>Loại đặt chỗ</th>
-                <th>Ngày tạo</th>
-                <th>Trạng thái</th>
+                <th>{t("Loại đặt chỗ")}</th>
+                <th>{t("Ngày tạo")}</th>
+                <th>{t("Trạng thái")}</th>
               </tr>
             </thead>
 
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="operator-table-empty">
-                    Đang tải dữ liệu...
-                  </td>
+                  <td colSpan={5} className="operator-table-empty">{t("Đang tải dữ liệu...")}</td>
                 </tr>
               ) : reservations.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="operator-table-empty">
-                    Chưa có lượt đặt chỗ
-                  </td>
+                  <td colSpan={5} className="operator-table-empty">{t("Chưa có lượt đặt chỗ")}</td>
                 </tr>
               ) : (
                 [...reservations]
@@ -725,21 +690,21 @@ const OperatorDashboard = ({
                       </td>
                       <td>
                         {hubMap.get(reservation.hubId)?.name ??
-                          "Không xác định"}
+                          t("Không xác định")}
                       </td>
                       <td>
                         {reservation.vehicleId
-                          ? "Phương tiện"
+                          ? t("Phương tiện")
                           : reservation.slotId
-                          ? "Chỗ đỗ"
-                          : "Không xác định"}
+                          ? t("Chỗ đỗ")
+                          : t("Không xác định")}
                       </td>
-                      <td>{formatDate(reservation.createdAt)}</td>
+                      <td>{formatDate(reservation.createdAt, language)}</td>
                       <td>
                         <span
                           className={`operator-status status-${reservation.status.toLowerCase()}`}
                         >
-                          {getReservationStatus(reservation.status)}
+                          {t(getReservationStatus(reservation.status))}
                         </span>
                       </td>
                     </tr>
@@ -763,19 +728,14 @@ const OperatorDashboard = ({
         {activePage === "settings" && <Settings size={36} />}
       </div>
 
-      <h2>{pageTitles[activePage]}</h2>
-      <p>
-        Khu vực quản lý này sẽ được triển khai riêng.
-        Bạn có thể quay lại trang tổng quan để theo dõi hệ thống.
-      </p>
+      <h2>{t(pageTitles[activePage])}</h2>
+      <p>{t("Khu vực quản lý này sẽ được triển khai riêng. Bạn có thể quay lại trang tổng quan để theo dõi hệ thống.")}</p>
 
       <button
         className="operator-primary-button"
         onClick={() => handleNavigate("overview")}
       >
-        <ChevronLeft size={17} />
-        Quay lại tổng quan
-      </button>
+        <ChevronLeft size={17} />{t("Quay lại tổng quan")}</button>
     </section>
   );
 
@@ -801,9 +761,7 @@ const OperatorDashboard = ({
 
         <div className="operator-sidebar-section">
           {!sidebarCollapsed && (
-            <span className="operator-sidebar-label">
-              MENU CHÍNH
-            </span>
+            <span className="operator-sidebar-label">{t("MENU CHÍNH")}</span>
           )}
 
           <nav className="operator-menu">
@@ -817,10 +775,10 @@ const OperatorDashboard = ({
                     activePage === item.id ? "active" : ""
                   }`}
                   onClick={() => handleNavigate(item.id)}
-                  title={sidebarCollapsed ? item.label : undefined}
+                  title={sidebarCollapsed ? t(item.label) : undefined}
                 >
                   <Icon size={20} />
-                  {!sidebarCollapsed && <span>{item.label}</span>}
+                  {!sidebarCollapsed && <span>{t(item.label)}</span>}
                 </button>
               );
             })}
@@ -848,14 +806,14 @@ const OperatorDashboard = ({
             onClick={() =>
               setSidebarCollapsed((previous) => !previous)
             }
-            title={sidebarCollapsed ? "Mở rộng menu" : "Thu gọn menu"}
+            title={sidebarCollapsed ? t("Mở rộng menu") : t("Thu gọn menu")}
           >
             {sidebarCollapsed ? (
               <ChevronRight size={18} />
             ) : (
               <ChevronLeft size={18} />
             )}
-            {!sidebarCollapsed && <span>Thu gọn menu</span>}
+            {!sidebarCollapsed && <span>{t("Thu gọn menu")}</span>}
           </button>
         </div>
       </aside>
@@ -868,7 +826,7 @@ const OperatorDashboard = ({
               onClick={() =>
                 setSidebarCollapsed((previous) => !previous)
               }
-              aria-label="Thu gọn menu"
+              aria-label={t("Thu gọn menu")}
             >
               <Menu size={21} />
             </button>
@@ -876,7 +834,7 @@ const OperatorDashboard = ({
             <div className="operator-breadcrumb">
               <span>Operator</span>
               <ChevronRight size={15} />
-              <strong>{pageTitles[activePage]}</strong>
+              <strong>{t(pageTitles[activePage])}</strong>
             </div>
           </div>
 
@@ -885,9 +843,9 @@ const OperatorDashboard = ({
               className={`operator-refresh-button ${
                 refreshing ? "spinning" : ""
               }`}
-              onClick={() => loadDashboard(true)}
-              disabled={refreshing}
-              title="Làm mới dữ liệu"
+              onClick={() => activePage === "settings" ? reload() : loadDashboard(true)}
+              disabled={activePage === "settings" ? preferencesLoading : refreshing}
+              title={t("Làm mới dữ liệu")}
             >
               <RefreshCw size={18} />
             </button>
@@ -899,7 +857,7 @@ const OperatorDashboard = ({
                   setShowNotifications((previous) => !previous);
                   setShowProfile(false);
                 }}
-                aria-label="Thông báo"
+                aria-label={t("Thông báo")}
               >
                 <Bell size={20} />
                 {notifications.length > 0 && (
@@ -914,14 +872,14 @@ const OperatorDashboard = ({
               {showNotifications && (
                 <div className="operator-dropdown operator-notification-dropdown">
                   <div className="operator-dropdown-heading">
-                    <strong>Thông báo</strong>
+                    <strong>{t("Thông báo")}</strong>
                     <span>{notifications.length}</span>
                   </div>
 
                   {notifications.length === 0 ? (
                     <div className="operator-dropdown-empty">
                       <CheckCircle2 size={22} />
-                      <span>Không có cảnh báo mới</span>
+                      <span>{t("Không có cảnh báo mới")}</span>
                     </div>
                   ) : (
                     notifications.map((notification) => (
@@ -932,7 +890,7 @@ const OperatorDashboard = ({
                       >
                         <AlertCircle size={19} />
                         <span>
-                          <strong>{notification.title}</strong>
+                          <strong>{t(notification.title)}</strong>
                           <small>{notification.description}</small>
                         </span>
                       </button>
@@ -969,16 +927,14 @@ const OperatorDashboard = ({
                     onClick={() => handleNavigate("settings")}
                   >
                     <Settings size={17} />
-                    Cài đặt
+                    {t("Cài đặt")}
                   </button>
 
                   <button
                     className="operator-logout-button"
                     onClick={handleLogout}
                   >
-                    <LogOut size={17} />
-                    Đăng xuất
-                  </button>
+                    <LogOut size={17} />{t("Đăng xuất")}</button>
                 </div>
               )}
             </div>
@@ -988,16 +944,12 @@ const OperatorDashboard = ({
         <div className="operator-page-content">
           <div className="operator-page-heading">
             <div>
-              <h1>{pageTitles[activePage]}</h1>
-              <p>
-                Quản lý và theo dõi hệ thống Smart E-Mobility Hub
-              </p>
+              <h1>{t(pageTitles[activePage])}</h1>
+              <p>{t("Quản lý và theo dõi hệ thống Smart E-Mobility Hub")}</p>
             </div>
 
             <div className="operator-system-status">
-              <span className="operator-system-status-dot" />
-              Hệ thống
-            </div>
+              <span className="operator-system-status-dot" />{t("Hệ thống")}</div>
           </div>
 
           {activePage === "overview" ? (
@@ -1010,6 +962,8 @@ const OperatorDashboard = ({
             <ParkingManagement />
           ) : activePage === "reservations" ? (
             <ReservationManagement />
+          ) : activePage === "settings" ? (
+            <SettingsPanel />
           ) : (
             renderPlaceholder()
           )}

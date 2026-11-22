@@ -1,3 +1,5 @@
+import { usePreferences } from "../../../../preferences/PreferencesContext";
+import { statusText } from "../statusLabels";
 
 import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
@@ -45,6 +47,8 @@ const unwrap = (response: any) =>
   response?.data?.data ?? response?.data ?? response;
 
 const VehicleManagement = () => {
+  const { t } = usePreferences();
+
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [hubs, setHubs] = useState<Hub[]>([]);
   const [loading, setLoading] = useState(true);
@@ -89,7 +93,7 @@ const VehicleManagement = () => {
       setError(
         err?.response?.data?.message ||
           err?.message ||
-          "Không thể tải dữ liệu phương tiện."
+          t("Không thể tải dữ liệu phương tiện.")
       );
     } finally {
       setLoading(false);
@@ -176,7 +180,7 @@ const VehicleManagement = () => {
       setError(
         err?.response?.data?.message ||
           err?.message ||
-          "Không thể lưu phương tiện."
+          t("Không thể lưu phương tiện.")
       );
     } finally {
       setSaving(false);
@@ -216,23 +220,19 @@ const VehicleManagement = () => {
           </div>
 
           <div>
-            <h2>Danh sách phương tiện</h2>
-            <p>
-              Quản lý xe đạp điện và xe máy điện trong hệ thống.
-            </p>
+            <h2>{t("Danh sách phương tiện")}</h2>
+            <p>{t("Quản lý xe đạp điện và xe máy điện trong hệ thống.")}</p>
           </div>
         </div>
 
         <button className="hub-add-button" onClick={openAdd}>
-          <Plus size={18} />
-          Thêm phương tiện
-        </button>
+          <Plus size={18} />{t("Thêm phương tiện")}</button>
       </div>
 
       {error && (
         <div className="operator-error">
           <AlertCircle size={18} />
-          {error}
+          {t(error)}
         </div>
       )}
 
@@ -244,19 +244,17 @@ const VehicleManagement = () => {
             <div className="hub-summary-icon">
               <CarFront size={21} />
             </div>
-            <span className="hub-summary-label">
-              TỔNG PHƯƠNG TIỆN
-            </span>
+            <span className="hub-summary-label">{t("TỔNG PHƯƠNG TIỆN")}</span>
           </div>
 
           <div className="hub-summary-value-row">
             <strong>{totalVehicles}</strong>
-            <span className="hub-summary-unit">phương tiện</span>
+            <span className="hub-summary-unit">{t("phương tiện")}</span>
           </div>
 
           <div className="hub-summary-footer">
-            <span>Quy mô đội xe</span>
-            <span className="hub-summary-badge">Tất cả</span>
+            <span>{t("Quy mô đội xe")}</span>
+            <span className="hub-summary-badge">{t("Tất cả")}</span>
           </div>
         </div>
 
@@ -266,7 +264,7 @@ const VehicleManagement = () => {
             <div className="hub-summary-icon">
               <Bike size={21} />
             </div>
-            <span className="hub-summary-label">XE ĐẠP ĐIỆN</span>
+            <span className="hub-summary-label">{t("XE ĐẠP ĐIỆN")}</span>
           </div>
 
           <div className="hub-summary-value-row">
@@ -284,7 +282,7 @@ const VehicleManagement = () => {
           </div>
 
           <div className="hub-summary-footer">
-            <span>Tỷ lệ trong đội xe</span>
+            <span>{t("Tỷ lệ trong đội xe")}</span>
             <strong>{getPercentage(totalBikes)}%</strong>
           </div>
         </div>
@@ -295,7 +293,7 @@ const VehicleManagement = () => {
             <div className="hub-summary-icon">
               <Zap size={21} />
             </div>
-            <span className="hub-summary-label">XE MÁY ĐIỆN</span>
+            <span className="hub-summary-label">{t("XE MÁY ĐIỆN")}</span>
           </div>
 
           <div className="hub-summary-value-row">
@@ -313,7 +311,7 @@ const VehicleManagement = () => {
           </div>
 
           <div className="hub-summary-footer">
-            <span>Tỷ lệ trong đội xe</span>
+            <span>{t("Tỷ lệ trong đội xe")}</span>
             <strong>{getPercentage(totalScooters)}%</strong>
           </div>
         </div>
@@ -324,7 +322,7 @@ const VehicleManagement = () => {
             <div className="hub-summary-icon">
               <CarFront size={21} />
             </div>
-            <span className="hub-summary-label">ĐANG KHẢ DỤNG</span>
+            <span className="hub-summary-label">{t("ĐANG KHẢ DỤNG")}</span>
           </div>
 
           <div className="hub-summary-value-row">
@@ -342,7 +340,7 @@ const VehicleManagement = () => {
           </div>
 
           <div className="hub-summary-footer">
-            <span>Tỷ lệ xe khả dụng</span>
+            <span>{t("Tỷ lệ xe khả dụng")}</span>
             <strong>{getPercentage(availableVehicles)}%</strong>
           </div>
         </div>
@@ -353,7 +351,7 @@ const VehicleManagement = () => {
           <div className="hub-search-box">
             <Search size={18} />
             <input
-              placeholder="Tìm theo mã phương tiện..."
+              placeholder={t("Tìm theo mã phương tiện...")}
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
             />
@@ -363,19 +361,19 @@ const VehicleManagement = () => {
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
           >
-            <option value="ALL">Tất cả loại xe</option>
-            <option value="E_BIKE">Xe đạp điện</option>
-            <option value="E_SCOOTER">Xe máy điện</option>
+            <option value="ALL">{t("Tất cả loại xe")}</option>
+            <option value="E_BIKE">{t("Xe đạp điện")}</option>
+            <option value="E_SCOOTER">{t("Xe máy điện")}</option>
           </select>
 
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
-            <option value="ALL">Tất cả trạng thái</option>
+            <option value="ALL">{t("Tất cả trạng thái")}</option>
             {[...new Set(vehicles.map((v) => v.status))].map((status) => (
               <option key={status} value={status}>
-                {status}
+                {statusText(status, t)}
               </option>
             ))}
           </select>
@@ -384,7 +382,7 @@ const VehicleManagement = () => {
             value={hubFilter}
             onChange={(e) => setHubFilter(e.target.value)}
           >
-            <option value="ALL">Tất cả Hub</option>
+            <option value="ALL">{t("Tất cả Hub")}</option>
             {hubs.map((hub) => (
               <option key={hub.id} value={hub.id}>
                 {hub.name}
@@ -399,7 +397,7 @@ const VehicleManagement = () => {
           <button
             className="hub-reset-button"
             onClick={loadData}
-            title="Tải lại"
+            title={t("Tải lại")}
           >
             <RefreshCw size={17} />
           </button>
@@ -407,10 +405,8 @@ const VehicleManagement = () => {
 
         <div className="hub-table-heading">
           <div>
-            <h3>Phương tiện</h3>
-            <p>
-              Hiển thị {filteredVehicles.length} / {vehicles.length} phương tiện
-            </p>
+            <h3>{t("Phương tiện")}</h3>
+            <p>{t("Hiển thị ")}{filteredVehicles.length} / {vehicles.length}{t(" phương tiện")}</p>
           </div>
         </div>
 
@@ -418,27 +414,23 @@ const VehicleManagement = () => {
           <table className="hub-table">
             <thead>
               <tr>
-                <th>Mã xe</th>
-                <th>Loại phương tiện</th>
+                <th>{t("Mã xe")}</th>
+                <th>{t("Loại phương tiện")}</th>
                 <th>Mobility Hub</th>
                 <th>Pin</th>
-                <th>Trạng thái</th>
-                <th>Thao tác</th>
+                <th>{t("Trạng thái")}</th>
+                <th>{t("Thao tác")}</th>
               </tr>
             </thead>
 
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="hub-empty-state">
-                    Đang tải dữ liệu...
-                  </td>
+                  <td colSpan={6} className="hub-empty-state">{t("Đang tải dữ liệu...")}</td>
                 </tr>
               ) : filteredVehicles.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="hub-empty-state">
-                    Không tìm thấy phương tiện phù hợp.
-                  </td>
+                  <td colSpan={6} className="hub-empty-state">{t("Không tìm thấy phương tiện phù hợp.")}</td>
                 </tr>
               ) : (
                 filteredVehicles.map((vehicle) => (
@@ -461,8 +453,8 @@ const VehicleManagement = () => {
 
                         <strong>
                           {vehicle.type === "E_BIKE"
-                            ? "Xe đạp điện"
-                            : "Xe máy điện"}
+                            ? t("Xe đạp điện")
+                            : t("Xe máy điện")}
                         </strong>
                       </div>
                     </td>
@@ -487,7 +479,7 @@ const VehicleManagement = () => {
                         }`}
                       >
                         <i />
-                        {vehicle.status}
+                        {statusText(vehicle.status, t)}
                       </span>
                     </td>
 
@@ -495,7 +487,7 @@ const VehicleManagement = () => {
                       <div className="hub-action-group">
                         <button
                           className="hub-edit-button"
-                          title="Cập nhật pin"
+                          title={t("Cập nhật pin")}
                           onClick={() => openEdit(vehicle)}
                         >
                           <Edit size={17} />
@@ -522,10 +514,10 @@ const VehicleManagement = () => {
               <div>
                 <h2>
                   {editingVehicle
-                    ? "Cập nhật phương tiện"
-                    : "Thêm phương tiện"}
+                    ? t("Cập nhật phương tiện")
+                    : t("Thêm phương tiện")}
                 </h2>
-                <p>Nhập thông tin phương tiện.</p>
+                <p>{t("Nhập thông tin phương tiện.")}</p>
               </div>
 
               <button
@@ -539,9 +531,7 @@ const VehicleManagement = () => {
 
             <form onSubmit={handleSubmit}>
               <div className="hub-form-grid">
-                <label>
-                  Mã phương tiện
-                  <input
+                <label>{t("Mã phương tiện")}<input
                     value={form.code}
                     disabled={!!editingVehicle}
                     required
@@ -554,9 +544,7 @@ const VehicleManagement = () => {
                   />
                 </label>
 
-                <label>
-                  Loại phương tiện
-                  <select
+                <label>{t("Loại phương tiện")}<select
                     value={form.type}
                     disabled={!!editingVehicle}
                     onChange={(e) =>
@@ -566,8 +554,8 @@ const VehicleManagement = () => {
                       }))
                     }
                   >
-                    <option value="E_BIKE">Xe đạp điện</option>
-                    <option value="E_SCOOTER">Xe máy điện</option>
+                    <option value="E_BIKE">{t("Xe đạp điện")}</option>
+                    <option value="E_SCOOTER">{t("Xe máy điện")}</option>
                   </select>
                 </label>
 
@@ -584,7 +572,7 @@ const VehicleManagement = () => {
                       }))
                     }
                   >
-                    <option value="">Chọn Hub</option>
+                    <option value="">{t("Chọn Hub")}</option>
                     {hubs.map((h) => (
                       <option key={h.id} value={h.id}>
                         {h.name}
@@ -594,9 +582,7 @@ const VehicleManagement = () => {
                 </label>
 
                 {!editingVehicle && (
-                  <label>
-                    Mã chỗ đỗ
-                    <input
+                  <label>{t("Mã chỗ đỗ")}<input
                       value={form.slotId}
                       onChange={(e) =>
                         setForm((p) => ({
@@ -604,14 +590,12 @@ const VehicleManagement = () => {
                           slotId: e.target.value,
                         }))
                       }
-                      placeholder="Nhập slotId nếu có"
+                      placeholder={t("Nhập slotId nếu có")}
                     />
                   </label>
                 )}
 
-                <label className="hub-form-full">
-                  Dung lượng pin (%)
-                  <input
+                <label className="hub-form-full">{t("Dung lượng pin (%)")}<input
                     type="number"
                     min="0"
                     max="100"
@@ -632,9 +616,7 @@ const VehicleManagement = () => {
                   type="button"
                   className="hub-cancel-button"
                   onClick={() => setShowModal(false)}
-                >
-                  Hủy
-                </button>
+                >{t("Hủy")}</button>
 
                 <button
                   type="submit"
@@ -643,10 +625,10 @@ const VehicleManagement = () => {
                 >
                   <Save size={17} />
                   {saving
-                    ? "Đang lưu..."
+                    ? t("Đang lưu...")
                     : editingVehicle
-                      ? "Lưu thay đổi"
-                      : "Thêm phương tiện"}
+                      ? t("Lưu thay đổi")
+                      : t("Thêm phương tiện")}
                 </button>
               </div>
             </form>

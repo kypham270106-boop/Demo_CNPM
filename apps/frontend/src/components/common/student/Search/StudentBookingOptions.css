@@ -3,7 +3,7 @@
   min-height: 100vh;
   padding-bottom: 40px;
   background: #f5f7fb;
-  color: #263b3a;
+  color: var(--app-text, #263b3a);
   font-family: inherit;
 }
 
@@ -15,8 +15,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #fff;
-  border-bottom: 1px solid #e8efed;
+  background: var(--app-surface, #fff);
+  border-bottom: 1px solid var(--app-border, #e8efed);
 }
 
 .options-back-button {
@@ -26,7 +26,7 @@
   padding: 9px 14px;
   border: 1px solid #e2e8f0;
   border-radius: 10px;
-  background: #fff;
+  background: var(--app-surface, #fff);
   color: #475569;
   font-size: 13px;
   font-weight: 700;
@@ -36,8 +36,8 @@
 
 .options-back-button:hover {
   border-color: #009688;
-  background: #e7f6f3;
-  color: #007f75;
+  background: var(--app-tint, #e7f6f3);
+  color: var(--app-accent-text, #007f75);
   transform: translateX(-2px);
 }
 
@@ -45,7 +45,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #263b3a;
+  color: var(--app-text, #263b3a);
   font-size: 14px;
   font-weight: 800;
 }
@@ -56,8 +56,8 @@
   display: grid;
   place-items: center;
   border-radius: 11px;
-  background: #e5f8f1;
-  color: #009688;
+  background: var(--app-tint, #e5f8f1);
+  color: var(--app-accent-text, #009688);
 }
 
 /* Main Container */
@@ -75,7 +75,7 @@
 }
 
 .options-eyebrow {
-  color: #009688;
+  color: var(--app-accent-text, #009688);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 1.5px;
@@ -83,7 +83,7 @@
 
 .options-intro h1 {
   margin: 10px 0;
-  color: #263b3a;
+  color: var(--app-text, #263b3a);
   font-size: clamp(26px, 3vw, 34px);
   font-weight: 800;
   line-height: 1.3;
@@ -92,7 +92,7 @@
 .options-intro p {
   max-width: 650px;
   margin: 0;
-  color: #82918f;
+  color: var(--app-muted, #82918f);
   font-size: 14px;
   line-height: 1.7;
 }
@@ -104,7 +104,7 @@
   padding: 23px 25px;
   border: 1px solid #d8eee8;
   border-radius: 16px;
-  background: #fff;
+  background: var(--app-surface, #fff);
   box-shadow: 0 4px 15px rgba(32, 66, 62, 0.04);
 }
 
@@ -121,8 +121,8 @@
   flex-shrink: 0;
   place-items: center;
   border-radius: 13px;
-  background: #e5f8f1;
-  color: #009688;
+  background: var(--app-tint, #e5f8f1);
+  color: var(--app-accent-text, #009688);
 }
 
 .selected-hub-heading {
@@ -131,7 +131,7 @@
 }
 
 .selected-hub-heading > span {
-  color: #009688;
+  color: var(--app-accent-text, #009688);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 1.2px;
@@ -139,7 +139,7 @@
 
 .selected-hub-heading h2 {
   margin: 5px 0 0;
-  color: #263b3a;
+  color: var(--app-text, #263b3a);
   font-size: 18px;
   font-weight: 800;
 }
@@ -150,7 +150,7 @@
   gap: 6px;
   padding: 7px 11px;
   border-radius: 20px;
-  background: #e5f8f1;
+  background: var(--app-tint, #e5f8f1);
   color: #15966c;
   font-size: 11px;
   font-weight: 800;
@@ -197,14 +197,14 @@
 
 .options-section-heading h2 {
   margin: 0 0 7px;
-  color: #263b3a;
+  color: var(--app-text, #263b3a);
   font-size: 20px;
   font-weight: 800;
 }
 
 .options-section-heading p {
   margin: 0;
-  color: #82918f;
+  color: var(--app-muted, #82918f);
   font-size: 12px;
 }
 
@@ -221,9 +221,9 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  border: 1px solid #e8efed;
+  border: 1px solid var(--app-border, #e8efed);
   border-radius: 16px;
-  background: #fff;
+  background: var(--app-surface, #fff);
   color: inherit;
   text-align: left;
   cursor: pointer;
@@ -259,7 +259,7 @@
 }
 
 .booking-option-icon.vehicle {
-  background: #e5f8f1;
+  background: var(--app-tint, #e5f8f1);
   color: #15966c;
 }
 
@@ -274,7 +274,7 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #e5f8f1;
+  background: var(--app-tint, #e5f8f1);
   color: #15966c;
 }
 
@@ -283,7 +283,7 @@
 }
 
 .option-label {
-  color: #009688;
+  color: var(--app-accent-text, #009688);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 1.2px;
@@ -291,7 +291,7 @@
 
 .booking-option-content h3 {
   margin: 8px 0 10px;
-  color: #263b3a;
+  color: var(--app-text, #263b3a);
   font-size: 21px;
   font-weight: 800;
 }
@@ -299,7 +299,7 @@
 .booking-option-content p {
   max-width: 390px;
   margin: 0;
-  color: #82918f;
+  color: var(--app-muted, #82918f);
   font-size: 13px;
   line-height: 1.8;
 }
@@ -311,14 +311,14 @@
   align-items: center;
   justify-content: space-between;
   border-top: 1px solid #edf1f0;
-  color: #009688;
+  color: var(--app-accent-text, #009688);
   font-size: 12px;
   font-weight: 800;
   transition: 0.2s ease;
 }
 
 .booking-option-card:hover .option-card-footer {
-  color: #007f75;
+  color: var(--app-accent-text, #007f75);
 }
 
 /* Notice */
@@ -331,8 +331,8 @@
   gap: 12px;
   border: 1px solid #d8eee8;
   border-radius: 12px;
-  background: #effaf7;
-  color: #007f75;
+  background: var(--app-tint, #effaf7);
+  color: var(--app-accent-text, #007f75);
 }
 
 .options-notice > span {
@@ -375,14 +375,14 @@
 
 .options-cancel-button {
   border: 1px solid #e2e8f0;
-  background: #fff;
+  background: var(--app-surface, #fff);
   color: #64748b;
 }
 
 .options-cancel-button:hover {
   border-color: #009688;
-  background: #e7f6f3;
-  color: #007f75;
+  background: var(--app-tint, #e7f6f3);
+  color: var(--app-accent-text, #007f75);
 }
 
 .options-primary-button {
@@ -400,7 +400,7 @@
 
 .options-primary-button:disabled {
   border-color: #dce5e3;
-  background: #e8efed;
+  background: var(--app-border, #e8efed);
   color: #a1adab;
   box-shadow: none;
   cursor: not-allowed;
@@ -424,20 +424,20 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #e5f8f1;
-  color: #009688;
+  background: var(--app-tint, #e5f8f1);
+  color: var(--app-accent-text, #009688);
 }
 
 .booking-options-empty h2 {
   margin: 20px 0 8px;
-  color: #263b3a;
+  color: var(--app-text, #263b3a);
   font-size: 22px;
 }
 
 .booking-options-empty p {
   max-width: 380px;
   margin: 0 0 22px;
-  color: #82918f;
+  color: var(--app-muted, #82918f);
   font-size: 13px;
   line-height: 1.7;
 }

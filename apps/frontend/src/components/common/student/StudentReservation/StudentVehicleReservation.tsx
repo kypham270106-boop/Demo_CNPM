@@ -1,3 +1,4 @@
+import { usePreferences } from "../../../../preferences/PreferencesContext";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -36,6 +37,8 @@ const getVehicleTypeLabel = (type: VehicleType) =>
   `${VEHICLE_TYPES[type].emoji} ${VEHICLE_TYPES[type].name}`;
 
 function StudentVehicleReservation() {
+  const { t } = usePreferences();
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -145,7 +148,7 @@ function StudentVehicleReservation() {
     setError("");
 
     if (!hubID || !vehicleID || !selectedHub || !selectedVehicle) {
-      setError("Vui lòng chọn Hub và phương tiện.");
+      setError(t("Vui lòng chọn Hub và phương tiện."));
       return;
     }
 
@@ -172,7 +175,7 @@ function StudentVehicleReservation() {
       const reservationID = extractReservationID(response);
 
       if (!reservationID) {
-        throw new Error("API không trả về mã đặt xe.");
+        throw new Error(t("API không trả về mã đặt xe."));
       }
 
       navigate("/student/reservation/confirmation", {
@@ -199,28 +202,26 @@ function StudentVehicleReservation() {
       <header className="service-selection-header">
 
         <div className="service-header-brand">
-          <Bike size={19} />
-          Đặt xe
-        </div>
+          <Bike size={19} />{t("Đặt xe")}</div>
       </header>
 
       <main className="service-selection-container">
         <section className="service-intro">
-          <span className="service-eyebrow">DỊCH VỤ DI CHUYỂN</span>
+          <span className="service-eyebrow">{t("DỊCH VỤ DI CHUYỂN")}</span>
 
-          <h1>Đặt xe điện dùng chung</h1>
+          <h1>{t("Đặt xe điện dùng chung")}</h1>
 
-          <p>Chọn Hub, phương tiện và khoảng thời gian bạn muốn sử dụng.</p>
+          <p>{t("Chọn Hub, phương tiện và khoảng thời gian bạn muốn sử dụng.")}</p>
         </section>
 
         <div className="reservation-form">
           {/* 01. Chọn Hub */}
           <section className="reservation-panel">
-            <h2>01. Chọn trạm Hub</h2>
+            <h2>{t("01. Chọn trạm Hub")}</h2>
 
             <div className="reservation-grid">
               <div className="reservation-field full">
-                <label htmlFor="vehicle-hub">Trạm Hub</label>
+                <label htmlFor="vehicle-hub">{t("Trạm Hub")}</label>
 
                 <select
                   id="vehicle-hub"
@@ -232,7 +233,7 @@ function StudentVehicleReservation() {
                   disabled={loadingHubs}
                 >
                   <option value="">
-                    {loadingHubs ? "Đang tải Hub..." : "Chọn trạm Hub"}
+                    {loadingHubs ? t("Đang tải Hub...") : t("Chọn trạm Hub")}
                   </option>
 
                   {hubs.map((hub) => (
@@ -249,15 +250,11 @@ function StudentVehicleReservation() {
                 )}
 
                 {passedHub && hubID === passedHub.id && (
-                  <span className="reservation-hint">
-                    Hub được chọn từ kết quả tìm kiếm lộ trình.
-                  </span>
+                  <span className="reservation-hint">{t("Hub được chọn từ kết quả tìm kiếm lộ trình.")}</span>
                 )}
 
                 {!loadingHubs && hubs.length === 0 && (
-                  <span className="reservation-hint">
-                    Hiện chưa có Hub khả dụng.
-                  </span>
+                  <span className="reservation-hint">{t("Hiện chưa có Hub khả dụng.")}</span>
                 )}
               </div>
             </div>
@@ -265,11 +262,11 @@ function StudentVehicleReservation() {
 
           {/* 02. Thời gian */}
           <section className="reservation-panel">
-            <h2>02. Thời gian sử dụng</h2>
+            <h2>{t("02. Thời gian sử dụng")}</h2>
 
             <div className="reservation-grid">
               <div className="reservation-field">
-                <label htmlFor="vehicle-start">Thời gian bắt đầu</label>
+                <label htmlFor="vehicle-start">{t("Thời gian bắt đầu")}</label>
 
                 <input
                   id="vehicle-start"
@@ -280,7 +277,7 @@ function StudentVehicleReservation() {
               </div>
 
               <div className="reservation-field">
-                <label htmlFor="vehicle-end">Thời gian kết thúc</label>
+                <label htmlFor="vehicle-end">{t("Thời gian kết thúc")}</label>
 
                 <input
                   id="vehicle-end"
@@ -295,19 +292,15 @@ function StudentVehicleReservation() {
 
           {/* 03. Chọn loại phương tiện */}
           <section className="reservation-panel">
-            <h2>03. Chọn loại phương tiện</h2>
+            <h2>{t("03. Chọn loại phương tiện")}</h2>
 
             {!hubID ? (
-              <div className="reservation-empty">Vui lòng chọn Hub trước.</div>
+              <div className="reservation-empty">{t("Vui lòng chọn Hub trước.")}</div>
             ) : loadingVehicles ? (
               <div className="reservation-loading">
-                <LoaderCircle size={18} />
-                Đang kiểm tra phương tiện...
-              </div>
+                <LoaderCircle size={18} />{t("Đang kiểm tra phương tiện...")}</div>
             ) : vehicles.length === 0 ? (
-              <div className="reservation-empty">
-                Không có phương tiện khả dụng trong khoảng thời gian này.
-              </div>
+              <div className="reservation-empty">{t("Không có phương tiện khả dụng trong khoảng thời gian này.")}</div>
             ) : (
               <div className="reservation-choice-grid">
                 {(Object.keys(VEHICLE_TYPES) as VehicleType[]).map((type) => (
@@ -322,8 +315,8 @@ function StudentVehicleReservation() {
                       setVehicleID("");
                     }}
                   >
-                    <strong>{getVehicleTypeLabel(type)}</strong>
-                    <span>{countByType(type)} xe khả dụng</span>
+                    <strong>{t(getVehicleTypeLabel(type))}</strong>
+                    <span>{countByType(type)}{t(" xe khả dụng")}</span>
                   </button>
                 ))}
               </div>
@@ -332,16 +325,12 @@ function StudentVehicleReservation() {
 
           {/* 04. Danh sách xe */}
           <section className="reservation-panel">
-            <h2>04. Danh sách phương tiện</h2>
+            <h2>{t("04. Danh sách phương tiện")}</h2>
 
             {!selectedVehicleType ? (
-              <div className="reservation-empty">
-                Vui lòng chọn loại phương tiện để xem danh sách xe.
-              </div>
+              <div className="reservation-empty">{t("Vui lòng chọn loại phương tiện để xem danh sách xe.")}</div>
             ) : filteredVehicles.length === 0 ? (
-              <div className="reservation-empty">
-                Không có xe thuộc loại phương tiện này khả dụng.
-              </div>
+              <div className="reservation-empty">{t("Không có xe thuộc loại phương tiện này khả dụng.")}</div>
             ) : (
               <div className="reservation-choice-grid">
                 {filteredVehicles.map((vehicle) => (
@@ -354,32 +343,30 @@ function StudentVehicleReservation() {
                     onClick={() => setVehicleID(vehicle.id)}
                   >
                     <strong>
-                      {getVehicleTypeLabel(getVehicleType(vehicle))}
+                      {t(getVehicleTypeLabel(getVehicleType(vehicle)))}
                     </strong>
 
-                    <span>Mã phương tiện: {vehicle.code}</span>
+                    <span>{t("Mã phương tiện: ")}{vehicle.code}</span>
 
                     {vehicle.battery !== undefined && (
                       <span>Pin: {vehicle.battery}%</span>
                     )}
 
-                    <span>Trạng thái: Có thể đặt</span>
+                    <span>{t("Trạng thái: Có thể đặt")}</span>
                   </button>
                 ))}
               </div>
             )}
           </section>
 
-          {error && <div className="reservation-error">{error}</div>}
+          {error && <div className="reservation-error">{t(error)}</div>}
 
           {/* Nút điều hướng */}
           <div className="service-selection-actions">
             <button
               className="service-cancel-button"
               onClick={() => navigate(-1)}
-            >
-              Quay lại
-            </button>
+            >{t("Quay lại")}</button>
 
             <button
               className="service-primary-button"
@@ -388,7 +375,7 @@ function StudentVehicleReservation() {
                 submitting || loadingVehicles || !hubID || !vehicleID
               }
             >
-              {submitting ? "Đang tạo đặt xe..." : "Tiếp tục"}
+              {submitting ? t("Đang tạo đặt xe...") : t("Tiếp tục")}
 
               <ArrowRight size={18} />
             </button>

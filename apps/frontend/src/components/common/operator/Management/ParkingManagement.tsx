@@ -1,3 +1,5 @@
+import { usePreferences } from "../../../../preferences/PreferencesContext";
+import type { Language } from "../../../../preferences/translations";
 
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -52,17 +54,19 @@ const statusLabels: Record<string, string> = {
   EXPIRED: "Hết hạn",
 };
 
-const formatDate = (value?: string) => {
+const formatDate = (value: string | undefined, language: Language) => {
   if (!value) return "—";
 
   const date = new Date(value);
 
   return Number.isNaN(date.getTime())
     ? "—"
-    : date.toLocaleString("vi-VN");
+    : date.toLocaleString(language === "en" ? "en-US" : "vi-VN");
 };
 
 const ReservationManagement = () => {
+  const { t, preferences: { language } } = usePreferences();
+
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [hubs, setHubs] = useState<Hub[]>([]);
   const [loading, setLoading] = useState(true);
@@ -92,7 +96,7 @@ const ReservationManagement = () => {
       setError(
         err?.response?.data?.message ||
           err?.message ||
-          "Không thể tải danh sách đặt chỗ."
+          t("Không thể tải danh sách đặt chỗ.")
       );
     } finally {
       setLoading(false);
@@ -157,17 +161,15 @@ const ReservationManagement = () => {
           </div>
 
           <div>
-            <h2>Danh sách đặt chỗ</h2>
-            <p>
-              Theo dõi các lượt đặt xe và đặt chỗ trong hệ thống.
-            </p>
+            <h2>{t("Danh sách đặt chỗ")}</h2>
+            <p>{t("Theo dõi các lượt đặt xe và đặt chỗ trong hệ thống.")}</p>
           </div>
         </div>
 
         <button
           className="hub-reset-button"
           onClick={loadData}
-          title="Làm mới dữ liệu"
+          title={t("Làm mới dữ liệu")}
           disabled={loading}
         >
           <RefreshCw size={18} />
@@ -177,7 +179,7 @@ const ReservationManagement = () => {
       {error && (
         <div className="operator-error">
           <AlertCircle size={18} />
-          {error}
+          {t(error)}
         </div>
       )}
 
@@ -190,19 +192,17 @@ const ReservationManagement = () => {
               <CalendarDays size={21} />
             </div>
 
-            <span className="hub-summary-label">
-              TỔNG LƯỢT ĐẶT
-            </span>
+            <span className="hub-summary-label">{t("TỔNG LƯỢT ĐẶT")}</span>
           </div>
 
           <div className="hub-summary-value-row">
             <strong>{totalReservations}</strong>
-            <span className="hub-summary-unit">lượt đặt</span>
+            <span className="hub-summary-unit">{t("lượt đặt")}</span>
           </div>
 
           <div className="hub-summary-footer">
-            <span>Quy mô đặt chỗ</span>
-            <span className="hub-summary-badge">Tất cả</span>
+            <span>{t("Quy mô đặt chỗ")}</span>
+            <span className="hub-summary-badge">{t("Tất cả")}</span>
           </div>
         </div>
 
@@ -213,14 +213,12 @@ const ReservationManagement = () => {
               <Clock size={21} />
             </div>
 
-            <span className="hub-summary-label">
-              ĐANG GIỮ CHỖ
-            </span>
+            <span className="hub-summary-label">{t("ĐANG GIỮ CHỖ")}</span>
           </div>
 
           <div className="hub-summary-value-row">
             <strong>{heldCount}</strong>
-            <span className="hub-summary-unit">lượt</span>
+            <span className="hub-summary-unit">{t("lượt")}</span>
           </div>
 
           <div className="hub-summary-progress">
@@ -233,7 +231,7 @@ const ReservationManagement = () => {
           </div>
 
           <div className="hub-summary-footer">
-            <span>Tỷ lệ lượt giữ chỗ</span>
+            <span>{t("Tỷ lệ lượt giữ chỗ")}</span>
             <strong>{getPercentage(heldCount)}%</strong>
           </div>
         </div>
@@ -245,14 +243,12 @@ const ReservationManagement = () => {
               <CalendarDays size={21} />
             </div>
 
-            <span className="hub-summary-label">
-              ĐÃ XÁC NHẬN
-            </span>
+            <span className="hub-summary-label">{t("ĐÃ XÁC NHẬN")}</span>
           </div>
 
           <div className="hub-summary-value-row">
             <strong>{confirmedCount}</strong>
-            <span className="hub-summary-unit">lượt</span>
+            <span className="hub-summary-unit">{t("lượt")}</span>
           </div>
 
           <div className="hub-summary-progress">
@@ -265,7 +261,7 @@ const ReservationManagement = () => {
           </div>
 
           <div className="hub-summary-footer">
-            <span>Tỷ lệ đã xác nhận</span>
+            <span>{t("Tỷ lệ đã xác nhận")}</span>
             <strong>{getPercentage(confirmedCount)}%</strong>
           </div>
         </div>
@@ -277,14 +273,12 @@ const ReservationManagement = () => {
               <MapPin size={21} />
             </div>
 
-            <span className="hub-summary-label">
-              ĐANG SỬ DỤNG
-            </span>
+            <span className="hub-summary-label">{t("ĐANG SỬ DỤNG")}</span>
           </div>
 
           <div className="hub-summary-value-row">
             <strong>{inUseCount}</strong>
-            <span className="hub-summary-unit">lượt</span>
+            <span className="hub-summary-unit">{t("lượt")}</span>
           </div>
 
           <div className="hub-summary-progress">
@@ -297,7 +291,7 @@ const ReservationManagement = () => {
           </div>
 
           <div className="hub-summary-footer">
-            <span>Tỷ lệ đang sử dụng</span>
+            <span>{t("Tỷ lệ đang sử dụng")}</span>
             <strong>{getPercentage(inUseCount)}%</strong>
           </div>
         </div>
@@ -309,14 +303,12 @@ const ReservationManagement = () => {
               <RotateCcw size={21} />
             </div>
 
-            <span className="hub-summary-label">
-              HOÀN THÀNH
-            </span>
+            <span className="hub-summary-label">{t("HOÀN THÀNH")}</span>
           </div>
 
           <div className="hub-summary-value-row">
             <strong>{completedCount}</strong>
-            <span className="hub-summary-unit">lượt</span>
+            <span className="hub-summary-unit">{t("lượt")}</span>
           </div>
 
           <div className="hub-summary-progress">
@@ -329,7 +321,7 @@ const ReservationManagement = () => {
           </div>
 
           <div className="hub-summary-footer">
-            <span>Tỷ lệ hoàn thành</span>
+            <span>{t("Tỷ lệ hoàn thành")}</span>
             <strong>{getPercentage(completedCount)}%</strong>
           </div>
         </div>
@@ -341,7 +333,7 @@ const ReservationManagement = () => {
             <Search size={18} />
 
             <input
-              placeholder="Tìm mã đặt chỗ, mã xác nhận hoặc người dùng..."
+              placeholder={t("Tìm mã đặt chỗ, mã xác nhận hoặc người dùng...")}
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
             />
@@ -351,11 +343,11 @@ const ReservationManagement = () => {
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
-            <option value="ALL">Tất cả trạng thái</option>
+            <option value="ALL">{t("Tất cả trạng thái")}</option>
 
             {Object.entries(statusLabels).map(([value, label]) => (
               <option key={value} value={value}>
-                {label}
+                {t(label)}
               </option>
             ))}
           </select>
@@ -364,7 +356,7 @@ const ReservationManagement = () => {
             value={hubFilter}
             onChange={(e) => setHubFilter(e.target.value)}
           >
-            <option value="ALL">Tất cả Hub</option>
+            <option value="ALL">{t("Tất cả Hub")}</option>
 
             {hubs.map((hub) => (
               <option key={hub.id} value={hub.id}>
@@ -376,7 +368,7 @@ const ReservationManagement = () => {
           <button
             className="hub-reset-button"
             onClick={resetFilters}
-            title="Đặt lại bộ lọc"
+            title={t("Đặt lại bộ lọc")}
           >
             <RotateCcw size={17} />
           </button>
@@ -384,11 +376,9 @@ const ReservationManagement = () => {
 
         <div className="hub-table-heading">
           <div>
-            <h3>Quản lý đặt chỗ</h3>
-            <p>
-              Hiển thị {filteredReservations.length} /{" "}
-              {reservations.length} lượt đặt
-            </p>
+            <h3>{t("Quản lý đặt chỗ")}</h3>
+            <p>{t("Hiển thị ")}{filteredReservations.length} /{" "}
+              {reservations.length}{t(" lượt đặt")}</p>
           </div>
         </div>
 
@@ -396,28 +386,24 @@ const ReservationManagement = () => {
           <table className="hub-table">
             <thead>
               <tr>
-                <th>Mã xác nhận</th>
-                <th>Người dùng</th>
+                <th>{t("Mã xác nhận")}</th>
+                <th>{t("Người dùng")}</th>
                 <th>Mobility Hub</th>
-                <th>Loại đặt chỗ</th>
-                <th>Thời gian tạo</th>
-                <th>Trạng thái</th>
-                <th>Chi tiết</th>
+                <th>{t("Loại đặt chỗ")}</th>
+                <th>{t("Thời gian tạo")}</th>
+                <th>{t("Trạng thái")}</th>
+                <th>{t("Chi tiết")}</th>
               </tr>
             </thead>
 
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="hub-empty-state">
-                    Đang tải dữ liệu...
-                  </td>
+                  <td colSpan={7} className="hub-empty-state">{t("Đang tải dữ liệu...")}</td>
                 </tr>
               ) : filteredReservations.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="hub-empty-state">
-                    Không tìm thấy lượt đặt chỗ phù hợp.
-                  </td>
+                  <td colSpan={7} className="hub-empty-state">{t("Không tìm thấy lượt đặt chỗ phù hợp.")}</td>
                 </tr>
               ) : (
                 filteredReservations.map((item) => (
@@ -437,13 +423,13 @@ const ReservationManagement = () => {
 
                     <td>
                       {item.vehicleId
-                        ? "Phương tiện"
+                        ? t("Phương tiện")
                         : item.slotId
-                          ? "Chỗ đỗ"
+                          ? t("Chỗ đỗ")
                           : "—"}
                     </td>
 
-                    <td>{formatDate(item.createdAt)}</td>
+                    <td>{formatDate(item.createdAt, language)}</td>
 
                     <td>
                       <span
@@ -457,14 +443,14 @@ const ReservationManagement = () => {
                         }`}
                       >
                         <i />
-                        {statusLabels[item.status] ?? item.status}
+                        {t(statusLabels[item.status] ?? item.status)}
                       </span>
                     </td>
 
                     <td>
                       <button
                         className="hub-edit-button"
-                        title="Xem chi tiết"
+                        title={t("Xem chi tiết")}
                         onClick={() => setSelected(item)}
                       >
                         <CalendarDays size={17} />
@@ -489,7 +475,7 @@ const ReservationManagement = () => {
           <div className="hub-modal">
             <div className="hub-modal-header">
               <div>
-                <h2>Chi tiết đặt chỗ</h2>
+                <h2>{t("Chi tiết đặt chỗ")}</h2>
                 <p>{selected.confirmationCode || selected.id}</p>
               </div>
 
@@ -497,27 +483,21 @@ const ReservationManagement = () => {
                 className="hub-modal-close"
                 onClick={() => setSelected(null)}
               >
-                <span>×</span>
+                <span>{t("×")}</span>
               </button>
             </div>
 
             <div className="hub-form-grid">
-              <label>
-                Mã đặt chỗ
-                <input readOnly value={selected.id} />
+              <label>{t("Mã đặt chỗ")}<input readOnly value={selected.id} />
               </label>
 
-              <label>
-                Mã xác nhận
-                <input
+              <label>{t("Mã xác nhận")}<input
                   readOnly
                   value={selected.confirmationCode || "—"}
                 />
               </label>
 
-              <label>
-                Người dùng
-                <input readOnly value={selected.userId} />
+              <label>{t("Người dùng")}<input readOnly value={selected.userId} />
               </label>
 
               <label>
@@ -531,54 +511,36 @@ const ReservationManagement = () => {
                 />
               </label>
 
-              <label>
-                Phương tiện
-                <input readOnly value={selected.vehicleId || "—"} />
+              <label>{t("Phương tiện")}<input readOnly value={selected.vehicleId || "—"} />
               </label>
 
-              <label>
-                Chỗ đỗ
-                <input readOnly value={selected.slotId || "—"} />
+              <label>{t("Chỗ đỗ")}<input readOnly value={selected.slotId || "—"} />
               </label>
 
-              <label>
-                Thời gian bắt đầu
-                <input readOnly value={formatDate(selected.startsAt)} />
+              <label>{t("Thời gian bắt đầu")}<input readOnly value={formatDate(selected.startsAt, language)} />
               </label>
 
-              <label>
-                Thời gian kết thúc
-                <input readOnly value={formatDate(selected.endsAt)} />
+              <label>{t("Thời gian kết thúc")}<input readOnly value={formatDate(selected.endsAt, language)} />
               </label>
 
-              <label>
-                Hạn nhận xe
-                <input readOnly value={formatDate(selected.pickupBy)} />
+              <label>{t("Hạn nhận xe")}<input readOnly value={formatDate(selected.pickupBy, language)} />
               </label>
 
-              <label>
-                Thời điểm nhận xe
-                <input readOnly value={formatDate(selected.pickedUpAt)} />
+              <label>{t("Thời điểm nhận xe")}<input readOnly value={formatDate(selected.pickedUpAt, language)} />
               </label>
 
-              <label>
-                Thời điểm trả xe
-                <input readOnly value={formatDate(selected.returnedAt)} />
+              <label>{t("Thời điểm trả xe")}<input readOnly value={formatDate(selected.returnedAt, language)} />
               </label>
 
-              <label>
-                Trạng thái
-                <input
+              <label>{t("Trạng thái")}<input
                   readOnly
                   value={
-                    statusLabels[selected.status] ?? selected.status
+                    t(statusLabels[selected.status] ?? selected.status)
                   }
                 />
               </label>
 
-              <label className="hub-form-full">
-                Tình trạng khi trả
-                <input
+              <label className="hub-form-full">{t("Tình trạng khi trả")}<input
                   readOnly
                   value={selected.returnCondition || "—"}
                 />
@@ -589,9 +551,7 @@ const ReservationManagement = () => {
               <button
                 className="hub-cancel-button"
                 onClick={() => setSelected(null)}
-              >
-                Đóng
-              </button>
+              >{t("Đóng")}</button>
             </div>
           </div>
         </div>

@@ -1,3 +1,4 @@
+import { usePreferences } from "../../../../preferences/PreferencesContext";
 import { useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -42,6 +43,8 @@ const calculateDistance = (
 };
 
 function StudentSearchResults() {
+  const { t } = usePreferences();
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -112,15 +115,13 @@ function StudentSearchResults() {
           <MapPin size={35} />
         </div>
 
-        <h2>Không tìm thấy thông tin tìm kiếm</h2>
-        <p>Vui lòng quay lại và nhập điểm đi, điểm đến để tìm Hub.</p>
+        <h2>{t("Không tìm thấy thông tin tìm kiếm")}</h2>
+        <p>{t("Vui lòng quay lại và nhập điểm đi, điểm đến để tìm Hub.")}</p>
 
         <button
           className="booking-primary-button"
           onClick={() => navigate("/student/booking/search")}
-        >
-          Quay lại tìm kiếm
-        </button>
+        >{t("Quay lại tìm kiếm")}</button>
       </div>
     );
   }
@@ -151,12 +152,12 @@ function StudentSearchResults() {
     };
 
     const selectedText = isPickup
-      ? "Đã chọn Hub nhận xe"
-      : "Đã chọn Hub trả xe đề xuất";
+      ? t("Đã chọn Hub nhận xe")
+      : t("Đã chọn Hub trả xe đề xuất");
 
     const unselectedText = isPickup
-      ? "Chọn Hub nhận xe"
-      : "Chọn Hub trả xe đề xuất";
+      ? t("Chọn Hub nhận xe")
+      : t("Chọn Hub trả xe đề xuất");
 
     return (
       <article
@@ -189,8 +190,7 @@ function StudentSearchResults() {
 
         <div className="booking-hub-distance">
           <Navigation size={14} />
-          <span>
-            Cách điểm {isPickup ? "xuất phát" : "đến"}:{" "}
+          <span>{t("Cách điểm ")}{isPickup ? t("xuất phát") : t("đến")}:{" "}
             {formatDistance(hub.distanceKm)}
           </span>
         </div>
@@ -200,7 +200,7 @@ function StudentSearchResults() {
             <Bike size={16} />
             <div>
               <strong>{hub.bikes}</strong>
-              <span>Xe đạp</span>
+              <span>{t("Xe đạp")}</span>
             </div>
           </div>
 
@@ -208,7 +208,7 @@ function StudentSearchResults() {
             <Zap size={16} />
             <div>
               <strong>{hub.scooters}</strong>
-              <span>Xe máy</span>
+              <span>{t("Xe máy")}</span>
             </div>
           </div>
 
@@ -216,7 +216,7 @@ function StudentSearchResults() {
             <PlugZap size={16} />
             <div>
               <strong>{hub.chargingSlots}</strong>
-              <span>Điểm sạc</span>
+              <span>{t("Điểm sạc")}</span>
             </div>
           </div>
 
@@ -224,7 +224,7 @@ function StudentSearchResults() {
             <BatteryCharging size={16} />
             <div>
               <strong>{hub.batteryLevel}%</strong>
-              <span>Mức pin</span>
+              <span>{t("Mức pin")}</span>
             </div>
           </div>
         </div>
@@ -239,9 +239,7 @@ function StudentSearchResults() {
         </button>
 
         {!isPickup && (
-          <p className="return-hub-note">
-            Đây chỉ là Hub gợi ý để tham khảo lộ trình, chưa đặt chỗ trả xe.
-          </p>
+          <p className="return-hub-note">{t("Đây chỉ là Hub gợi ý để tham khảo lộ trình, chưa đặt chỗ trả xe.")}</p>
         )}
       </article>
     );
@@ -255,7 +253,7 @@ function StudentSearchResults() {
           onClick={() => navigate(-1)}
         >
           <ArrowLeft size={19} />
-          <span>Quay lại</span>
+          <span>{t("Quay lại")}</span>
         </button>
 
         <div className="booking-header-brand">
@@ -268,19 +266,16 @@ function StudentSearchResults() {
 
       <main className="booking-results-container">
         <section className="booking-results-heading">
-          <span className="booking-eyebrow">KẾT QUẢ TÌM KIẾM</span>
-          <h1>Các Hub phù hợp với bạn</h1>
-          <p>
-            Chọn Hub nhận xe gần điểm xuất phát và Hub trả xe đề xuất gần
-            điểm đến.
-          </p>
+          <span className="booking-eyebrow">{t("KẾT QUẢ TÌM KIẾM")}</span>
+          <h1>{t("Các Hub phù hợp với bạn")}</h1>
+          <p>{t("Chọn Hub nhận xe gần điểm xuất phát và Hub trả xe đề xuất gần điểm đến.")}</p>
         </section>
 
         <section className="booking-route-summary">
           <div className="booking-summary-point">
             <span className="summary-dot start" />
             <div>
-              <span>Điểm xuất phát</span>
+              <span>{t("Điểm xuất phát")}</span>
               <strong>{searchState.startPoint}</strong>
             </div>
           </div>
@@ -292,7 +287,7 @@ function StudentSearchResults() {
           <div className="booking-summary-point">
             <span className="summary-dot destination" />
             <div>
-              <span>Điểm đến</span>
+              <span>{t("Điểm đến")}</span>
               <strong>{searchState.destination}</strong>
             </div>
           </div>
@@ -302,8 +297,8 @@ function StudentSearchResults() {
           <section className="booking-map-section">
             <div className="booking-section-title">
               <div>
-                <h2>Bản đồ Hub</h2>
-                <p>Vị trí các Hub trên hành trình</p>
+                <h2>{t("Bản đồ Hub")}</h2>
+                <p>{t("Vị trí các Hub trên hành trình")}</p>
               </div>
               <span className="booking-result-count">{mapHubs.length} Hub</span>
             </div>
@@ -340,7 +335,7 @@ function StudentSearchResults() {
                       else if (isReturn) setSuggestedReturnHub(hub);
                     }}
                     title={`${hub.name} - ${
-                      isPickup ? "Hub nhận xe" : "Hub trả xe đề xuất"
+                      isPickup ? t("Hub nhận xe") : t("Hub trả xe đề xuất")
                     }`}
                   >
                     <MapPin size={22} fill="currentColor" />
@@ -349,19 +344,13 @@ function StudentSearchResults() {
               })}
 
               <div className="map-location-label map-start-label">
-                <span className="map-label-dot start" />
-                Điểm đi
-              </div>
+                <span className="map-label-dot start" />{t("Điểm đi")}</div>
 
               <div className="map-location-label map-end-label">
-                <span className="map-label-dot end" />
-                Điểm đến
-              </div>
+                <span className="map-label-dot end" />{t("Điểm đến")}</div>
 
               {mapHubs.length === 0 && (
-                <div className="map-no-results">
-                  Không tìm thấy Hub trên hành trình.
-                </div>
+                <div className="map-no-results">{t("Không tìm thấy Hub trên hành trình.")}</div>
               )}
 
               <div className="map-legend">
@@ -370,13 +359,9 @@ function StudentSearchResults() {
                   Hub
                 </span>
                 <span>
-                  <i className="legend-dot selected" />
-                  Hub nhận xe
-                </span>
+                  <i className="legend-dot selected" />{t("Hub nhận xe")}</span>
                 <span>
-                  <i className="legend-dot return" />
-                  Hub trả xe
-                </span>
+                  <i className="legend-dot return" />{t("Hub trả xe")}</span>
               </div>
             </div>
           </section>
@@ -384,8 +369,8 @@ function StudentSearchResults() {
           <section className="booking-hub-section">
             <div className="booking-section-title">
               <div>
-                <h2>Danh sách Hub</h2>
-                <p>Chọn Hub cho hành trình của bạn</p>
+                <h2>{t("Danh sách Hub")}</h2>
+                <p>{t("Chọn Hub cho hành trình của bạn")}</p>
               </div>
             </div>
 
@@ -393,25 +378,19 @@ function StudentSearchResults() {
               <button
                 className={filter === "all" ? "active" : ""}
                 onClick={() => setFilter("all")}
-              >
-                Tất cả
-              </button>
+              >{t("Tất cả")}</button>
 
               <button
                 className={filter === "bike" ? "active" : ""}
                 onClick={() => setFilter("bike")}
               >
-                <Bike size={15} />
-                Xe đạp
-              </button>
+                <Bike size={15} />{t("Xe đạp")}</button>
 
               <button
                 className={filter === "scooter" ? "active" : ""}
                 onClick={() => setFilter("scooter")}
               >
-                <Zap size={15} />
-                Xe máy
-              </button>
+                <Zap size={15} />{t("Xe máy")}</button>
 
               <label className="booking-battery-filter">
                 <input
@@ -420,7 +399,7 @@ function StudentSearchResults() {
                   onChange={(event) => setBatteryAbove50(event.target.checked)}
                 />
                 <BatteryCharging size={17} />
-                <span>Pin trên 50%</span>
+                <span>{t("Pin trên 50%")}</span>
               </label>
             </div>
 
@@ -429,12 +408,8 @@ function StudentSearchResults() {
                 <div className="booking-hub-group-heading">
                   <div>
                     <h3>
-                      <Bike size={17} />
-                      1. Hub nhận xe
-                    </h3>
-                    <p>
-                      Chọn Hub gần điểm xuất phát để đặt phương tiện.
-                    </p>
+                      <Bike size={17} />{t("1. Hub nhận xe")}</h3>
+                    <p>{t("Chọn Hub gần điểm xuất phát để đặt phương tiện.")}</p>
                   </div>
                   <span>{pickupHubs.length} Hub</span>
                 </div>
@@ -444,18 +419,14 @@ function StudentSearchResults() {
                 ) : (
                   <div className="booking-no-hubs">
                     <MapPin size={30} />
-                    <h3>Không tìm thấy Hub nhận xe</h3>
-                    <p>
-                      Không có Hub phù hợp với loại phương tiện bạn đã chọn.
-                    </p>
+                    <h3>{t("Không tìm thấy Hub nhận xe")}</h3>
+                    <p>{t("Không có Hub phù hợp với loại phương tiện bạn đã chọn.")}</p>
                     <button
                       onClick={() => {
                         setFilter("all");
                         setBatteryAbove50(false);
                       }}
-                    >
-                      Xem tất cả phương tiện
-                    </button>
+                    >{t("Xem tất cả phương tiện")}</button>
                   </div>
                 )}
               </div>
@@ -464,12 +435,8 @@ function StudentSearchResults() {
                 <div className="booking-hub-group-heading return">
                   <div>
                     <h3>
-                      <Flag size={17} />
-                      2. Hub trả xe đề xuất
-                    </h3>
-                    <p>
-                      Tham khảo Hub gần điểm đến để định hướng nơi trả xe.
-                    </p>
+                      <Flag size={17} />{t("2. Hub trả xe đề xuất")}</h3>
+                    <p>{t("Tham khảo Hub gần điểm đến để định hướng nơi trả xe.")}</p>
                   </div>
                   <span>{returnHubs.length} Hub</span>
                 </div>
@@ -479,8 +446,8 @@ function StudentSearchResults() {
                 ) : (
                   <div className="booking-no-hubs">
                     <MapPin size={30} />
-                    <h3>Không tìm thấy Hub trả xe</h3>
-                    <p>Hiện chưa có Hub phù hợp gần điểm đến.</p>
+                    <h3>{t("Không tìm thấy Hub trả xe")}</h3>
+                    <p>{t("Hiện chưa có Hub phù hợp gần điểm đến.")}</p>
                   </div>
                 )}
               </div>
@@ -496,13 +463,13 @@ function StudentSearchResults() {
               </span>
 
               <div>
-                <span>Hub nhận xe</span>
-                <strong>{selectedHub?.name || "Chưa chọn"}</strong>
+                <span>{t("Hub nhận xe")}</span>
+                <strong>{selectedHub?.name || t("Chưa chọn")}</strong>
               </div>
 
               <div>
-                <span>Hub trả xe đề xuất</span>
-                <strong>{suggestedReturnHub?.name || "Chưa chọn"}</strong>
+                <span>{t("Hub trả xe đề xuất")}</span>
+                <strong>{suggestedReturnHub?.name || t("Chưa chọn")}</strong>
               </div>
             </div>
 
@@ -510,9 +477,7 @@ function StudentSearchResults() {
               className="booking-continue-button"
               onClick={handleContinue}
               disabled={!selectedHub || !suggestedReturnHub}
-            >
-              Tiếp tục
-              <span>→</span>
+            >{t("Tiếp tục")}<span>→</span>
             </button>
           </div>
         )}

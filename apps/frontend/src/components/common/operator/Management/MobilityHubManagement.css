@@ -7,11 +7,11 @@
 .mobility-hub-management {
   --hub-primary: #168b78;
   --hub-primary-dark: #107565;
-  --hub-primary-light: #e7f5f1;
-  --hub-text: #263b3a;
-  --hub-muted: #849493;
-  --hub-border: #e9efee;
-  --hub-background: #f5f8f8;
+  --hub-primary-light: var(--app-tint, #e7f5f1);
+  --hub-text: var(--app-text, #263b3a);
+  --hub-muted: var(--app-muted, #849493);
+  --hub-border: var(--app-border, #e9efee);
+  --hub-background: var(--app-background, #f5f8f8);
 
   display: block;
   width: 100%;
@@ -84,7 +84,7 @@
   flex-shrink: 0;
   width: 43px;
   height: 43px;
-  color: var(--hub-primary);
+  color: var(--app-accent-text, var(--hub-primary));
   background: var(--hub-primary-light);
   border-radius: 12px;
 }
@@ -141,7 +141,7 @@
   min-width: 0;
   padding: 19px;
 
-  background: #fff;
+  background: var(--app-surface, #fff);
   border: 1px solid var(--hub-border);
   border-radius: 14px;
 
@@ -189,7 +189,7 @@
   margin: 0 0 20px;
   padding: 16px;
 
-  background: #fff;
+  background: var(--app-surface, #fff);
   border: 1px solid var(--hub-border);
   border-radius: 12px;
 }
@@ -205,7 +205,7 @@
   min-height: 42px;
   padding: 0 12px;
 
-  background: #fff;
+  background: var(--app-surface, #fff);
   border: 1px solid var(--hub-border);
   border-radius: 8px;
   color: var(--hub-muted);
@@ -242,7 +242,7 @@
   border-radius: 8px;
   outline: none;
 
-  background: #fff;
+  background: var(--app-surface, #fff);
   color: var(--hub-text);
 
   font-family: inherit;
@@ -270,8 +270,8 @@
   border: 1px solid var(--hub-border);
   border-radius: 8px;
 
-  background: #fff;
-  color: #71817f;
+  background: var(--app-surface, #fff);
+  color: var(--app-muted, #71817f);
 
   font-family: inherit;
   font-size: 11px;
@@ -280,7 +280,7 @@
 }
 
 .hub-reset-button:hover {
-  color: var(--hub-primary);
+  color: var(--app-accent-text, var(--hub-primary));
   background: var(--hub-primary-light);
 }
 
@@ -295,7 +295,7 @@
   min-width: 0;
   margin: 0 0 22px;
 
-  background: #fff;
+  background: var(--app-surface, #fff);
   border: 1px solid var(--hub-border);
   border-radius: 14px;
 
@@ -349,13 +349,13 @@
 }
 
 .hub-table thead {
-  background: #f7faf9;
+  background: var(--app-inset, #f7faf9);
 }
 
 .hub-table th {
   padding: 13px 10px;
 
-  color: #879592;
+  color: var(--app-muted, #879592);
   font-size: 10px;
   font-weight: 750;
   line-height: 1.5;
@@ -370,12 +370,12 @@
 .hub-table td {
   padding: 14px 10px;
 
-  color: #647471;
+  color: var(--app-body, #647471);
   font-size: 11px;
   line-height: 1.6;
   vertical-align: middle;
 
-  border-bottom: 1px solid #f0f3f2;
+  border-bottom: 1px solid var(--app-border, #f0f3f2);
 
   overflow-wrap: anywhere;
   word-break: normal;
@@ -386,7 +386,7 @@
 }
 
 .hub-table tbody tr:hover {
-  background: #fbfdfc;
+  background: var(--app-inset, #fbfdfc);
 }
 
 .hub-table tbody tr:last-child td {
@@ -406,8 +406,27 @@
   font-weight: 750;
 }
 
+.mobility-hub-management .hub-table-wrapper {
+  overflow-x: auto;
+}
+
+.mobility-hub-management .hub-table {
+  min-width: 960px;
+}
+
+.mobility-hub-management .hub-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mobility-hub-management .hub-notes-cell {
+  font-weight: 400;
+  white-space: pre-line;
+}
+
 .hub-address-cell {
-  color: #71817f;
+  color: var(--app-muted, #71817f);
   line-height: 1.6;
   overflow-wrap: anywhere;
 }
@@ -421,7 +440,7 @@
   width: 34px;
   height: 34px;
 
-  color: var(--hub-primary);
+  color: var(--app-accent-text, var(--hub-primary));
   background: var(--hub-primary-light);
   border-radius: 9px;
 }
@@ -446,20 +465,20 @@
 
 .hub-status-active,
 .status-active {
-  color: #21866e;
-  background: #e8f7f0;
+  color: var(--app-success-text, #21866e);
+  background: var(--app-tint, #e8f7f0);
 }
 
 .hub-status-inactive,
 .status-inactive {
-  color: #bd6262;
-  background: #fff0f0;
+  color: var(--app-danger-text, #bd6262);
+  background: var(--app-danger-bg, #fff0f0);
 }
 
 .hub-status-maintenance,
 .status-maintenance {
-  color: #a87b27;
-  background: #fff6e4;
+  color: var(--app-warning-text, #a87b27);
+  background: var(--app-warning-bg, #fff6e4);
 }
 
 /* ========================================
@@ -497,27 +516,27 @@
 }
 
 .hub-edit-button {
-  color: #4e83c5;
+  color: var(--app-info-text, #4e83c5);
 }
 
 .hub-edit-button:hover {
-  background: #edf4ff;
+  background: var(--app-info-bg, #edf4ff);
 }
 
 .hub-delete-button {
-  color: #d85b5b;
+  color: var(--app-danger-text, #d85b5b);
 }
 
 .hub-delete-button:hover {
-  background: #fff0f0;
+  background: var(--app-danger-bg, #fff0f0);
 }
 
 .hub-more-button {
-  color: #71817f;
+  color: var(--app-muted, #71817f);
 }
 
 .hub-more-button:hover {
-  color: var(--hub-primary);
+  color: var(--app-accent-text, var(--hub-primary));
   background: var(--hub-primary-light);
 }
 
@@ -534,7 +553,7 @@
   width: 155px;
   padding: 6px;
 
-  background: #fff;
+  background: var(--app-surface, #fff);
   border: 1px solid var(--hub-border);
   border-radius: 9px;
   box-shadow: 0 8px 24px rgba(30, 60, 55, 0.13);
@@ -557,7 +576,7 @@
 
 .hub-action-menu button:hover {
   background: var(--hub-primary-light);
-  color: var(--hub-primary-dark);
+  color: var(--app-accent-text, var(--hub-primary-dark));
 }
 
 /* ========================================
@@ -620,7 +639,7 @@
   max-height: 90vh;
   overflow-y: auto;
 
-  background: #fff;
+  background: var(--app-surface, #fff);
   border-radius: 15px;
   box-shadow: 0 20px 60px rgba(20, 42, 39, 0.2);
 
@@ -656,7 +675,7 @@
 
   border: none;
   border-radius: 8px;
-  background: #f1f5f4;
+  background: var(--app-inset, #f1f5f4);
   color: var(--hub-muted);
 
   font-size: 20px;
@@ -694,7 +713,7 @@
   border-radius: 8px;
   outline: none;
 
-  background: #fff;
+  background: var(--app-surface, #fff);
   color: var(--hub-text);
 
   font-family: inherit;
@@ -759,12 +778,12 @@
 
 .hub-cancel-button {
   border: 1px solid var(--hub-border);
-  background: #fff;
+  background: var(--app-surface, #fff);
   color: #647873;
 }
 
 .hub-cancel-button:hover {
-  background: #f3f7f6;
+  background: var(--app-inset, #f3f7f6);
 }
 
 .hub-save-button {
@@ -786,7 +805,7 @@
   max-width: 420px;
   padding: 25px;
 
-  background: #fff;
+  background: var(--app-surface, #fff);
   border-radius: 15px;
   box-shadow: 0 20px 60px rgba(20, 42, 39, 0.2);
   text-align: center;
@@ -801,8 +820,8 @@
   height: 55px;
   margin: 0 auto 15px;
 
-  color: #d85b5b;
-  background: #fff0f0;
+  color: var(--app-danger-text, #d85b5b);
+  background: var(--app-danger-bg, #fff0f0);
   border-radius: 16px;
 }
 
@@ -1006,29 +1025,29 @@
 /* Màu nền pastel */
 .hub-summary-total {
   --summary-color: #168b78;
-  --summary-bg: #e7f5f1;
-  --summary-border: #d5ebe5;
+  --summary-bg: var(--app-tint, #e7f5f1);
+  --summary-border: var(--app-border, #d5ebe5);
   --summary-soft: #d5eee7;
 }
 
 .hub-summary-active {
   --summary-color: #168b78;
-  --summary-bg: #e7f5f1;
-  --summary-border: #d5ebe5;
+  --summary-bg: var(--app-tint, #e7f5f1);
+  --summary-border: var(--app-border, #d5ebe5);
   --summary-soft: #d5eee7;
 }
 
 .hub-summary-inactive {
   --summary-color: #c16f60;
   --summary-bg: #fff0ec;
-  --summary-border: #f5dfd9;
+  --summary-border: var(--app-danger-bg, #f5dfd9);
   --summary-soft: #f9e1da;
 }
 
 .hub-summary-maintenance {
   --summary-color: #bd892e;
   --summary-bg: #fff6e5;
-  --summary-border: #f2e7ce;
+  --summary-border: var(--app-warning-bg, #f2e7ce);
   --summary-soft: #f8ebcf;
 }
 
@@ -1072,14 +1091,14 @@
 }
 
 .hub-summary-value-row strong {
-  color: #263b3a;
+  color: var(--app-text, #263b3a);
   font-size: 31px;
   font-weight: 800;
   line-height: 1;
 }
 
 .hub-summary-unit {
-  color: #788c87;
+  color: var(--app-muted, #788c87);
   font-size: 11px;
   font-weight: 600;
 }
@@ -1113,7 +1132,7 @@
   gap: 8px;
   min-height: 20px;
   margin-top: 11px;
-  color: #788c87;
+  color: var(--app-muted, #788c87);
   font-size: 10px;
 }
 
@@ -1127,8 +1146,8 @@
 .hub-summary-total {
   /* Xanh ngọc */
   --summary-color: #168b78;
-  --summary-bg: #e7f5f1;
-  --summary-border: #d5ebe5;
+  --summary-bg: var(--app-tint, #e7f5f1);
+  --summary-border: var(--app-border, #d5ebe5);
   --summary-soft: #d5eee7;
 }
 
@@ -1136,7 +1155,7 @@
   /* Xanh dương nhạt */
   --summary-color: #4f75b8;
   --summary-bg: #edf2fb;
-  --summary-border: #dce5f5;
+  --summary-border: var(--app-info-bg, #dce5f5);
   --summary-soft: #dce7f8;
 }
 
@@ -1144,7 +1163,7 @@
   /* Đỏ san hô */
   --summary-color: #c16f60;
   --summary-bg: #fff0ec;
-  --summary-border: #f5dfd9;
+  --summary-border: var(--app-danger-bg, #f5dfd9);
   --summary-soft: #f9e1da;
 }
 
@@ -1152,7 +1171,7 @@
   /* Vàng cam */
   --summary-color: #bd892e;
   --summary-bg: #fff6e5;
-  --summary-border: #f2e7ce;
+  --summary-border: var(--app-warning-bg, #f2e7ce);
   --summary-soft: #f8ebcf;
 }
 
@@ -1166,9 +1185,9 @@
 .mobility-hub-management .hub-search-box {
   min-height: 43px;
   padding: 0 13px;
-  border: 1.5px solid #cbd9d6;
+  border: 1.5px solid var(--app-border, #cbd9d6);
   border-radius: 10px;
-  background: #ffffff;
+  background: var(--app-surface, #ffffff);
   box-shadow: 0 2px 6px rgba(30, 62, 55, 0.045);
   transition: all 0.2s ease;
 }
@@ -1184,7 +1203,7 @@
 }
 
 .mobility-hub-management .hub-search-box > svg {
-  color: #0f8b7d;
+  color: var(--app-accent-text, #0f8b7d);
   flex-shrink: 0;
 }
 
@@ -1194,13 +1213,13 @@
   outline: none;
   background: transparent;
   box-shadow: none;
-  color: #263b3a;
+  color: var(--app-text, #263b3a);
   font-size: 13px;
   font-weight: 500;
 }
 
 .mobility-hub-management .hub-search-box input::placeholder {
-  color: #9aa9a5;
+  color: var(--app-muted, #9aa9a5);
   font-weight: 400;
 }
 
@@ -1208,10 +1227,10 @@
 .mobility-hub-management .hub-filter-toolbar > select {
   min-height: 43px;
   padding: 10px 35px 10px 13px;
-  border: 1.5px solid #cbd9d6;
+  border: 1.5px solid var(--app-border, #cbd9d6);
   border-radius: 9px;
-  background-color: #ffffff;
-  color: #36524e;
+  background-color: var(--app-surface, #ffffff);
+  color: var(--app-body, #36524e);
   font-size: 13px;
   font-weight: 600;
   outline: none;
@@ -1222,7 +1241,7 @@
 
 .mobility-hub-management .hub-filter-toolbar > select:hover {
   border-color: #8bb8ae;
-  background-color: #f8fcfb;
+  background-color: var(--app-inset, #f8fcfb);
 }
 
 .mobility-hub-management .hub-filter-toolbar > select:focus {
@@ -1237,10 +1256,10 @@
   width: 100%;
   min-height: 43px;
   padding: 10px 13px;
-  border: 1.5px solid #cbd9d6;
+  border: 1.5px solid var(--app-border, #cbd9d6);
   border-radius: 9px;
-  background: #ffffff;
-  color: #263b3a;
+  background: var(--app-surface, #ffffff);
+  color: var(--app-text, #263b3a);
   font-family: inherit;
   font-size: 13px;
   font-weight: 500;
@@ -1259,7 +1278,7 @@
 /* Placeholder */
 .mobility-hub-management .hub-form-grid input::placeholder,
 .mobility-hub-management .hub-form-grid textarea::placeholder {
-  color: #9aa9a5;
+  color: var(--app-muted, #9aa9a5);
   font-weight: 400;
 }
 
@@ -1268,7 +1287,7 @@
 .mobility-hub-management .hub-form-grid select:hover,
 .mobility-hub-management .hub-form-grid textarea:hover {
   border-color: #8bb8ae;
-  background: #fcfefd;
+  background: var(--app-inset, #fcfefd);
 }
 
 /* Focus */
@@ -1276,7 +1295,7 @@
 .mobility-hub-management .hub-form-grid select:focus,
 .mobility-hub-management .hub-form-grid textarea:focus {
   border-color: #0f8b7d;
-  background: #ffffff;
+  background: var(--app-surface, #ffffff);
   box-shadow: 0 0 0 3px rgba(15, 139, 125, 0.13);
 }
 
@@ -1288,16 +1307,16 @@
 
 .mobility-hub-management select option {
   padding: 10px;
-  background: #ffffff;
-  color: #263b3a;
+  background: var(--app-surface, #ffffff);
+  color: var(--app-text, #263b3a);
 }
 
 /* Mã Hub bị khóa */
 .mobility-hub-management .hub-form-grid input:disabled,
 .mobility-hub-management .hub-form-grid select:disabled {
-  background: #edf3f1;
-  border-color: #dce6e3;
-  color: #84938f;
+  background: var(--app-inset, #edf3f1);
+  border-color: var(--app-border, #dce6e3);
+  color: var(--app-muted, #84938f);
   cursor: not-allowed;
   box-shadow: none;
 }
@@ -1308,7 +1327,7 @@
 }
 
 .mobility-hub-management .hub-reset-button:hover {
-  color: #0f766e;
-  background: #e7f5f1;
+  color: var(--app-accent-text, #0f766e);
+  background: var(--app-tint, #e7f5f1);
   border-color: #a7d3c8;
 }

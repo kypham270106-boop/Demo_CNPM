@@ -1,3 +1,5 @@
+import { usePreferences } from "../../../../preferences/PreferencesContext";
+import { statusText } from "../statusLabels";
 
 import { useEffect, useMemo, useState } from "react";
 import type { FormEvent } from "react";
@@ -45,6 +47,8 @@ const getItems = (data: any) =>
   Array.isArray(data) ? data : data?.items ?? [];
 
 const ParkingManagement = () => {
+  const { t } = usePreferences();
+
   const [slots, setSlots] = useState<ParkingSlot[]>([]);
   const [chargers, setChargers] = useState<ChargingPoint[]>([]);
   const [hubs, setHubs] = useState<Hub[]>([]);
@@ -89,7 +93,7 @@ const ParkingManagement = () => {
       setError(
         err?.response?.data?.message ||
           err?.message ||
-          "Không thể tải dữ liệu chỗ đỗ và cổng sạc."
+          t("Không thể tải dữ liệu chỗ đỗ và cổng sạc.")
       );
     } finally {
       setLoading(false);
@@ -166,7 +170,7 @@ const ParkingManagement = () => {
       setError(
         err?.response?.data?.message ||
           err?.message ||
-          "Không thể thêm dữ liệu."
+          t("Không thể thêm dữ liệu.")
       );
     } finally {
       setSaving(false);
@@ -189,7 +193,7 @@ const ParkingManagement = () => {
       setError(
         err?.response?.data?.message ||
           err?.message ||
-          "Không thể cập nhật trạng thái cổng sạc."
+          t("Không thể cập nhật trạng thái cổng sạc.")
       );
     }
   };
@@ -225,10 +229,8 @@ const ParkingManagement = () => {
           </div>
 
           <div>
-            <h2>Quản lý chỗ đỗ & cổng sạc</h2>
-            <p>
-              Theo dõi vị trí đỗ xe và tình trạng các cổng sạc tại từng Hub.
-            </p>
+            <h2>{t("Quản lý chỗ đỗ & cổng sạc")}</h2>
+            <p>{t("Theo dõi vị trí đỗ xe và tình trạng các cổng sạc tại từng Hub.")}</p>
           </div>
         </div>
 
@@ -239,14 +241,14 @@ const ParkingManagement = () => {
           }
         >
           <Plus size={18} />
-          {activeTab === "slots" ? "Thêm chỗ đỗ" : "Thêm cổng sạc"}
+          {activeTab === "slots" ? t("Thêm chỗ đỗ") : t("Thêm cổng sạc")}
         </button>
       </div>
 
       {error && (
         <div className="operator-error">
           <AlertCircle size={18} />
-          {error}
+          {t(error)}
         </div>
       )}
 
@@ -255,41 +257,41 @@ const ParkingManagement = () => {
         {/* Tổng chỗ đỗ */}
         <div
           className="hub-summary-card parking-summary-total"
-          aria-label={`Tổng số chỗ đỗ: ${totalSlots}`}
+          aria-label={`${t("Tổng số chỗ đỗ: ")}${totalSlots}`}
         >
           <div className="hub-summary-top">
             <div className="hub-summary-icon">
               <ParkingSquare size={22} />
             </div>
-            <span className="hub-summary-label">TỔNG SỐ CHỖ ĐỖ</span>
+            <span className="hub-summary-label">{t("TỔNG SỐ CHỖ ĐỖ")}</span>
           </div>
 
           <div className="hub-summary-value-row">
             <strong>{totalSlots}</strong>
-            <span className="hub-summary-unit">Chỗ</span>
+            <span className="hub-summary-unit">{t("Chỗ")}</span>
           </div>
 
           <div className="hub-summary-footer">
-            <span>Quy mô bãi đỗ xe</span>
-            <span className="hub-summary-badge">Tất cả</span>
+            <span>{t("Quy mô bãi đỗ xe")}</span>
+            <span className="hub-summary-badge">{t("Tất cả")}</span>
           </div>
         </div>
 
         {/* Chỗ đỗ còn trống */}
         <div
           className="hub-summary-card parking-summary-free"
-          aria-label={`Chỗ đỗ còn trống: ${freeSlots}`}
+          aria-label={`${t("Chỗ đỗ còn trống: ")}${freeSlots}`}
         >
           <div className="hub-summary-top">
             <div className="hub-summary-icon">
               <ParkingCircle size={22} />
             </div>
-            <span className="hub-summary-label">CHỖ ĐỖ CÒN TRỐNG</span>
+            <span className="hub-summary-label">{t("CHỖ ĐỖ CÒN TRỐNG")}</span>
           </div>
 
           <div className="hub-summary-value-row">
             <strong>{freeSlots}</strong>
-            <span className="hub-summary-unit">Chỗ</span>
+            <span className="hub-summary-unit">{t("Chỗ")}</span>
           </div>
 
           <div className="hub-summary-progress">
@@ -302,7 +304,7 @@ const ParkingManagement = () => {
           </div>
 
           <div className="hub-summary-footer">
-            <span>Tỷ lệ còn trống</span>
+            <span>{t("Tỷ lệ còn trống")}</span>
             <strong>{getPercentage(freeSlots, totalSlots)}%</strong>
           </div>
         </div>
@@ -310,41 +312,41 @@ const ParkingManagement = () => {
         {/* Tổng cổng sạc */}
         <div
           className="hub-summary-card parking-summary-chargers"
-          aria-label={`Tổng số cổng sạc: ${totalChargers}`}
+          aria-label={`${t("Tổng số cổng sạc: ")}${totalChargers}`}
         >
           <div className="hub-summary-top">
             <div className="hub-summary-icon">
               <PlugZap size={22} />
             </div>
-            <span className="hub-summary-label">TỔNG SỐ CỔNG SẠC</span>
+            <span className="hub-summary-label">{t("TỔNG SỐ CỔNG SẠC")}</span>
           </div>
 
           <div className="hub-summary-value-row">
             <strong>{totalChargers}</strong>
-            <span className="hub-summary-unit">Cổng</span>
+            <span className="hub-summary-unit">{t("Cổng")}</span>
           </div>
 
           <div className="hub-summary-footer">
-            <span>Quy mô hệ thống sạc</span>
-            <span className="hub-summary-badge">Tất cả</span>
+            <span>{t("Quy mô hệ thống sạc")}</span>
+            <span className="hub-summary-badge">{t("Tất cả")}</span>
           </div>
         </div>
 
         {/* Cổng sạc khả dụng */}
         <div
           className="hub-summary-card parking-summary-available"
-          aria-label={`Cổng sạc khả dụng: ${availableChargers}`}
+          aria-label={`${t("Cổng sạc khả dụng: ")}${availableChargers}`}
         >
           <div className="hub-summary-top">
             <div className="hub-summary-icon">
               <Activity size={22} />
             </div>
-            <span className="hub-summary-label">CỔNG SẠC KHẢ DỤNG</span>
+            <span className="hub-summary-label">{t("CỔNG SẠC KHẢ DỤNG")}</span>
           </div>
 
           <div className="hub-summary-value-row">
             <strong>{availableChargers}</strong>
-            <span className="hub-summary-unit">Cổng</span>
+            <span className="hub-summary-unit">{t("Cổng")}</span>
           </div>
 
           <div className="hub-summary-progress">
@@ -360,7 +362,7 @@ const ParkingManagement = () => {
           </div>
 
           <div className="hub-summary-footer">
-            <span>Tỷ lệ khả dụng</span>
+            <span>{t("Tỷ lệ khả dụng")}</span>
             <strong>
               {getPercentage(availableChargers, totalChargers)}%
             </strong>
@@ -381,9 +383,7 @@ const ParkingManagement = () => {
               resetFilters();
             }}
           >
-            <ParkingSquare size={17} />
-            Chỗ đỗ xe
-            <span>{slots.length}</span>
+            <ParkingSquare size={17} />{t("Chỗ đỗ xe")}<span>{slots.length}</span>
           </button>
 
           <button
@@ -396,9 +396,7 @@ const ParkingManagement = () => {
               resetFilters();
             }}
           >
-            <PlugZap size={17} />
-            Cổng sạc
-            <span>{chargers.length}</span>
+            <PlugZap size={17} />{t("Cổng sạc")}<span>{chargers.length}</span>
           </button>
         </div>
 
@@ -407,7 +405,7 @@ const ParkingManagement = () => {
           <div className="hub-search-box">
             <Search size={18} />
             <input
-              placeholder="Tìm theo mã..."
+              placeholder={t("Tìm theo mã...")}
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
             />
@@ -417,7 +415,7 @@ const ParkingManagement = () => {
             value={hubFilter}
             onChange={(e) => setHubFilter(e.target.value)}
           >
-            <option value="ALL">Tất cả Hub</option>
+            <option value="ALL">{t("Tất cả Hub")}</option>
             {hubs.map((h) => (
               <option key={h.id} value={h.id}>
                 {h.name}
@@ -429,11 +427,11 @@ const ParkingManagement = () => {
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
-            <option value="ALL">Tất cả trạng thái</option>
+            <option value="ALL">{t("Tất cả trạng thái")}</option>
             {[...new Set(currentItems.map((item) => item.status))].map(
               (status) => (
                 <option key={status} value={status}>
-                  {status}
+                  {statusText(status, t)}
                 </option>
               )
             )}
@@ -452,17 +450,15 @@ const ParkingManagement = () => {
           <div>
             <h3>
               {activeTab === "slots"
-                ? "Danh sách chỗ đỗ"
-                : "Danh sách cổng sạc"}
+                ? t("Danh sách chỗ đỗ")
+                : t("Danh sách cổng sạc")}
             </h3>
-            <p>
-              Hiển thị{" "}
+            <p>{t("Hiển thị")}{" "}
               {activeTab === "slots"
                 ? filteredSlots.length
                 : filteredChargers.length}
               {" / "}
-              {activeTab === "slots" ? slots.length : chargers.length} mục
-            </p>
+              {activeTab === "slots" ? slots.length : chargers.length}{t(" mục")}</p>
           </div>
         </div>
 
@@ -472,24 +468,20 @@ const ParkingManagement = () => {
               <>
                 <thead>
                   <tr>
-                    <th>Mã chỗ đỗ</th>
+                    <th>{t("Mã chỗ đỗ")}</th>
                     <th>Mobility Hub</th>
-                    <th>Trạng thái</th>
+                    <th>{t("Trạng thái")}</th>
                   </tr>
                 </thead>
 
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan={3} className="hub-empty-state">
-                        Đang tải dữ liệu...
-                      </td>
+                      <td colSpan={3} className="hub-empty-state">{t("Đang tải dữ liệu...")}</td>
                     </tr>
                   ) : filteredSlots.length === 0 ? (
                     <tr>
-                      <td colSpan={3} className="hub-empty-state">
-                        Không tìm thấy chỗ đỗ phù hợp.
-                      </td>
+                      <td colSpan={3} className="hub-empty-state">{t("Không tìm thấy chỗ đỗ phù hợp.")}</td>
                     </tr>
                   ) : (
                     filteredSlots.map((slot) => (
@@ -510,7 +502,7 @@ const ParkingManagement = () => {
                             }`}
                           >
                             <i />
-                            {slot.status}
+                            {statusText(slot.status, t)}
                           </span>
                         </td>
                       </tr>
@@ -522,27 +514,23 @@ const ParkingManagement = () => {
               <>
                 <thead>
                   <tr>
-                    <th>Mã cổng sạc</th>
+                    <th>{t("Mã cổng sạc")}</th>
                     <th>Mobility Hub</th>
-                    <th>Mã chỗ đỗ</th>
-                    <th>Công suất</th>
-                    <th>Trạng thái</th>
-                    <th>Cập nhật</th>
+                    <th>{t("Mã chỗ đỗ")}</th>
+                    <th>{t("Công suất")}</th>
+                    <th>{t("Trạng thái")}</th>
+                    <th>{t("Cập nhật")}</th>
                   </tr>
                 </thead>
 
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan={6} className="hub-empty-state">
-                        Đang tải dữ liệu...
-                      </td>
+                      <td colSpan={6} className="hub-empty-state">{t("Đang tải dữ liệu...")}</td>
                     </tr>
                   ) : filteredChargers.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="hub-empty-state">
-                        Không tìm thấy cổng sạc phù hợp.
-                      </td>
+                      <td colSpan={6} className="hub-empty-state">{t("Không tìm thấy cổng sạc phù hợp.")}</td>
                     </tr>
                   ) : (
                     filteredChargers.map((charger) => (
@@ -571,7 +559,7 @@ const ParkingManagement = () => {
                             }`}
                           >
                             <i />
-                            {charger.status}
+                            {statusText(charger.status, t)}
                           </span>
                         </td>
                         <td>
@@ -582,10 +570,10 @@ const ParkingManagement = () => {
                             }
                           >
                             <option value={charger.status}>
-                              {charger.status}
+                              {statusText(charger.status, t)}
                             </option>
-                            <option value="AVAILABLE">AVAILABLE</option>
-                            <option value="FAULT">FAULT</option>
+                            <option value="AVAILABLE">{statusText("AVAILABLE", t)}</option>
+                            <option value="FAULT">{statusText("FAULT", t)}</option>
                           </select>
                         </td>
                       </tr>
@@ -611,10 +599,10 @@ const ParkingManagement = () => {
               <div>
                 <h2>
                   {formType === "slot"
-                    ? "Thêm chỗ đỗ"
-                    : "Thêm cổng sạc"}
+                    ? t("Thêm chỗ đỗ")
+                    : t("Thêm cổng sạc")}
                 </h2>
-                <p>Nhập thông tin theo Hub tương ứng.</p>
+                <p>{t("Nhập thông tin theo Hub tương ứng.")}</p>
               </div>
 
               <button
@@ -640,7 +628,7 @@ const ParkingManagement = () => {
                       }))
                     }
                   >
-                    <option value="">Chọn Hub</option>
+                    <option value="">{t("Chọn Hub")}</option>
                     {hubs.map((h) => (
                       <option key={h.id} value={h.id}>
                         {h.name}
@@ -649,8 +637,7 @@ const ParkingManagement = () => {
                   </select>
                 </label>
 
-                <label className="hub-form-full">
-                  Mã {formType === "slot" ? "chỗ đỗ" : "cổng sạc"}
+                <label className="hub-form-full">{t("Mã ")}{formType === "slot" ? t("chỗ đỗ") : t("cổng sạc")}
                   <input
                     value={form.code}
                     required
@@ -660,15 +647,13 @@ const ParkingManagement = () => {
                         code: e.target.value,
                       }))
                     }
-                    placeholder="Nhập mã"
+                    placeholder={t("Nhập mã")}
                   />
                 </label>
 
                 {formType === "charger" && (
                   <>
-                    <label className="hub-form-full">
-                      Chỗ đỗ gắn cổng sạc
-                      <select
+                    <label className="hub-form-full">{t("Chỗ đỗ gắn cổng sạc")}<select
                         value={form.slotId}
                         required
                         onChange={(e) =>
@@ -678,7 +663,7 @@ const ParkingManagement = () => {
                           }))
                         }
                       >
-                        <option value="">Chọn chỗ đỗ</option>
+                        <option value="">{t("Chọn chỗ đỗ")}</option>
                         {slots
                           .filter((s) => s.hubId === form.hubId)
                           .map((s) => (
@@ -689,9 +674,7 @@ const ParkingManagement = () => {
                       </select>
                     </label>
 
-                    <label className="hub-form-full">
-                      Công suất (kW)
-                      <input
+                    <label className="hub-form-full">{t("Công suất (kW)")}<input
                         type="number"
                         min="0.1"
                         step="0.1"
@@ -714,9 +697,7 @@ const ParkingManagement = () => {
                   type="button"
                   className="hub-cancel-button"
                   onClick={() => setShowModal(false)}
-                >
-                  Hủy
-                </button>
+                >{t("Hủy")}</button>
 
                 <button
                   type="submit"
@@ -724,7 +705,7 @@ const ParkingManagement = () => {
                   disabled={saving}
                 >
                   <Save size={17} />
-                  {saving ? "Đang lưu..." : "Lưu"}
+                  {saving ? t("Đang lưu...") : t("Lưu")}
                 </button>
               </div>
             </form>

@@ -1,6 +1,8 @@
+import { usePreferences } from "../../../../preferences/PreferencesContext";
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 import {
   LayoutDashboard,
   Map,
@@ -16,13 +18,16 @@ import {
   LogOut,
   UserRound,
   X,
+  Settings,
 } from "lucide-react";
 
 import studentService from "../../../../services/student.service";
 import reservationService from "../../../../services/reservation.service";
 import "./StudentDashboard.css";
+import SettingsPanel from "../../../../preferences/SettingsPanel";
 
 interface StudentDashboardProps {
+  settingsMode?: boolean;
   onRequestCharging?: () => void;
   onReturnVehicle?: (reservationID: string) => void;
 }
@@ -98,10 +103,14 @@ type CancelTarget =
   | { type: "charging"; id: string };
 
 function StudentDashboard({
+  settingsMode = false,
   onRequestCharging,
   onReturnVehicle,
 }: StudentDashboardProps) {
+  const { t, preferences: { language }, reload, loading: preferencesLoading } = usePreferences();
+
   const navigate = useNavigate();
+  const { hash } = useLocation();
 
   // Trạng thái Sidebar và Header
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -139,11 +148,6 @@ function StudentDashboard({
       const chargingData =
         chargingRes.data?.data ?? chargingRes.data;
 
-      console.log(
-        "CHI TIẾT LỊCH SẠC:",
-        JSON.stringify(chargingData.items, null, 2)
-      );
-
       setReservations(
         Array.isArray(reservationData)
           ? reservationData
@@ -157,7 +161,29 @@ function StudentDashboard({
       );
     } catch (err) {
       console.error("Student dashboard error:", err);
-      setError("Không thể tải dữ liệu bảng điều khiển. Vui lòng thử lại.");
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 401) {
+          for (const storage of [localStorage, sessionStorage]) {
+            storage.removeItem("accessToken");
+            storage.removeItem("user");
+          }
+          navigate("/login", { replace: true, state: { sessionExpired: true } });
+          return;
+        }
+        if (err.response?.status === 403) {
+          setError(err.message);
+          return;
+        }
+        if (!err.response) {
+          setError(t("Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối và thử lại."));
+          return;
+        }
+        if (err.response.data?.code === "DATABASE_UNAVAILABLE") {
+          setError(t("Hệ thống hiện không khả dụng. Vui lòng thử lại sau."));
+          return;
+        }
+      }
+      setError(t("Không thể tải dữ liệu bảng điều khiển. Vui lòng thử lại."));
     } finally {
       setLoading(false);
     }
@@ -166,6 +192,12 @@ function StudentDashboard({
   useEffect(() => {
     fetchDashboardData();
   }, []);
+
+  useEffect(() => {
+    if (!settingsMode && !loading && hash) {
+      document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [hash, loading, settingsMode]);
 
   // Lấy ID
   const getReservationID = (reservation: Reservation) =>
@@ -195,6 +227,10 @@ function StudentDashboard({
 
   // Cuộn đến khu vực được chọn trên Dashboard
   const scrollToSection = (sectionID: string) => {
+    if (settingsMode) {
+      navigate(`/student#${sectionID}`);
+      return;
+    }
     document.getElementById(sectionID)?.scrollIntoView({
       behavior: "smooth",
       block: "start",
@@ -265,9 +301,9 @@ function StudentDashboard({
           )
         );
 
-        setToastMessage("Đã hủy lượt đặt chỗ thành công!");
+        setToastMessage(t("Đã hủy lượt đặt chỗ thành công!"));
       } else {
-        console.log("Charging schedule ID gửi lên:", target.id);
+        console.log(t("Charging schedule ID gửi lên:"), target.id);
 
         await reservationService.cancelChargingSchedule(target.id);
 
@@ -279,7 +315,7 @@ function StudentDashboard({
           )
         );
 
-        setToastMessage("Đã hủy lịch sạc thành công!");
+        setToastMessage(t("Đã hủy lịch sạc thành công!"));
       }
 
       setCancelTarget(null);
@@ -293,8 +329,8 @@ function StudentDashboard({
         err?.response?.data?.message ||
           err?.message ||
           (target.type === "charging"
-            ? "Không thể hủy lịch sạc. Vui lòng thử lại."
-            : "Không thể hủy đặt chỗ. Vui lòng thử lại.")
+            ? t("Không thể hủy lịch sạc. Vui lòng thử lại.")
+            : t("Không thể hủy đặt chỗ. Vui lòng thử lại."))
       );
     } finally {
       setCancelling(false);
@@ -309,7 +345,7 @@ function StudentDashboard({
     const reservationID = getReservationID(target);
 
     if (!reservationID) {
-      setPickupError("Không tìm thấy mã đặt xe.");
+      setPickupError(t("Không tìm thấy mã đặt xe."));
       return;
     }
 
@@ -325,14 +361,14 @@ function StudentDashboard({
       );
 
       if (!selectedHub) {
-        throw new Error("Không tìm thấy Hub của lượt đặt xe.");
+        throw new Error(t("Không tìm thấy Hub của lượt đặt xe."));
       }
 
       const { latitude, longitude } = selectedHub;
 
       if (latitude == null || longitude == null) {
         throw new Error(
-          "Hub chưa có thông tin tọa độ. Vui lòng kiểm tra dữ liệu Hub."
+          t("Hub chưa có thông tin tọa độ. Vui lòng kiểm tra dữ liệu Hub.")
         );
       }
 
@@ -349,7 +385,7 @@ function StudentDashboard({
 
       // Nhận xe thành công: ở lại Dashboard và tải lại dữ liệu
       setPickupTarget(null);
-      setToastMessage("Nhận xe thành công!");
+      setToastMessage(t("Nhận xe thành công!"));
       await fetchDashboardData();
     } catch (err: any) {
       console.error("Pickup failed:", err);
@@ -357,7 +393,7 @@ function StudentDashboard({
       setPickupError(
         err.response?.data?.message ||
           err.message ||
-          "Không thể nhận xe. Vui lòng thử lại."
+          t("Không thể nhận xe. Vui lòng thử lại.")
       );
     } finally {
       setPickupLoadingID("");
@@ -399,52 +435,52 @@ function StudentDashboard({
 
   // Định dạng ngày tháng
   const formatDate = (date?: string) => {
-    if (!date) return "Chưa có thông tin";
+    if (!date) return t("Chưa có thông tin");
 
     const parsedDate = new Date(date);
 
     return Number.isNaN(parsedDate.getTime())
-      ? "Chưa có thông tin"
-      : parsedDate.toLocaleString("vi-VN");
+      ? t("Chưa có thông tin")
+      : parsedDate.toLocaleString((language === "en" ? "en-US" : "vi-VN"));
   };
 
   // Dịch trạng thái
   const statusMap: Record<string, string> = {
-    HELD: "Đã giữ chỗ",
-    CONFIRMED: "Đã xác nhận",
-    IN_USE: "Đang sử dụng",
-    COMPLETED: "Hoàn thành",
-    CANCELLED: "Đã hủy",
-    PENDING: "Đang chờ xử lý",
-    APPROVED: "Đã duyệt",
-    REJECTED: "Từ chối",
+    HELD: t("Đã giữ chỗ"),
+    CONFIRMED: t("Đã xác nhận"),
+    IN_USE: t("Đang sử dụng"),
+    COMPLETED: t("Hoàn thành"),
+    CANCELLED: t("Đã hủy"),
+    PENDING: t("Đang chờ xử lý"),
+    APPROVED: t("Đã duyệt"),
+    REJECTED: t("Từ chối"),
   };
 
   const translateStatus = (status?: string) =>
-    status ? statusMap[status] || status : "Đang chờ xử lý";
+    status ? statusMap[status] || status : t("Đang chờ xử lý");
 
   // Thống kê
   const stats = [
     {
-      label: "Đặt xe sắp tới",
+      label: t("Đặt xe sắp tới"),
       value: upcomingReservations.length,
       icon: "📅",
       color: "purple",
     },
     {
-      label: "Chuyến đi đang hoạt động",
+      label: t("Chuyến đi đang hoạt động"),
       value: activeReservations.length,
       icon: "🚲",
       color: "green",
     },
     {
-      label: "Chuyến đi đã hoàn thành",
+      label: t("Chuyến đi đã hoàn thành"),
       value: completedReservations.length,
       icon: "✓",
       color: "blue",
     },
     {
-      label: "Yêu cầu sạc đang chờ",
+      label: t("Yêu cầu sạc đang chờ"),
       value: pendingChargingRequests.length,
       icon: "⚡",
       color: "orange",
@@ -473,58 +509,58 @@ function StudentDashboard({
         </div>
 
         <div className="student-sidebar-label">
-          {!sidebarCollapsed && "MENU CHÍNH"}
+          {!sidebarCollapsed && t("MENU CHÍNH")}
         </div>
 
         <nav className="student-sidebar-menu">
           <button
             type="button"
-            className="student-menu-item active"
+            className={`student-menu-item ${!settingsMode ? "active" : ""}`}
             onClick={() => navigateTo("/student")}
-            title="Tổng quan"
+            title={t("Tổng quan")}
           >
             <LayoutDashboard size={20} />
-            {!sidebarCollapsed && <span>Tổng quan</span>}
+            {!sidebarCollapsed && <span>{t("Tổng quan")}</span>}
           </button>
 
           <button
             type="button"
             className="student-menu-item"
             onClick={() => navigateTo("/student/booking/search")}
-            title="Tìm kiếm lộ trình"
+            title={t("Tìm kiếm lộ trình")}
           >
             <Map size={20} />
-            {!sidebarCollapsed && <span>Tìm kiếm lộ trình</span>}
+            {!sidebarCollapsed && <span>{t("Tìm kiếm lộ trình")}</span>}
           </button>
 
           <button
             type="button"
             className="student-menu-item"
             onClick={() => navigateTo("/student/reservation/vehicle")}
-            title="Đặt xe"
+            title={t("Đặt xe")}
           >
             <Bike size={20} />
-            {!sidebarCollapsed && <span>Đặt xe</span>}
+            {!sidebarCollapsed && <span>{t("Đặt xe")}</span>}
           </button>
 
           <button
             type="button"
             className="student-menu-item"
             onClick={() => navigateTo("/student/reservation/parking")}
-            title="Đặt chỗ đỗ xe"
+            title={t("Đặt chỗ đỗ xe")}
           >
             <ParkingSquare size={20} />
-            {!sidebarCollapsed && <span>Đặt chỗ đỗ xe</span>}
+            {!sidebarCollapsed && <span>{t("Đặt chỗ đỗ xe")}</span>}
           </button>
 
           <button
             type="button"
             className="student-menu-item"
             onClick={goToCharging}
-            title="Đặt lịch sạc"
+            title={t("Đặt lịch sạc")}
           >
             <Zap size={20} />
-            {!sidebarCollapsed && <span>Đặt lịch sạc</span>}
+            {!sidebarCollapsed && <span>{t("Đặt lịch sạc")}</span>}
           </button>
 
           <button
@@ -537,20 +573,25 @@ function StudentDashboard({
                 scrollToSection("active-trips");
               }
             }}
-            title="Trả xe"
+            title={t("Trả xe")}
           >
             <Bike size={20} />
-            {!sidebarCollapsed && <span>Trả xe</span>}
+            {!sidebarCollapsed && <span>{t("Trả xe")}</span>}
           </button>
 
           <button
             type="button"
             className="student-menu-item"
             onClick={() => scrollToSection("vehicle-history")}
-            title="Lịch sử đặt chỗ"
+            title={t("Lịch sử đặt chỗ")}
           >
             <History size={20} />
-            {!sidebarCollapsed && <span>Lịch sử</span>}
+            {!sidebarCollapsed && <span>{t("Lịch sử")}</span>}
+          </button>
+          <button type="button" className={`student-menu-item ${settingsMode ? "active" : ""}`}
+            onClick={() => navigateTo("/student/settings")} title={t("Cài đặt")}>
+            <Settings size={20} />
+            {!sidebarCollapsed && <span>{t("Cài đặt")}</span>}
           </button>
         </nav>
 
@@ -562,8 +603,8 @@ function StudentDashboard({
 
             {!sidebarCollapsed && (
               <div className="student-account-info">
-                <strong>Sinh viên</strong>
-                <span>Tài khoản sinh viên</span>
+                <strong>{t("Sinh viên")}</strong>
+                <span>{t("Tài khoản sinh viên")}</span>
               </div>
             )}
           </div>
@@ -574,8 +615,8 @@ function StudentDashboard({
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
             title={
               sidebarCollapsed
-                ? "Mở rộng thanh bên"
-                : "Thu gọn thanh bên"
+                ? t("Mở rộng thanh bên")
+                : t("Thu gọn thanh bên")
             }
           >
             {sidebarCollapsed ? (
@@ -583,7 +624,7 @@ function StudentDashboard({
             ) : (
               <>
                 <ChevronLeft size={19} />
-                <span>Thu gọn menu</span>
+                <span>{t("Thu gọn menu")}</span>
               </>
             )}
           </button>
@@ -599,15 +640,15 @@ function StudentDashboard({
               type="button"
               className="student-header-menu-btn"
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              title="Thu gọn hoặc mở rộng menu"
+              title={t("Thu gọn hoặc mở rộng menu")}
             >
               <Menu size={21} />
             </button>
 
             <div className="student-breadcrumb">
-              <span>Trang sinh viên</span>
+              <span>{t("Trang sinh viên")}</span>
               <ChevronRight size={15} />
-              <strong>Tổng quan</strong>
+              <strong>{settingsMode ? t("Cài đặt") : t("Tổng quan")}</strong>
             </div>
           </div>
 
@@ -615,9 +656,9 @@ function StudentDashboard({
             <button
               type="button"
               className="student-header-action"
-              onClick={fetchDashboardData}
-              disabled={loading}
-              title="Làm mới dữ liệu"
+              onClick={settingsMode ? reload : fetchDashboardData}
+              disabled={settingsMode ? preferencesLoading : loading}
+              title={t("Làm mới dữ liệu")}
             >
               <RefreshCw
                 size={19}
@@ -634,7 +675,7 @@ function StudentDashboard({
                   setShowNotifications(!showNotifications);
                   setShowProfile(false);
                 }}
-                title="Thông báo"
+                title={t("Thông báo")}
               >
                 <Bell size={19} />
                 {pendingChargingRequests.length +
@@ -646,43 +687,35 @@ function StudentDashboard({
               {showNotifications && (
                 <div className="student-dropdown-panel">
                   <div className="student-dropdown-heading">
-                    <strong>Thông báo</strong>
+                    <strong>{t("Thông báo")}</strong>
                     <button
                       type="button"
                       onClick={() => setShowNotifications(false)}
-                      aria-label="Đóng thông báo"
+                      aria-label={t("Đóng thông báo")}
                     >
                       <X size={17} />
                     </button>
                   </div>
 
                   {loading ? (
-                    <p>Đang tải dữ liệu...</p>
+                    <p>{t("Đang tải dữ liệu...")}</p>
                   ) : (
                     <>
                       <div className="student-notification-item">
                         <Bike size={18} />
-                        <span>
-                          Bạn có{" "}
-                          <strong>{upcomingReservations.length}</strong>{" "}
-                          lượt đặt xe sắp tới.
-                        </span>
+                        <span>{t("Bạn có")}{" "}
+                          <strong>{upcomingReservations.length}</strong>{" "}{t("lượt đặt xe sắp tới.")}</span>
                       </div>
 
                       <div className="student-notification-item">
                         <Zap size={18} />
-                        <span>
-                          Bạn có{" "}
-                          <strong>{pendingChargingRequests.length}</strong>{" "}
-                          yêu cầu sạc đang chờ.
-                        </span>
+                        <span>{t("Bạn có")}{" "}
+                          <strong>{pendingChargingRequests.length}</strong>{" "}{t("yêu cầu sạc đang chờ.")}</span>
                       </div>
 
                       {upcomingReservations.length === 0 &&
                         pendingChargingRequests.length === 0 && (
-                          <p className="student-no-notification">
-                            Bạn hiện không có thông báo mới.
-                          </p>
+                          <p className="student-no-notification">{t("Bạn hiện không có thông báo mới.")}</p>
                         )}
                     </>
                   )}
@@ -705,8 +738,8 @@ function StudentDashboard({
                 </div>
 
                 <div className="student-profile-text">
-                  <strong>Sinh viên</strong>
-                  <span>Tài khoản</span>
+                  <strong>{t("Sinh viên")}</strong>
+                  <span>{t("Tài khoản")}</span>
                 </div>
 
                 <ChevronRight size={16} />
@@ -715,11 +748,11 @@ function StudentDashboard({
               {showProfile && (
                 <div className="student-dropdown-panel student-profile-dropdown">
                   <div className="student-dropdown-heading">
-                    <strong>Tài khoản</strong>
+                    <strong>{t("Tài khoản")}</strong>
                     <button
                       type="button"
                       onClick={() => setShowProfile(false)}
-                      aria-label="Đóng tài khoản"
+                      aria-label={t("Đóng tài khoản")}
                     >
                       <X size={17} />
                     </button>
@@ -728,7 +761,7 @@ function StudentDashboard({
                   <div className="student-profile-detail">
                     <UserRound size={20} />
                     <div>
-                      <strong>Sinh viên</strong>
+                      <strong>{t("Sinh viên")}</strong>
                       <span>Smart E-Mobility Hub</span>
                     </div>
                   </div>
@@ -740,7 +773,7 @@ function StudentDashboard({
                     onClick={handleLogout}
                   >
                     <LogOut size={17} />
-                    <span>Đăng xuất</span>
+                    <span>{t("Đăng xuất")}</span>
                   </button>
                 </div>
               )}
@@ -750,15 +783,14 @@ function StudentDashboard({
 
         {/* NỘI DUNG DASHBOARD */}
         <div className="student-page-content">
+          {settingsMode ? <SettingsPanel /> : <>
           <div className="student-page-heading">
             <div>
               <span className="student-page-eyebrow">
                 STUDENT PORTAL
               </span>
-              <h1>Tổng quan</h1>
-              <p>
-                Quản lý các hoạt động và dịch vụ di chuyển của bạn.
-              </p>
+              <h1>{t("Tổng quan")}</h1>
+              <p>{t("Quản lý các hoạt động và dịch vụ di chuyển của bạn.")}</p>
             </div>
           </div>
 
@@ -767,23 +799,17 @@ function StudentDashboard({
             <section className="student-welcome">
               <div className="welcome-content">
                 <span className="welcome-label">
-                  <span className="online-dot" />
-                  CỔNG THÔNG TIN SINH VIÊN
-                </span>
+                  <span className="online-dot" />{t("CỔNG THÔNG TIN SINH VIÊN")}</span>
 
-                <h1>Chào mừng đến với Smart E-Mobility Hub</h1>
+                <h1>{t("Chào mừng đến với Smart E-Mobility Hub")}</h1>
 
-                <p>
-                  Hành trình của bạn bắt đầu từ đây. Tìm kiếm lộ trình,
-                  đặt xe điện và quản lý các dịch vụ di chuyển một cách dễ dàng.
-                </p>
+                <p>{t("Hành trình của bạn bắt đầu từ đây. Tìm kiếm lộ trình, đặt xe điện và quản lý các dịch vụ di chuyển một cách dễ dàng.")}</p>
 
                 <div className="welcome-actions">
                   <button
                     className="dashboard-btn dashboard-btn-light"
                     onClick={() => navigateTo("/student/booking/search")}
-                  >
-                    Khám phá trạm <span>→</span>
+                  >{t("Khám phá trạm ")}<span>→</span>
                   </button>
 
                   <button
@@ -791,7 +817,7 @@ function StudentDashboard({
                     onClick={fetchDashboardData}
                     disabled={loading}
                   >
-                    {loading ? "Đang tải..." : "↻ Làm mới"}
+                    {loading ? t("Đang tải...") : t("↻ Làm mới")}
                   </button>
                 </div>
               </div>
@@ -808,8 +834,8 @@ function StudentDashboard({
             {error && (
               <div className="dashboard-error">
                 <span>⚠</span>
-                <p>{error}</p>
-                <button onClick={fetchDashboardData}>Thử lại</button>
+                <p>{t(error)}</p>
+                <button onClick={fetchDashboardData}>{t("Thử lại")}</button>
               </div>
             )}
 
@@ -817,24 +843,22 @@ function StudentDashboard({
             <section className="dashboard-section" id="student-overview">
               <div className="section-heading">
                 <div>
-                  <span className="section-eyebrow">TỔNG QUAN</span>
-                  <h2>Hoạt động của bạn</h2>
+                  <span className="section-eyebrow">{t("TỔNG QUAN")}</span>
+                  <h2>{t("Hoạt động của bạn")}</h2>
                 </div>
 
-                <span className="section-description">
-                  Tổng hợp các hoạt động di chuyển của bạn
-                </span>
+                <span className="section-description">{t("Tổng hợp các hoạt động di chuyển của bạn")}</span>
               </div>
 
               <div className="stats-grid">
                 {stats.map((item) => (
-                  <div className="stat-card" key={item.label}>
+                  <div className="stat-card" key={t(item.label)}>
                     <div className={`stat-icon ${item.color}`}>
                       {item.icon}
                     </div>
 
                     <div className="stat-info">
-                      <span>{item.label}</span>
+                      <span>{t(item.label)}</span>
                       <strong>{loading ? "—" : item.value}</strong>
                     </div>
                   </div>
@@ -846,59 +870,42 @@ function StudentDashboard({
             <section className="dashboard-section" id="student-services">
               <div className="section-heading">
                 <div>
-                  <span className="section-eyebrow">
-                    DỊCH VỤ DI CHUYỂN
-                  </span>
-                  <h2>Bạn muốn thực hiện thao tác nào?</h2>
+                  <span className="section-eyebrow">{t("DỊCH VỤ DI CHUYỂN")}</span>
+                  <h2>{t("Bạn muốn thực hiện thao tác nào?")}</h2>
                 </div>
               </div>
 
               <div className="services-grid">
                 <div className="service-card">
                   <div className="service-icon route-icon">📍</div>
-                  <h3>Tìm kiếm lộ trình</h3>
-                  <p>
-                    Tìm kiếm các trạm trung chuyển phù hợp dựa trên vị trí
-                    hiện tại hoặc lộ trình di chuyển của bạn.
-                  </p>
+                  <h3>{t("Tìm kiếm lộ trình")}</h3>
+                  <p>{t("Tìm kiếm các trạm trung chuyển phù hợp dựa trên vị trí hiện tại hoặc lộ trình di chuyển của bạn.")}</p>
                   <button
                     onClick={() => navigateTo("/student/booking/search")}
-                  >
-                    Tìm lộ trình <span>→</span>
+                  >{t("Tìm lộ trình ")}<span>→</span>
                   </button>
                 </div>
 
                 <div className="service-card">
                   <div className="service-icon vehicle-icon">🚲</div>
-                  <h3>Đặt xe / Chỗ đỗ</h3>
-                  <p>
-                    Tìm kiếm Hub phù hợp và lựa chọn dịch vụ đặt xe
-                    hoặc đặt chỗ đỗ xe theo nhu cầu của bạn.
-                  </p>
-                  <button onClick={() => navigateTo("/student/reservation")}>
-                    Khám phá ngay <span>→</span>
+                  <h3>{t("Đặt xe / Chỗ đỗ")}</h3>
+                  <p>{t("Tìm kiếm Hub phù hợp và lựa chọn dịch vụ đặt xe hoặc đặt chỗ đỗ xe theo nhu cầu của bạn.")}</p>
+                  <button onClick={() => navigateTo("/student/reservation")}>{t("Khám phá ngay ")}<span>→</span>
                   </button>
                 </div>
 
                 <div className="service-card">
                   <div className="service-icon charging-icon">⚡</div>
-                  <h3>Yêu cầu sạc pin</h3>
-                  <p>
-                    Gửi yêu cầu sạc pin và nhận lịch sạc phù hợp
-                    với nhu cầu của bạn.
-                  </p>
-                  <button onClick={goToCharging}>
-                    Gửi yêu cầu sạc <span>→</span>
+                  <h3>{t("Yêu cầu sạc pin")}</h3>
+                  <p>{t("Gửi yêu cầu sạc pin và nhận lịch sạc phù hợp với nhu cầu của bạn.")}</p>
+                  <button onClick={goToCharging}>{t("Gửi yêu cầu sạc ")}<span>→</span>
                   </button>
                 </div>
 
                 <div className="service-card">
                   <div className="service-icon return-icon">🏁</div>
-                  <h3>Trả xe</h3>
-                  <p>
-                    Kiểm tra các chuyến đi đang hoạt động và thực hiện
-                    trả xe tại trạm trung chuyển phù hợp.
-                  </p>
+                  <h3>{t("Trả xe")}</h3>
+                  <p>{t("Kiểm tra các chuyến đi đang hoạt động và thực hiện trả xe tại trạm trung chuyển phù hợp.")}</p>
                   <button
                     onClick={() => {
                       if (activeReservations[0]) {
@@ -913,8 +920,8 @@ function StudentDashboard({
                     }
                   >
                     {activeReservations.length > 0
-                      ? "Trả xe của tôi"
-                      : "Không có chuyến đi"}
+                      ? t("Trả xe của tôi")
+                      : t("Không có chuyến đi")}
                     <span>→</span>
                   </button>
                 </div>
@@ -925,10 +932,8 @@ function StudentDashboard({
             <section className="dashboard-section">
               <div className="section-heading">
                 <div>
-                  <span className="section-eyebrow">
-                    TRUNG TÂM HOẠT ĐỘNG
-                  </span>
-                  <h2>Hoạt động gần đây</h2>
+                  <span className="section-eyebrow">{t("TRUNG TÂM HOẠT ĐỘNG")}</span>
+                  <h2>{t("Hoạt động gần đây")}</h2>
                 </div>
               </div>
 
@@ -937,21 +942,17 @@ function StudentDashboard({
                 <div className="activity-card" id="vehicle-history">
                   <div className="activity-header">
                     <div>
-                      <h3>📅 Lịch sử đặt xe</h3>
-                      <p>Các lượt đặt phương tiện dùng chung của bạn</p>
+                      <h3>{t("📅 Lịch sử đặt xe")}</h3>
+                      <p>{t("Các lượt đặt phương tiện dùng chung của bạn")}</p>
                     </div>
 
                     <button
                       onClick={() => navigateTo("/student/reservation/vehicle")}
-                    >
-                      Đặt thêm +
-                    </button>
+                    >{t("Đặt thêm +")}</button>
                   </div>
 
                   {loading ? (
-                    <p className="empty-message">
-                      Đang tải danh sách đặt xe...
-                    </p>
+                    <p className="empty-message">{t("Đang tải danh sách đặt xe...")}</p>
                   ) : vehicleReservationHistory.length > 0 ? (
                     vehicleReservationHistory.slice(0, 3).map((reservation, index) => {
                       const reservationID = getReservationID(reservation);
@@ -967,32 +968,28 @@ function StudentDashboard({
                             <strong>
                               {reservation.vehicle?.name ||
                                 reservation.vehicle?.code ||
-                                "Phương tiện đã đặt"}
+                                t("Phương tiện đã đặt")}
                             </strong>
 
-                            <span>
-                              Trạm:{" "}
+                            <span>{t("Trạm:")}{" "}
                               {reservation.hub?.name ||
                                 reservation.hub?.code ||
                                 "—"}
                             </span>
 
-                            <span>
-                              Thời gian bắt đầu:{" "}
+                            <span>{t("Thời gian bắt đầu:")}{" "}
                               {formatDate(
                                 reservation.startsAt || reservation.startTime
                               )}
                             </span>
 
-                            <span>
-                              Thời gian kết thúc:{" "}
+                            <span>{t("Thời gian kết thúc:")}{" "}
                               {formatDate(
                                 reservation.endsAt || reservation.endTime
                               )}
                             </span>
 
-                            <span>
-                              Ngày tạo: {formatDate(reservation.createdAt)}
+                            <span>{t("Ngày tạo: ")}{formatDate(reservation.createdAt)}
                             </span>
                           </div>
 
@@ -1022,8 +1019,8 @@ function StudentDashboard({
                                 }
                               >
                                 {pickupLoadingID === reservationID
-                                  ? "Đang nhận..."
-                                  : "Nhận xe"}
+                                  ? t("Đang nhận...")
+                                  : t("Nhận xe")}
                               </button>
                             )}
 
@@ -1038,18 +1035,14 @@ function StudentDashboard({
                                   })
                                 }
                                 disabled={!reservationID || cancelling}
-                              >
-                                Hủy đặt xe
-                              </button>
+                              >{t("Hủy đặt xe")}</button>
                             )}
                           </div>
                         </div>
                       );
                     })
                   ) : (
-                    <p className="empty-message">
-                      Bạn chưa có lịch sử đặt xe nào.
-                    </p>
+                    <p className="empty-message">{t("Bạn chưa có lịch sử đặt xe nào.")}</p>
                   )}
                 </div>
 
@@ -1057,21 +1050,17 @@ function StudentDashboard({
                 <div className="activity-card" id="parking-history">
                   <div className="activity-header">
                     <div>
-                      <h3>🅿️ Lịch sử đặt chỗ đỗ</h3>
-                      <p>Các lượt đặt chỗ đỗ xe của bạn</p>
+                      <h3>{t("🅿️ Lịch sử đặt chỗ đỗ")}</h3>
+                      <p>{t("Các lượt đặt chỗ đỗ xe của bạn")}</p>
                     </div>
 
                     <button
                       onClick={() => navigateTo("/student/reservation/parking")}
-                    >
-                      Đặt thêm +
-                    </button>
+                    >{t("Đặt thêm +")}</button>
                   </div>
 
                   {loading ? (
-                    <p className="empty-message">
-                      Đang tải lịch sử đặt chỗ đỗ...
-                    </p>
+                    <p className="empty-message">{t("Đang tải lịch sử đặt chỗ đỗ...")}</p>
                   ) : parkingReservations.length > 0 ? (
                     parkingReservations.slice(0, 3).map((reservation, index) => {
                       const reservationID = getReservationID(reservation);
@@ -1084,8 +1073,7 @@ function StudentDashboard({
                           <div className="activity-item-icon blue">🅿️</div>
 
                           <div className="activity-item-content">
-                            <strong>
-                              Chỗ đỗ xe {reservation.slot?.code || ""}
+                            <strong>{t("Chỗ đỗ xe ")}{reservation.slot?.code || ""}
                             </strong>
 
                             <span>
@@ -1096,29 +1084,25 @@ function StudentDashboard({
                                 "—"}
                             </span>
 
-                            <span>
-                              Mã chỗ đỗ:{" "}
+                            <span>{t("Mã chỗ đỗ:")}{" "}
                               {reservation.slot?.code ||
                                 reservation.slotId ||
                                 "—"}
                             </span>
 
-                            <span>
-                              Thời gian bắt đầu:{" "}
+                            <span>{t("Thời gian bắt đầu:")}{" "}
                               {formatDate(
                                 reservation.startsAt || reservation.startTime
                               )}
                             </span>
 
-                            <span>
-                              Thời gian kết thúc:{" "}
+                            <span>{t("Thời gian kết thúc:")}{" "}
                               {formatDate(
                                 reservation.endsAt || reservation.endTime
                               )}
                             </span>
 
-                            <span>
-                              Ngày đặt: {formatDate(reservation.createdAt)}
+                            <span>{t("Ngày đặt: ")}{formatDate(reservation.createdAt)}
                             </span>
                           </div>
 
@@ -1146,18 +1130,14 @@ function StudentDashboard({
                                   })
                                 }
                                 disabled={!reservationID || cancelling}
-                              >
-                                Hủy đặt chỗ đỗ
-                              </button>
+                              >{t("Hủy đặt chỗ đỗ")}</button>
                             )}
                           </div>
                         </div>
                       );
                     })
                   ) : (
-                    <p className="empty-message">
-                      Bạn chưa có lượt đặt chỗ đỗ nào.
-                    </p>
+                    <p className="empty-message">{t("Bạn chưa có lượt đặt chỗ đỗ nào.")}</p>
                   )}
                 </div>
 
@@ -1165,15 +1145,13 @@ function StudentDashboard({
                 <div className="activity-card" id="active-trips">
                   <div className="activity-header">
                     <div>
-                      <h3>🚲 Chuyến đi đang hoạt động</h3>
-                      <p>Các chuyến đi bạn đang thực hiện</p>
+                      <h3>{t("🚲 Chuyến đi đang hoạt động")}</h3>
+                      <p>{t("Các chuyến đi bạn đang thực hiện")}</p>
                     </div>
                   </div>
 
                   {loading ? (
-                    <p className="empty-message">
-                      Đang tải danh sách chuyến đi...
-                    </p>
+                    <p className="empty-message">{t("Đang tải danh sách chuyến đi...")}</p>
                   ) : activeReservations.length > 0 ? (
                     activeReservations.slice(0, 3).map((reservation, index) => {
                       const reservationID = getReservationID(reservation);
@@ -1189,11 +1167,10 @@ function StudentDashboard({
                             <strong>
                               {reservation.vehicle?.name ||
                                 reservation.vehicle?.code ||
-                                "Phương tiện điện"}
+                                t("Phương tiện điện")}
                             </strong>
 
-                            <span>
-                              Bắt đầu:{" "}
+                            <span>{t("Bắt đầu:")}{" "}
                               {formatDate(
                                 reservation.pickedUpAt ||
                                   reservation.startsAt ||
@@ -1205,17 +1182,13 @@ function StudentDashboard({
                               className="return-link"
                               disabled={!reservationID}
                               onClick={() => goToReturn(reservation)}
-                            >
-                              Trả xe →
-                            </button>
+                            >{t("Trả xe →")}</button>
                           </div>
                         </div>
                       );
                     })
                   ) : (
-                    <p className="empty-message">
-                      Hiện tại bạn không có chuyến đi nào đang hoạt động.
-                    </p>
+                    <p className="empty-message">{t("Hiện tại bạn không có chuyến đi nào đang hoạt động.")}</p>
                   )}
                 </div>
 
@@ -1223,19 +1196,15 @@ function StudentDashboard({
                 <div className="activity-card" id="charging-requests">
                   <div className="activity-header">
                     <div>
-                      <h3>⚡ Yêu cầu sạc pin</h3>
-                      <p>Các yêu cầu sạc pin của bạn</p>
+                      <h3>{t("⚡ Yêu cầu sạc pin")}</h3>
+                      <p>{t("Các yêu cầu sạc pin của bạn")}</p>
                     </div>
 
-                    <button onClick={goToCharging}>
-                      Yêu cầu mới +
-                    </button>
+                    <button onClick={goToCharging}>{t("Yêu cầu mới +")}</button>
                   </div>
 
                   {loading ? (
-                    <p className="empty-message">
-                      Đang tải danh sách yêu cầu sạc...
-                    </p>
+                    <p className="empty-message">{t("Đang tải danh sách yêu cầu sạc...")}</p>
                   ) : chargingRequests.length > 0 ? (
                     chargingRequests.slice(0, 3).map((request, index) => (
                       <div
@@ -1245,22 +1214,19 @@ function StudentDashboard({
                         <div className="activity-item-icon blue">⚡</div>
 
                         <div className="activity-item-content">
-                          <strong>Yêu cầu sạc pin</strong>
+                          <strong>{t("Yêu cầu sạc pin")}</strong>
 
-                          <span>
-                            Trạm:{" "}
+                          <span>{t("Trạm:")}{" "}
                             {request.hub?.name ||
                               request.hub?.code ||
                               "—"}
                           </span>
 
-                          <span>
-                            Ngày tạo: {formatDate(request.createdAt)}
+                          <span>{t("Ngày tạo: ")}{formatDate(request.createdAt)}
                           </span>
 
                           {request.startsAt && (
-                            <span>
-                              Thời gian sạc: {formatDate(request.startsAt)}
+                            <span>{t("Thời gian sạc: ")}{formatDate(request.startsAt)}
                               {request.endsAt
                                 ? ` – ${formatDate(request.endsAt)}`
                                 : ""}
@@ -1291,17 +1257,13 @@ function StudentDashboard({
                               disabled={
                                 !getChargingScheduleID(request) || cancelling
                               }
-                            >
-                              Hủy lịch sạc
-                            </button>
+                            >{t("Hủy lịch sạc")}</button>
                           )}
                         </div>
                       </div>
                     ))
                   ) : (
-                    <p className="empty-message">
-                      Bạn chưa gửi yêu cầu sạc pin nào.
-                    </p>
+                    <p className="empty-message">{t("Bạn chưa gửi yêu cầu sạc pin nào.")}</p>
                   )}
                 </div>
               </div>
@@ -1313,40 +1275,35 @@ function StudentDashboard({
                 <div className="pickup-modal">
                   <div className="pickup-modal-icon">🚲</div>
 
-                  <h3>Xác nhận nhận xe</h3>
+                  <h3>{t("Xác nhận nhận xe")}</h3>
 
-                  <p>
-                    Bạn có chắc chắn muốn nhận phương tiện này không?
-                  </p>
+                  <p>{t("Bạn có chắc chắn muốn nhận phương tiện này không?")}</p>
 
                   <div className="pickup-modal-info">
                     <div>
-                      <span>Phương tiện</span>
+                      <span>{t("Phương tiện")}</span>
                       <strong>
                         {pickupTarget.vehicle?.name ||
                           pickupTarget.vehicle?.code ||
-                          "Phương tiện điện"}
+                          t("Phương tiện điện")}
                       </strong>
                     </div>
 
                     <div>
-                      <span>Hub nhận xe</span>
+                      <span>{t("Hub nhận xe")}</span>
                       <strong>
                         {pickupTarget.hub?.name ||
                           pickupTarget.hub?.code ||
-                          "Chưa có thông tin"}
+                          t("Chưa có thông tin")}
                       </strong>
                     </div>
                   </div>
 
-                  <p className="pickup-modal-note">
-                    Thời gian sử dụng tối đa 8 giờ sẽ được tính
-                    từ thời điểm nhận xe thành công.
-                  </p>
+                  <p className="pickup-modal-note">{t("Thời gian sử dụng tối đa 8 giờ sẽ được tính từ thời điểm nhận xe thành công.")}</p>
 
                   {pickupError && (
                     <div className="pickup-modal-error">
-                      ⚠ {pickupError}
+                      ⚠ {t(pickupError)}
                     </div>
                   )}
 
@@ -1356,9 +1313,7 @@ function StudentDashboard({
                       className="pickup-modal-cancel"
                       onClick={() => setPickupTarget(null)}
                       disabled={Boolean(pickupLoadingID)}
-                    >
-                      Hủy
-                    </button>
+                    >{t("Hủy")}</button>
 
                     <button
                       type="button"
@@ -1367,8 +1322,8 @@ function StudentDashboard({
                       disabled={Boolean(pickupLoadingID)}
                     >
                       {pickupLoadingID
-                        ? "Đang xử lý..."
-                        : "Xác nhận nhận xe"}
+                        ? t("Đang xử lý...")
+                        : t("Xác nhận nhận xe")}
                     </button>
                   </div>
                 </div>
@@ -1383,17 +1338,14 @@ function StudentDashboard({
 
                   <h3>
                     {cancelTarget.type === "charging"
-                      ? "Xác nhận hủy lịch sạc"
-                      : "Xác nhận hủy đặt chỗ"}
+                      ? t("Xác nhận hủy lịch sạc")
+                      : t("Xác nhận hủy đặt chỗ")}
                   </h3>
 
-                  <p>
-                    Bạn có chắc chắn muốn hủy{" "}
+                  <p>{t("Bạn có chắc chắn muốn hủy")}{" "}
                     {cancelTarget.type === "charging"
-                      ? "lịch sạc"
-                      : "lượt đặt chỗ"}{" "}
-                    này không? Thao tác này không thể hoàn tác.
-                  </p>
+                      ? t("lịch sạc")
+                      : t("lượt đặt chỗ")}{" "}{t("này không? Thao tác này không thể hoàn tác.")}</p>
 
                   <div className="cancel-modal-actions">
                     <button
@@ -1401,9 +1353,7 @@ function StudentDashboard({
                       className="cancel-modal-close"
                       onClick={() => setCancelTarget(null)}
                       disabled={cancelling}
-                    >
-                      Đóng
-                    </button>
+                    >{t("Đóng")}</button>
 
                     <button
                       type="button"
@@ -1411,7 +1361,7 @@ function StudentDashboard({
                       onClick={handleCancel}
                       disabled={cancelling}
                     >
-                      {cancelling ? "Đang hủy..." : "Xác nhận hủy"}
+                      {cancelling ? t("Đang hủy...") : t("Xác nhận hủy")}
                     </button>
                   </div>
                 </div>
@@ -1422,17 +1372,16 @@ function StudentDashboard({
             {toastMessage && (
               <div className="cancel-toast">
                 <span>✓</span>
-                {toastMessage}
+                {t(toastMessage)}
 
                 <button
                   type="button"
                   onClick={() => setToastMessage("")}
-                >
-                  ×
-                </button>
+                >{t("×")}</button>
               </div>
             )}
           </div>
+          </>}
         </div>
       </main>
     </div>

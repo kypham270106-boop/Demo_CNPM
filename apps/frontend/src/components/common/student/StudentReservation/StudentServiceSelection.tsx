@@ -1,3 +1,4 @@
+import { usePreferences } from "../../../../preferences/PreferencesContext";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -37,6 +38,8 @@ const SERVICES = [
 ] as const;
 
 function StudentServiceSelection() {
+  const { t } = usePreferences();
+
   const navigate = useNavigate();
 
   const [selectedType, setSelectedType] =
@@ -56,7 +59,7 @@ function StudentServiceSelection() {
           onClick={() => navigate("/student")}
         >
           <ArrowLeft size={19} />
-          <span>Quay lại Dashboard</span>
+          <span>{t("Quay lại Dashboard")}</span>
         </button>
 
         <div className="service-header-brand">
@@ -67,20 +70,17 @@ function StudentServiceSelection() {
 
       <main className="service-selection-container">
         <section className="service-intro">
-          <span className="service-eyebrow">DỊCH VỤ SINH VIÊN</span>
+          <span className="service-eyebrow">{t("DỊCH VỤ SINH VIÊN")}</span>
 
-          <h1>Bạn muốn sử dụng dịch vụ nào?</h1>
+          <h1>{t("Bạn muốn sử dụng dịch vụ nào?")}</h1>
 
-          <p>
-            Chọn dịch vụ phù hợp với nhu cầu của bạn.
-            Hệ thống sẽ hướng dẫn bạn thực hiện các bước tiếp theo.
-          </p>
+          <p>{t("Chọn dịch vụ phù hợp với nhu cầu của bạn. Hệ thống sẽ hướng dẫn bạn thực hiện các bước tiếp theo.")}</p>
         </section>
 
         <section className="service-options-section">
           <div className="service-section-heading">
-            <h2>Chọn loại dịch vụ</h2>
-            <p>Vui lòng chọn một trong hai dịch vụ dưới đây.</p>
+            <h2>{t("Chọn loại dịch vụ")}</h2>
+            <p>{t("Vui lòng chọn một trong hai dịch vụ dưới đây.")}</p>
           </div>
 
           <div className="service-options-grid">
@@ -125,28 +125,20 @@ function StudentServiceSelection() {
         <section className="service-selection-notice">
           <span>ⓘ</span>
 
-          <p>
-            Đặt xe dành cho phương tiện dùng chung của hệ thống.
-            Đặt chỗ đỗ dành cho phương tiện cá nhân của sinh viên.
-            Yêu cầu sạc pin được thực hiện riêng từ Dashboard.
-          </p>
+          <p>{t("Đặt xe dành cho phương tiện dùng chung của hệ thống. Đặt chỗ đỗ dành cho phương tiện cá nhân của sinh viên. Yêu cầu sạc pin được thực hiện riêng từ Dashboard.")}</p>
         </section>
 
         <div className="service-selection-actions">
           <button
             className="service-cancel-button"
             onClick={() => navigate("/student")}
-          >
-            Quay lại
-          </button>
+          >{t("Quay lại")}</button>
 
           <button
             className="service-primary-button"
             onClick={handleContinue}
             disabled={!selectedType}
-          >
-            Tiếp tục
-            <ArrowRight size={18} />
+          >{t("Tiếp tục")}<ArrowRight size={18} />
           </button>
         </div>
       </main>

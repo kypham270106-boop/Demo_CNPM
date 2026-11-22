@@ -1,3 +1,4 @@
+import { usePreferences } from "../../../../preferences/PreferencesContext";
 
 import { useState, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
@@ -82,6 +83,8 @@ function LocationInput({
   onSelect,
   children,
 }: LocationInputProps) {
+  const { t } = usePreferences();
+
   return (
     <div className="route-input-block">
       <label htmlFor={id}>{label}</label>
@@ -113,9 +116,7 @@ function LocationInput({
       {active && (
         <div className="route-suggestions">
           {field.loading ? (
-            <div className="route-suggestion-message">
-              Đang tìm địa điểm...
-            </div>
+            <div className="route-suggestion-message">{t("Đang tìm địa điểm...")}</div>
           ) : field.suggestions.length > 0 ? (
             field.suggestions.map((location, index) => (
               <button
@@ -125,13 +126,11 @@ function LocationInput({
                 onClick={() => onSelect(location)}
               >
                 <MapPin size={17} />
-                <span>{location.label}</span>
+                <span>{t(location.label)}</span>
               </button>
             ))
           ) : field.text.trim().length >= MIN_QUERY_LENGTH ? (
-            <div className="route-suggestion-message">
-              Không tìm thấy địa điểm phù hợp.
-            </div>
+            <div className="route-suggestion-message">{t("Không tìm thấy địa điểm phù hợp.")}</div>
           ) : null}
         </div>
       )}
@@ -200,6 +199,8 @@ function MapPicker({ position, onPick }: MapPickerProps) {
 // ================================
 
 function StudentSearchRoute() {
+  const { t } = usePreferences();
+
   const navigate = useNavigate();
 
   const start = useLocationField("Start location search error:");
@@ -288,7 +289,7 @@ function StudentSearchRoute() {
       console.error("GPS error:", err);
 
       setError(
-        "Không thể xác định vị trí hiện tại. Vui lòng kiểm tra quyền truy cập vị trí."
+        t("Không thể xác định vị trí hiện tại. Vui lòng kiểm tra quyền truy cập vị trí.")
       );
     } finally {
       setLoadingGPS(false);
@@ -316,7 +317,7 @@ function StudentSearchRoute() {
     longitude: number
   ) => {
     const temporaryPoint: LocationPoint = {
-      label: "Đang lấy địa chỉ...",
+      label: t("Đang lấy địa chỉ..."),
       latitude,
       longitude,
     };
@@ -331,7 +332,7 @@ function StudentSearchRoute() {
       );
 
       if (!response.ok) {
-        throw new Error("Không thể lấy địa chỉ.");
+        throw new Error(t("Không thể lấy địa chỉ."));
       }
 
       const data = await response.json();
@@ -353,7 +354,7 @@ function StudentSearchRoute() {
       });
 
       setMapError(
-        "Không lấy được tên địa chỉ. Bạn vẫn có thể xác nhận tọa độ này."
+        t("Không lấy được tên địa chỉ. Bạn vẫn có thể xác nhận tọa độ này.")
       );
     } finally {
       setMapLoading(false);
@@ -419,7 +420,7 @@ function StudentSearchRoute() {
   const handleAddFavorite = () => {
     if (!destination.location) {
       setError(
-        "Vui lòng chọn điểm đến từ danh sách gợi ý hoặc bản đồ trước."
+        t("Vui lòng chọn điểm đến từ danh sách gợi ý hoặc bản đồ trước.")
       );
       return;
     }
@@ -437,7 +438,7 @@ function StudentSearchRoute() {
     );
 
     if (exists) {
-      setError("Địa điểm này đã có trong danh sách yêu thích.");
+      setError(t("Địa điểm này đã có trong danh sách yêu thích."));
       return;
     }
 
@@ -512,13 +513,13 @@ function StudentSearchRoute() {
 
   const handleSearch = async () => {
     if (!start.text.trim() || !destination.text.trim()) {
-      setError("Vui lòng nhập đầy đủ điểm đi và điểm đến.");
+      setError(t("Vui lòng nhập đầy đủ điểm đi và điểm đến."));
       return;
     }
 
     if (!start.location || !destination.location) {
       setError(
-        "Vui lòng chọn địa điểm từ danh sách gợi ý hoặc bản đồ."
+        t("Vui lòng chọn địa điểm từ danh sách gợi ý hoặc bản đồ.")
       );
       return;
     }
@@ -588,7 +589,7 @@ function StudentSearchRoute() {
       console.error("Route search error:", err);
 
       setError(
-        "Không thể tìm kiếm lộ trình. Vui lòng kiểm tra kết nối và thử lại."
+        t("Không thể tìm kiếm lộ trình. Vui lòng kiểm tra kết nối và thử lại.")
       );
     } finally {
       setSearching(false);
@@ -608,7 +609,7 @@ function StudentSearchRoute() {
           onClick={() => navigate("/student")}
         >
           <ArrowLeft size={19} />
-          <span>Quay lại Dashboard</span>
+          <span>{t("Quay lại Dashboard")}</span>
         </button>
 
         <div className="route-header-title">
@@ -622,31 +623,22 @@ function StudentSearchRoute() {
 
       <main className="search-route-container">
         <section className="search-route-intro">
-          <span className="route-eyebrow">
-            HÀNH TRÌNH CỦA BẠN
-          </span>
+          <span className="route-eyebrow">{t("HÀNH TRÌNH CỦA BẠN")}</span>
 
-          <h1>Tìm kiếm lộ trình</h1>
+          <h1>{t("Tìm kiếm lộ trình")}</h1>
 
-          <p>
-            Nhập điểm xuất phát và điểm đến để tìm các Hub phù hợp
-            trên hành trình di chuyển của bạn.
-          </p>
+          <p>{t("Nhập điểm xuất phát và điểm đến để tìm các Hub phù hợp trên hành trình di chuyển của bạn.")}</p>
         </section>
 
         <section className="search-route-form">
           <div className="route-form-heading">
             <div>
-              <h2>Bạn muốn đi đâu?</h2>
+              <h2>{t("Bạn muốn đi đâu?")}</h2>
 
-              <p>
-                Chọn vị trí bắt đầu và điểm đến của hành trình.
-              </p>
+              <p>{t("Chọn vị trí bắt đầu và điểm đến của hành trình.")}</p>
             </div>
 
-            <span className="route-form-badge">
-              Tìm Hub gần lộ trình
-            </span>
+            <span className="route-form-badge">{t("Tìm Hub gần lộ trình")}</span>
           </div>
 
           {/* Hai ô nhập điểm đi và điểm đến */}
@@ -661,9 +653,9 @@ function StudentSearchRoute() {
               {/* Điểm xuất phát */}
               <LocationInput
                 id="start-location"
-                label="Điểm xuất phát"
-                placeholder="Nhập vị trí bắt đầu..."
-                clearLabel="Xóa điểm xuất phát"
+                label={t("Điểm xuất phát")}
+                placeholder={t("Nhập vị trí bắt đầu...")}
+                clearLabel={t("Xóa điểm xuất phát")}
                 field={start}
                 active={activeInput === "start"}
                 onFocus={() => setActiveInput("start")}
@@ -684,8 +676,8 @@ function StudentSearchRoute() {
                     <LocateFixed size={16} />
 
                     {loadingGPS
-                      ? "Đang xác định vị trí..."
-                      : "Sử dụng vị trí hiện tại"}
+                      ? t("Đang xác định vị trí...")
+                      : t("Sử dụng vị trí hiện tại")}
                   </button>
 
                   <button
@@ -693,9 +685,7 @@ function StudentSearchRoute() {
                     className="route-map-button"
                     onClick={() => handleOpenMap("start")}
                   >
-                    <MapPin size={16} />
-                    Chọn trên bản đồ
-                  </button>
+                    <MapPin size={16} />{t("Chọn trên bản đồ")}</button>
                 </div>
               </LocationInput>
 
@@ -705,7 +695,7 @@ function StudentSearchRoute() {
                   type="button"
                   className="route-swap-button"
                   onClick={handleSwapLocations}
-                  title="Đổi điểm đi và điểm đến"
+                  title={t("Đổi điểm đi và điểm đến")}
                 >
                   ↕
                 </button>
@@ -714,9 +704,9 @@ function StudentSearchRoute() {
               {/* Điểm đến */}
               <LocationInput
                 id="destination-location"
-                label="Điểm đến"
-                placeholder="Nhập điểm đến..."
-                clearLabel="Xóa điểm đến"
+                label={t("Điểm đến")}
+                placeholder={t("Nhập điểm đến...")}
+                clearLabel={t("Xóa điểm đến")}
                 field={destination}
                 active={activeInput === "destination"}
                 onFocus={() =>
@@ -736,9 +726,7 @@ function StudentSearchRoute() {
                     handleOpenMap("destination")
                   }
                 >
-                  <MapPin size={16} />
-                  Chọn trên bản đồ
-                </button>
+                  <MapPin size={16} />{t("Chọn trên bản đồ")}</button>
               </LocationInput>
             </div>
           </div>
@@ -747,11 +735,9 @@ function StudentSearchRoute() {
           <section className="route-extra-section">
             <div className="route-extra-heading">
               <div>
-                <h3>Địa điểm yêu thích</h3>
+                <h3>{t("Địa điểm yêu thích")}</h3>
 
-                <p>
-                  Lưu những địa điểm bạn thường xuyên di chuyển đến.
-                </p>
+                <p>{t("Lưu những địa điểm bạn thường xuyên di chuyển đến.")}</p>
               </div>
 
               <button
@@ -759,11 +745,9 @@ function StudentSearchRoute() {
                 className="route-add-favorite"
                 onClick={handleAddFavorite}
                 disabled={!destination.location}
-                title="Lưu điểm đến hiện tại"
+                title={t("Lưu điểm đến hiện tại")}
               >
-                <span>+</span>
-                Thêm yêu thích
-              </button>
+                <span>+</span>{t("Thêm yêu thích")}</button>
             </div>
 
             <div className="route-favorite-list">
@@ -781,7 +765,7 @@ function StudentSearchRoute() {
                       }
                     >
                       <MapPin size={15} />
-                      {favorite.label}
+                      {t(favorite.label)}
                     </button>
 
                     <button
@@ -790,17 +774,14 @@ function StudentSearchRoute() {
                       onClick={() =>
                         handleRemoveFavorite(favorite)
                       }
-                      title="Xóa địa điểm yêu thích"
+                      title={t("Xóa địa điểm yêu thích")}
                     >
                       <X size={14} />
                     </button>
                   </div>
                 ))
               ) : (
-                <p className="route-extra-empty">
-                  Chưa có địa điểm yêu thích. Hãy chọn điểm đến
-                  rồi nhấn Thêm yêu thích.
-                </p>
+                <p className="route-extra-empty">{t("Chưa có địa điểm yêu thích. Hãy chọn điểm đến rồi nhấn Thêm yêu thích.")}</p>
               )}
             </div>
           </section>
@@ -809,11 +790,9 @@ function StudentSearchRoute() {
           <section className="route-extra-section">
             <div className="route-extra-heading">
               <div>
-                <h3>Lịch sử tìm kiếm</h3>
+                <h3>{t("Lịch sử tìm kiếm")}</h3>
 
-                <p>
-                  Chọn lại hành trình bạn đã tìm kiếm trước đó.
-                </p>
+                <p>{t("Chọn lại hành trình bạn đã tìm kiếm trước đó.")}</p>
               </div>
 
               {history.length > 4 && (
@@ -825,8 +804,8 @@ function StudentSearchRoute() {
                   }
                 >
                   {showAllHistory
-                    ? "Thu gọn"
-                    : "Xem tất cả"}
+                    ? t("Thu gọn")
+                    : t("Xem tất cả")}
                 </button>
               )}
             </div>
@@ -852,8 +831,7 @@ function StudentSearchRoute() {
                     <span className="route-history-info">
                       <strong>{item.destination}</strong>
 
-                      <small>
-                        Xuất phát: {item.startPoint}
+                      <small>{t("Xuất phát: ")}{item.startPoint}
                       </small>
                     </span>
 
@@ -863,9 +841,7 @@ function StudentSearchRoute() {
                   </button>
                 ))
               ) : (
-                <p className="route-extra-empty">
-                  Chưa có lịch sử tìm kiếm.
-                </p>
+                <p className="route-extra-empty">{t("Chưa có lịch sử tìm kiếm.")}</p>
               )}
             </div>
           </section>
@@ -874,7 +850,7 @@ function StudentSearchRoute() {
           {error && (
             <div className="route-error-message">
               <span>⚠</span>
-              {error}
+              {t(error)}
             </div>
           )}
 
@@ -885,9 +861,7 @@ function StudentSearchRoute() {
               className="route-reset-button"
               onClick={handleReset}
               disabled={searching}
-            >
-              Xóa thông tin
-            </button>
+            >{t("Xóa thông tin")}</button>
 
             <button
               type="button"
@@ -898,8 +872,8 @@ function StudentSearchRoute() {
               <Search size={18} />
 
               {searching
-                ? "Đang tìm kiếm..."
-                : "Tìm kiếm Hub"}
+                ? t("Đang tìm kiếm...")
+                : t("Tìm kiếm Hub")}
             </button>
           </div>
         </section>
@@ -909,12 +883,9 @@ function StudentSearchRoute() {
           <div className="route-help-icon">💡</div>
 
           <div>
-            <h3>Mẹo tìm kiếm</h3>
+            <h3>{t("Mẹo tìm kiếm")}</h3>
 
-            <p>
-              Bạn có thể sử dụng vị trí hiện tại làm điểm xuất phát,
-              nhập tên địa điểm hoặc chọn trực tiếp trên bản đồ.
-            </p>
+            <p>{t("Bạn có thể sử dụng vị trí hiện tại làm điểm xuất phát, nhập tên địa điểm hoặc chọn trực tiếp trên bản đồ.")}</p>
           </div>
         </section>
 
@@ -932,12 +903,12 @@ function StudentSearchRoute() {
             >
               <div className="route-map-heading">
                 <div>
-                  <h2>Chọn vị trí trên bản đồ</h2>
+                  <h2>{t("Chọn vị trí trên bản đồ")}</h2>
 
                   <p>
                     {mapTarget === "start"
-                      ? "Chọn vị trí xuất phát của bạn."
-                      : "Chọn vị trí điểm đến của bạn."}
+                      ? t("Chọn vị trí xuất phát của bạn.")
+                      : t("Chọn vị trí điểm đến của bạn.")}
                   </p>
                 </div>
 
@@ -945,17 +916,14 @@ function StudentSearchRoute() {
                   type="button"
                   className="route-map-close"
                   onClick={handleCloseMap}
-                  aria-label="Đóng bản đồ"
+                  aria-label={t("Đóng bản đồ")}
                 >
                   <X size={20} />
                 </button>
               </div>
 
               <div className="route-map-instruction">
-                <MapPin size={16} />
-
-                Nhấn trực tiếp lên bản đồ để đặt ghim tại vị trí mong muốn.
-              </div>
+                <MapPin size={16} />{t("Nhấn trực tiếp lên bản đồ để đặt ghim tại vị trí mong muốn.")}</div>
 
               <MapPicker
                 position={
@@ -970,28 +938,23 @@ function StudentSearchRoute() {
               />
 
               <div className="route-map-selected">
-                <strong>Vị trí đã chọn</strong>
+                <strong>{t("Vị trí đã chọn")}</strong>
 
                 {mapPoint ? (
                   <>
-                    <p>{mapPoint.label}</p>
+                    <p>{t(mapPoint.label)}</p>
 
-                    <small>
-                      Tọa độ:{" "}
+                    <small>{t("Tọa độ:")}{" "}
                       {mapPoint.latitude.toFixed(6)},{" "}
                       {mapPoint.longitude.toFixed(6)}
                     </small>
                   </>
                 ) : (
-                  <p>
-                    Chưa chọn vị trí. Hãy nhấn lên bản đồ.
-                  </p>
+                  <p>{t("Chưa chọn vị trí. Hãy nhấn lên bản đồ.")}</p>
                 )}
 
                 {mapLoading && (
-                  <small>
-                    Đang xác định địa chỉ...
-                  </small>
+                  <small>{t("Đang xác định địa chỉ...")}</small>
                 )}
 
                 {mapError && (
@@ -1006,18 +969,14 @@ function StudentSearchRoute() {
                   type="button"
                   className="route-map-cancel"
                   onClick={handleCloseMap}
-                >
-                  Hủy
-                </button>
+                >{t("Hủy")}</button>
 
                 <button
                   type="button"
                   className="route-map-confirm"
                   disabled={!mapPoint || mapLoading}
                   onClick={handleConfirmMapLocation}
-                >
-                  Xác nhận vị trí
-                </button>
+                >{t("Xác nhận vị trí")}</button>
               </div>
             </section>
           </div>

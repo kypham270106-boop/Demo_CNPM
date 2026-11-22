@@ -5,8 +5,7 @@
 ========================================= */
 
 .confirmation-page {
-  background:
-    radial-gradient(circle at 10% 0%, rgba(0, 150, 136, 0.07), transparent 30%),
+  background: radial-gradient(circle at 10% 0%, rgba(0, 150, 136, 0.07), transparent 30%),
     #f5f7fb;
 }
 
@@ -28,7 +27,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #009688;
+  color: var(--app-accent-text, #009688);
   background: #e0f2f1;
   border-radius: 22px;
   box-shadow: 0 8px 24px rgba(0, 150, 136, 0.10);
@@ -73,7 +72,7 @@
   padding: 26px;
   border-radius: 20px;
   border: 1px solid #dcece9;
-  background: linear-gradient(125deg, #ffffff 0%, #f0faf8 100%);
+  background: linear-gradient(125deg, var(--app-surface, #ffffff) 0%, #f0faf8 100%);
   box-shadow: 0 8px 28px rgba(31, 70, 67, 0.06);
 }
 
@@ -90,7 +89,7 @@
 
 .confirmation-resource-card.parking-card {
   border-color: #dfe6f5;
-  background: linear-gradient(125deg, #ffffff 0%, #f3f6fd 100%);
+  background: linear-gradient(125deg, var(--app-surface, #ffffff) 0%, #f3f6fd 100%);
 }
 
 .confirmation-resource-card.parking-card::before {
@@ -239,7 +238,7 @@
 
 .confirmation-detail-panel {
   padding: 25px;
-  background: #ffffff;
+  background: var(--app-surface, #ffffff);
   border: 1px solid #e8edef;
   border-radius: 18px;
   box-shadow: 0 5px 20px rgba(31, 50, 56, 0.035);
@@ -310,7 +309,7 @@
 }
 
 .confirmation-detail-label svg {
-  color: #009688;
+  color: var(--app-accent-text, #009688);
 }
 
 .confirmation-detail-item > strong {
@@ -521,8 +520,7 @@
 .confirmation-actions button {
   min-height: 48px;
   border-radius: 12px;
-  transition:
-    transform 0.2s ease,
+  transition: transform 0.2s ease,
     box-shadow 0.2s ease,
     background 0.2s ease;
 }

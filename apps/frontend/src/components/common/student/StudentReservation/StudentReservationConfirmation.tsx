@@ -1,3 +1,4 @@
+import { usePreferences } from "../../../../preferences/PreferencesContext";
 
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -22,21 +23,23 @@ import type { ReservationNavigationState } from "./types";
 
 import "./StudentReservationConfirmation.css";
 
-const formatDate = (value?: string) => {
-  if (!value) return "Chưa có thông tin";
 
-  const date = new Date(value);
 
-  return Number.isNaN(date.getTime())
-    ? "Chưa có thông tin"
-    : date.toLocaleString("vi-VN");
-};
+
+
+const getErrorMessage = (error: any) =>
+  error?.response?.data?.message ||
+  error?.message ||
+  "Không thể xác nhận đặt chỗ. Vui lòng thử lại.";
+
+function StudentReservationConfirmation() {
+  const { t, preferences: { language } } = usePreferences();
 
 const getReservationDuration = (
   startsAt?: string,
   endsAt?: string
 ) => {
-  if (!startsAt || !endsAt) return "Chưa có thông tin";
+  if (!startsAt || !endsAt) return t("Chưa có thông tin");
 
   const start = new Date(startsAt).getTime();
   const end = new Date(endsAt).getTime();
@@ -46,7 +49,7 @@ const getReservationDuration = (
     Number.isNaN(end) ||
     end <= start
   ) {
-    return "Chưa có thông tin";
+    return t("Chưa có thông tin");
   }
 
   const totalMinutes = Math.floor((end - start) / 60000);
@@ -56,20 +59,24 @@ const getReservationDuration = (
   const minutes = totalMinutes % 60;
 
   return [
-    days > 0 ? `${days} ngày` : "",
-    hours > 0 ? `${hours} giờ` : "",
-    minutes > 0 ? `${minutes} phút` : "",
+    days > 0 ? `${days} ${t("ngày")}` : "",
+    hours > 0 ? `${hours} ${t("giờ")}` : "",
+    minutes > 0 ? `${minutes} ${t("phút")}` : "",
   ]
     .filter(Boolean)
     .join(" ");
 };
 
-const getErrorMessage = (error: any) =>
-  error?.response?.data?.message ||
-  error?.message ||
-  "Không thể xác nhận đặt chỗ. Vui lòng thử lại.";
+const formatDate = (value?: string) => {
+  if (!value) return t("Chưa có thông tin");
 
-function StudentReservationConfirmation() {
+  const date = new Date(value);
+
+  return Number.isNaN(date.getTime())
+    ? t("Chưa có thông tin")
+    : date.toLocaleString(language === "en" ? "en-US" : "vi-VN");
+};
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -86,16 +93,12 @@ function StudentReservationConfirmation() {
     return (
       <div className="service-selection-page">
         <main className="service-selection-container">
-          <div className="reservation-error">
-            Không tìm thấy thông tin đặt chỗ. Vui lòng thực hiện đặt dịch vụ lại.
-          </div>
+          <div className="reservation-error">{t("Không tìm thấy thông tin đặt chỗ. Vui lòng thực hiện đặt dịch vụ lại.")}</div>
 
           <button
             className="service-primary-button"
             onClick={() => navigate("/student/reservation")}
-          >
-            Quay lại chọn dịch vụ
-          </button>
+          >{t("Quay lại chọn dịch vụ")}</button>
         </main>
       </div>
     );
@@ -112,7 +115,7 @@ function StudentReservationConfirmation() {
     try {
       if (isCharging) {
         if (!booking.chargingScheduleID) {
-          throw new Error("Không tìm thấy lịch sạc đề xuất.");
+          throw new Error(t("Không tìm thấy lịch sạc đề xuất."));
         }
 
         await reservationService.confirmChargingSchedule(
@@ -137,8 +140,8 @@ function StudentReservationConfirmation() {
 
     const accepted = window.confirm(
       isCharging
-        ? "Bạn có chắc chắn muốn hủy lịch sạc này không?"
-        : "Bạn có chắc chắn muốn hủy yêu cầu đặt dịch vụ này không?"
+        ? t("Bạn có chắc chắn muốn hủy lịch sạc này không?")
+        : t("Bạn có chắc chắn muốn hủy yêu cầu đặt dịch vụ này không?")
     );
 
     if (!accepted) return;
@@ -149,7 +152,7 @@ function StudentReservationConfirmation() {
     try {
       if (isCharging) {
         if (!booking.chargingScheduleID) {
-          throw new Error("Không tìm thấy mã lịch sạc cần hủy.");
+          throw new Error(t("Không tìm thấy mã lịch sạc cần hủy."));
         }
 
         await reservationService.cancelChargingSchedule(
@@ -166,7 +169,7 @@ function StudentReservationConfirmation() {
       setError(
         err?.response?.data?.message ||
         err?.message ||
-        "Không thể hủy dịch vụ. Vui lòng thử lại."
+        t("Không thể hủy dịch vụ. Vui lòng thử lại.")
       );
     } finally {
       setCancelling(false);
@@ -180,18 +183,14 @@ function StudentReservationConfirmation() {
           className="service-back-button"
           onClick={() => navigate(-1)}
         >
-          <ArrowLeft size={19} />
-          Quay lại
-        </button>
+          <ArrowLeft size={19} />{t("Quay lại")}</button>
 
         <div className="service-header-brand">
           {isVehicle ? (
             <Bike size={19} />
           ) : (
             <ParkingSquare size={19} />
-          )}
-          Xác nhận dịch vụ
-        </div>
+          )}{t("Xác nhận dịch vụ")}</div>
       </header>
 
       <main className="service-selection-container confirmation-container">
@@ -207,26 +206,26 @@ function StudentReservationConfirmation() {
 
           <span className="service-eyebrow">
             {cancelled
-              ? "ĐÃ HỦY DỊCH VỤ"
+              ? t("ĐÃ HỦY DỊCH VỤ")
               : success
-              ? "ĐẶT DỊCH VỤ THÀNH CÔNG"
-              : "KIỂM TRA THÔNG TIN"}
+              ? t("ĐẶT DỊCH VỤ THÀNH CÔNG")
+              : t("KIỂM TRA THÔNG TIN")}
           </span>
 
           <h1>
             {cancelled
-              ? "Đã hủy dịch vụ!"
+              ? t("Đã hủy dịch vụ!")
               : success
-              ? "Đặt dịch vụ thành công!"
-              : "Xác nhận thông tin đặt dịch vụ"}
+              ? t("Đặt dịch vụ thành công!")
+              : t("Xác nhận thông tin đặt dịch vụ")}
           </h1>
 
           <p>
             {cancelled
-              ? "Yêu cầu hủy của bạn đã được hệ thống xử lý thành công."
+              ? t("Yêu cầu hủy của bạn đã được hệ thống xử lý thành công.")
               : success
-              ? "Yêu cầu của bạn đã được hệ thống xác nhận. Hãy lưu lại thông tin đặt chỗ bên dưới."
-              : "Kiểm tra lại thông tin dịch vụ trước khi gửi yêu cầu xác nhận."}
+              ? t("Yêu cầu của bạn đã được hệ thống xác nhận. Hãy lưu lại thông tin đặt chỗ bên dưới.")
+              : t("Kiểm tra lại thông tin dịch vụ trước khi gửi yêu cầu xác nhận.")}
           </p>
         </section>
 
@@ -251,8 +250,8 @@ function StudentReservationConfirmation() {
               <div className="confirmation-resource-title">
                 <span>
                   {isVehicle
-                    ? "PHƯƠNG TIỆN DÙNG CHUNG"
-                    : "DỊCH VỤ ĐỖ XE CÁ NHÂN"}
+                    ? t("PHƯƠNG TIỆN DÙNG CHUNG")
+                    : t("DỊCH VỤ ĐỖ XE CÁ NHÂN")}
                 </span>
 
                 <h2>{booking.resourceName}</h2>
@@ -270,10 +269,10 @@ function StudentReservationConfirmation() {
               >
                 <span />
                 {cancelled
-                  ? "Đã hủy"
+                  ? t("Đã hủy")
                   : success
-                  ? "Đã xác nhận"
-                  : "Chờ xác nhận"}
+                  ? t("Đã xác nhận")
+                  : t("Chờ xác nhận")}
               </div>
             </div>
 
@@ -288,12 +287,12 @@ function StudentReservationConfirmation() {
               <div>
                 <span>
                   {isVehicle
-                    ? "Hub nhận phương tiện"
-                    : "Địa điểm sử dụng dịch vụ"}
+                    ? t("Hub nhận phương tiện")
+                    : t("Địa điểm sử dụng dịch vụ")}
                 </span>
 
                 <strong>{booking.hubName}</strong>
-                <small>Mã Hub: {booking.hubCode}</small>
+                <small>{t("Mã Hub: ")}{booking.hubCode}</small>
               </div>
             </div>
           </section>
@@ -306,26 +305,22 @@ function StudentReservationConfirmation() {
               </div>
 
               <div>
-                <h2>Thông tin đặt chỗ</h2>
-                <p>Thời gian và thông tin đăng ký dịch vụ</p>
+                <h2>{t("Thông tin đặt chỗ")}</h2>
+                <p>{t("Thời gian và thông tin đăng ký dịch vụ")}</p>
               </div>
             </div>
 
             <div className="confirmation-detail-grid">
               <div className="confirmation-detail-item">
                 <div className="confirmation-detail-label">
-                  <CalendarDays size={16} />
-                  Thời gian bắt đầu
-                </div>
+                  <CalendarDays size={16} />{t("Thời gian bắt đầu")}</div>
 
                 <strong>{formatDate(booking.startsAt)}</strong>
               </div>
 
               <div className="confirmation-detail-item">
                 <div className="confirmation-detail-label">
-                  <Clock3 size={16} />
-                  Thời gian kết thúc
-                </div>
+                  <Clock3 size={16} />{t("Thời gian kết thúc")}</div>
 
                 <strong>{formatDate(booking.endsAt)}</strong>
               </div>
@@ -334,9 +329,7 @@ function StudentReservationConfirmation() {
               {isVehicle && (
                 <div className="confirmation-detail-item full">
                   <div className="confirmation-detail-label">
-                    <Clock3 size={16} />
-                    Tổng thời gian giữ xe
-                  </div>
+                    <Clock3 size={16} />{t("Tổng thời gian giữ xe")}</div>
 
                   <strong>
                     {getReservationDuration(
@@ -350,9 +343,7 @@ function StudentReservationConfirmation() {
               {/* Mã đặt chỗ */}
               <div className="confirmation-detail-item full">
                 <div className="confirmation-detail-label">
-                  <Hash size={16} />
-                  Mã yêu cầu đặt chỗ
-                </div>
+                  <Hash size={16} />{t("Mã yêu cầu đặt chỗ")}</div>
 
                 <div className="confirmation-code-value">
                   <strong>{booking.reservationID}</strong>
@@ -375,8 +366,8 @@ function StudentReservationConfirmation() {
                 </div>
 
                 <div>
-                  <h2>Chi tiết dịch vụ đỗ xe</h2>
-                  <p>Thông tin hình thức đỗ xe đã lựa chọn</p>
+                  <h2>{t("Chi tiết dịch vụ đỗ xe")}</h2>
+                  <p>{t("Thông tin hình thức đỗ xe đã lựa chọn")}</p>
                 </div>
               </div>
 
@@ -390,11 +381,11 @@ function StudentReservationConfirmation() {
                 </div>
 
                 <div>
-                  <span>Hình thức sử dụng</span>
+                  <span>{t("Hình thức sử dụng")}</span>
                   <strong>
                     {isCharging
-                      ? "Chỗ đỗ kèm sạc"
-                      : "Chỗ đỗ thường"}
+                      ? t("Chỗ đỗ kèm sạc")
+                      : t("Chỗ đỗ thường")}
                   </strong>
                 </div>
 
@@ -410,22 +401,20 @@ function StudentReservationConfirmation() {
                   <div className="confirmation-battery-grid">
                     <div className="confirmation-battery-item">
                       <BatteryCharging size={20} />
-                      <span>Pin hiện tại</span>
+                      <span>{t("Pin hiện tại")}</span>
                       <strong>{booking.currentBattery}%</strong>
                     </div>
 
                     <div className="confirmation-battery-item target">
                       <Zap size={20} />
-                      <span>Pin mục tiêu</span>
+                      <span>{t("Pin mục tiêu")}</span>
                       <strong>{booking.targetBattery}%</strong>
                     </div>
                   </div>
 
                   <div className="confirmation-charging-schedule">
                     <div className="confirmation-detail-label">
-                      <CalendarDays size={16} />
-                      Lịch sạc đề xuất
-                    </div>
+                      <CalendarDays size={16} />{t("Lịch sạc đề xuất")}</div>
 
                     <strong>
                       {formatDate(booking.chargingStartsAt)}
@@ -433,16 +422,12 @@ function StudentReservationConfirmation() {
                       {formatDate(booking.chargingEndsAt)}
                     </strong>
 
-                    <small>
-                      Mã lịch sạc:{" "}
-                      {booking.chargingScheduleID || "Chưa có thông tin"}
+                    <small>{t("Mã lịch sạc:")}{" "}
+                      {booking.chargingScheduleID || t("Chưa có thông tin")}
                     </small>
                   </div>
 
-                  <p className="reservation-hint">
-                    Khi bạn xác nhận lịch sạc, hệ thống đồng thời xác nhận
-                    chỗ đỗ liên kết với yêu cầu sạc này.
-                  </p>
+                  <p className="reservation-hint">{t("Khi bạn xác nhận lịch sạc, hệ thống đồng thời xác nhận chỗ đỗ liên kết với yêu cầu sạc này.")}</p>
                 </>
               )}
             </section>
@@ -455,36 +440,21 @@ function StudentReservationConfirmation() {
             </div>
 
             <div>
-              <strong>Lưu ý dành cho bạn</strong>
+              <strong>{t("Lưu ý dành cho bạn")}</strong>
 
               {isVehicle ? (
                 <ul className="confirmation-notice-list">
-                  <li>
-                    Bạn cần đến đúng Hub đã chọn và nhận xe trong vòng
-                    <strong> 10 phút </strong>
-                    kể từ khi đặt xe thành công.
+                  <li>{t("Bạn cần đến đúng Hub đã chọn và nhận xe trong vòng")}<strong>{t(" 10 phút ")}</strong>{t("kể từ khi đặt xe thành công.")}</li>
+
+                  <li>{t("Sau khi nhận xe thành công, thời gian sử dụng xe tối đa là")}<strong>{t(" 8 giờ")}</strong>.
                   </li>
 
-                  <li>
-                    Sau khi nhận xe thành công, thời gian sử dụng xe tối đa là
-                    <strong> 8 giờ</strong>.
-                  </li>
+                  <li>{t("Thời hạn nhận xe được tính từ thời điểm đặt xe thành công; thời gian sử dụng được tính từ thời điểm nhận xe thành công.")}</li>
 
-                  <li>
-                    Thời hạn nhận xe được tính từ thời điểm đặt xe thành công;
-                    thời gian sử dụng được tính từ thời điểm nhận xe thành công.
-                  </li>
-
-                  <li>
-                    Các mốc thời gian được hệ thống quản lý dựa trên
-                    timestamp từ máy chủ.
-                  </li>
+                  <li>{t("Các mốc thời gian được hệ thống quản lý dựa trên timestamp từ máy chủ.")}</li>
                 </ul>
               ) : (
-                <p>
-                  Vui lòng kiểm tra lại Hub và thông tin chỗ đỗ.
-                  Trạng thái đặt chỗ sẽ được cập nhật theo hệ thống.
-                </p>
+                <p>{t("Vui lòng kiểm tra lại Hub và thông tin chỗ đỗ. Trạng thái đặt chỗ sẽ được cập nhật theo hệ thống.")}</p>
               )}
             </div>
           </section>
@@ -492,7 +462,7 @@ function StudentReservationConfirmation() {
           {/* Thông báo lỗi */}
           {error && (
             <div className="reservation-error">
-              {error}
+              {t(error)}
             </div>
           )}
 
@@ -503,8 +473,8 @@ function StudentReservationConfirmation() {
 
               <span>
                 {cancelled
-                  ? "Lịch sạc đã được hủy thành công."
-                  : "Thông tin đặt dịch vụ đã được xác nhận thành công."}
+                  ? t("Lịch sạc đã được hủy thành công.")
+                  : t("Thông tin đặt dịch vụ đã được xác nhận thành công.")}
               </span>
             </div>
           )}
@@ -515,9 +485,7 @@ function StudentReservationConfirmation() {
               <button
                 className="service-primary-button"
                 onClick={() => navigate("/student", { replace: true })}
-              >
-                Về Dashboard
-                <ArrowRight size={18} />
+              >{t("Về Dashboard")}<ArrowRight size={18} />
               </button>
             </div>
           ) : (
@@ -532,11 +500,9 @@ function StudentReservationConfirmation() {
                     <LoaderCircle
                       size={17}
                       className="confirmation-spinner"
-                    />
-                    Đang hủy...
-                  </>
+                    />{t("Đang hủy...")}</>
                 ) : (
-                  "Hủy yêu cầu"
+                  t("Hủy yêu cầu")
                 )}
               </button>
 
@@ -550,13 +516,9 @@ function StudentReservationConfirmation() {
                     <LoaderCircle
                       size={17}
                       className="confirmation-spinner"
-                    />
-                    Đang xác nhận...
-                  </>
+                    />{t("Đang xác nhận...")}</>
                 ) : (
-                  <>
-                    Xác nhận đặt dịch vụ
-                    <CheckCircle2 size={18} />
+                  <>{t("Xác nhận đặt dịch vụ")}<CheckCircle2 size={18} />
                   </>
                 )}
               </button>

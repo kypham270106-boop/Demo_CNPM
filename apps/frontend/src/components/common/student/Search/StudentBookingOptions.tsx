@@ -1,3 +1,4 @@
+import { usePreferences } from "../../../../preferences/PreferencesContext";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -39,6 +40,8 @@ const BOOKING_OPTIONS = [
 ] as const;
 
 function StudentBookingOptions() {
+  const { t } = usePreferences();
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -54,16 +57,14 @@ function StudentBookingOptions() {
           <MapPin size={35} />
         </div>
 
-        <h2>Chưa có Hub được chọn</h2>
+        <h2>{t("Chưa có Hub được chọn")}</h2>
 
-        <p>Vui lòng tìm kiếm và chọn một Hub trước khi tiếp tục.</p>
+        <p>{t("Vui lòng tìm kiếm và chọn một Hub trước khi tiếp tục.")}</p>
 
         <button
           className="options-primary-button"
           onClick={() => navigate("/student/booking/search")}
-        >
-          Tìm kiếm Hub
-        </button>
+        >{t("Tìm kiếm Hub")}</button>
       </div>
     );
   }
@@ -71,9 +72,9 @@ function StudentBookingOptions() {
   const { selectedHub } = bookingState;
 
   const hubDetails = [
-    { label: "Mã Hub", value: selectedHub.code },
-    { label: "Địa chỉ", value: selectedHub.address },
-    { label: "Khoảng cách đến lộ trình", value: selectedHub.distance },
+    { label: t("Mã Hub"), value: selectedHub.code },
+    { label: t("Địa chỉ"), value: selectedHub.address },
+    { label: t("Khoảng cách đến lộ trình"), value: selectedHub.distance },
   ];
 
   // Chuyển sang màn hình đặt dịch vụ và truyền Hub đã chọn
@@ -91,7 +92,7 @@ function StudentBookingOptions() {
           onClick={() => navigate(-1)}
         >
           <ArrowLeft size={19} />
-          <span>Quay lại kết quả</span>
+          <span>{t("Quay lại kết quả")}</span>
         </button>
 
         <div className="options-header-brand">
@@ -104,13 +105,11 @@ function StudentBookingOptions() {
 
       <main className="booking-options-container">
         <section className="options-intro">
-          <span className="options-eyebrow">LỰA CHỌN DỊCH VỤ</span>
+          <span className="options-eyebrow">{t("LỰA CHỌN DỊCH VỤ")}</span>
 
-          <h1>Bạn muốn sử dụng dịch vụ nào?</h1>
+          <h1>{t("Bạn muốn sử dụng dịch vụ nào?")}</h1>
 
-          <p>
-            Chọn hình thức phù hợp với nhu cầu của bạn tại Hub đã lựa chọn.
-          </p>
+          <p>{t("Chọn hình thức phù hợp với nhu cầu của bạn tại Hub đã lựa chọn.")}</p>
         </section>
 
         {/* Hub đã lựa chọn */}
@@ -121,14 +120,12 @@ function StudentBookingOptions() {
             </div>
 
             <div className="selected-hub-heading">
-              <span>HUB ĐÃ LỰA CHỌN</span>
+              <span>{t("HUB ĐÃ LỰA CHỌN")}</span>
               <h2>{selectedHub.name}</h2>
             </div>
 
             <span className="selected-hub-check">
-              <CheckCircle2 size={18} />
-              Đã chọn
-            </span>
+              <CheckCircle2 size={18} />{t("Đã chọn")}</span>
           </div>
 
           <div className="selected-hub-details">
@@ -144,12 +141,9 @@ function StudentBookingOptions() {
         {/* Các hình thức dịch vụ */}
         <section className="booking-options-section">
           <div className="options-section-heading">
-            <h2>Chọn hình thức dịch vụ</h2>
+            <h2>{t("Chọn hình thức dịch vụ")}</h2>
 
-            <p>
-              Bạn có thể thuê xe điện dùng chung hoặc đặt trước chỗ đỗ
-              cho phương tiện cá nhân.
-            </p>
+            <p>{t("Bạn có thể thuê xe điện dùng chung hoặc đặt trước chỗ đỗ cho phương tiện cá nhân.")}</p>
           </div>
 
           <div className="booking-options-grid">
@@ -199,10 +193,7 @@ function StudentBookingOptions() {
         <section className="options-notice">
           <span>ℹ</span>
 
-          <p>
-            Vị trí đỗ chỉ được giữ khi bạn hoàn tất yêu cầu đặt chỗ
-            và hệ thống xác nhận vị trí còn trống.
-          </p>
+          <p>{t("Vị trí đỗ chỉ được giữ khi bạn hoàn tất yêu cầu đặt chỗ và hệ thống xác nhận vị trí còn trống.")}</p>
         </section>
 
         {/* Nút điều hướng */}
@@ -210,17 +201,13 @@ function StudentBookingOptions() {
           <button
             className="options-cancel-button"
             onClick={() => navigate(-1)}
-          >
-            Quay lại
-          </button>
+          >{t("Quay lại")}</button>
 
           <button
             className="options-primary-button"
             onClick={handleContinue}
             disabled={!selectedType}
-          >
-            Tiếp tục
-            <ArrowRight size={18} />
+          >{t("Tiếp tục")}<ArrowRight size={18} />
           </button>
         </div>
       </main>

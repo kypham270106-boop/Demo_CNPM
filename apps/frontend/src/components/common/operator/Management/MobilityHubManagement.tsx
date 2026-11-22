@@ -1,3 +1,4 @@
+import { usePreferences } from "../../../../preferences/PreferencesContext";
 
 import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
@@ -78,6 +79,8 @@ const statusLabels: Record<Hub["status"], string> = {
 };
 
 const MobilityHubManagement = () => {
+  const { t } = usePreferences();
+
   const [hubs, setHubs] = useState<Hub[]>(initialHubs);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
@@ -229,11 +232,8 @@ const MobilityHubManagement = () => {
           </div>
 
           <div>
-            <h2>Danh sách Mobility Hub</h2>
-            <p>
-              Quản lý thông tin và trạng thái các trạm Mobility Hub
-              trong hệ thống.
-            </p>
+            <h2>{t("Danh sách Mobility Hub")}</h2>
+            <p>{t("Quản lý thông tin và trạng thái các trạm Mobility Hub trong hệ thống.")}</p>
           </div>
         </div>
 
@@ -241,9 +241,7 @@ const MobilityHubManagement = () => {
           className="hub-add-button"
           onClick={openAddModal}
         >
-          <Plus size={19} />
-          Thêm Mobility Hub
-        </button>
+          <Plus size={19} />{t("Thêm Mobility Hub")}</button>
       </div>
 
       {/* ========================================
@@ -258,9 +256,7 @@ const MobilityHubManagement = () => {
               <Building2 size={22} />
             </div>
 
-            <span className="hub-summary-label">
-              TỔNG SỐ HUB
-            </span>
+            <span className="hub-summary-label">{t("TỔNG SỐ HUB")}</span>
           </div>
 
           <div className="hub-summary-value-row">
@@ -269,8 +265,8 @@ const MobilityHubManagement = () => {
           </div>
 
           <div className="hub-summary-footer">
-            <span>Quy mô hệ thống</span>
-            <span className="hub-summary-badge">Tất cả</span>
+            <span>{t("Quy mô hệ thống")}</span>
+            <span className="hub-summary-badge">{t("Tất cả")}</span>
           </div>
         </div>
 
@@ -281,9 +277,7 @@ const MobilityHubManagement = () => {
               <Activity size={22} />
             </div>
 
-            <span className="hub-summary-label">
-              ĐANG HOẠT ĐỘNG
-            </span>
+            <span className="hub-summary-label">{t("ĐANG HOẠT ĐỘNG")}</span>
           </div>
 
           <div className="hub-summary-value-row">
@@ -301,7 +295,7 @@ const MobilityHubManagement = () => {
           </div>
 
           <div className="hub-summary-footer">
-            <span>Tỷ lệ hoạt động</span>
+            <span>{t("Tỷ lệ hoạt động")}</span>
             <strong>{getPercentage(activeHubCount)}%</strong>
           </div>
         </div>
@@ -313,9 +307,7 @@ const MobilityHubManagement = () => {
               <CirclePause size={22} />
             </div>
 
-            <span className="hub-summary-label">
-              NGỪNG HOẠT ĐỘNG
-            </span>
+            <span className="hub-summary-label">{t("NGỪNG HOẠT ĐỘNG")}</span>
           </div>
 
           <div className="hub-summary-value-row">
@@ -333,7 +325,7 @@ const MobilityHubManagement = () => {
           </div>
 
           <div className="hub-summary-footer">
-            <span>Tỷ lệ ngừng hoạt động</span>
+            <span>{t("Tỷ lệ ngừng hoạt động")}</span>
             <strong>{getPercentage(inactiveHubCount)}%</strong>
           </div>
         </div>
@@ -345,9 +337,7 @@ const MobilityHubManagement = () => {
               <Wrench size={22} />
             </div>
 
-            <span className="hub-summary-label">
-              ĐANG BẢO TRÌ
-            </span>
+            <span className="hub-summary-label">{t("ĐANG BẢO TRÌ")}</span>
           </div>
 
           <div className="hub-summary-value-row">
@@ -365,7 +355,7 @@ const MobilityHubManagement = () => {
           </div>
 
           <div className="hub-summary-footer">
-            <span>Tỷ lệ bảo trì</span>
+            <span>{t("Tỷ lệ bảo trì")}</span>
             <strong>{getPercentage(maintenanceHubCount)}%</strong>
           </div>
         </div>
@@ -382,7 +372,7 @@ const MobilityHubManagement = () => {
 
             <input
               type="text"
-              placeholder="Tìm theo mã Hub, tên hoặc địa chỉ..."
+              placeholder={t("Tìm theo mã Hub, tên hoặc địa chỉ...")}
               value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
             />
@@ -392,17 +382,17 @@ const MobilityHubManagement = () => {
             value={statusFilter}
             onChange={(event) => setStatusFilter(event.target.value)}
           >
-            <option value="ALL">Tất cả trạng thái</option>
-            <option value="ACTIVE">Đang hoạt động</option>
-            <option value="INACTIVE">Ngừng hoạt động</option>
-            <option value="MAINTENANCE">Đang bảo trì</option>
+            <option value="ALL">{t("Tất cả trạng thái")}</option>
+            <option value="ACTIVE">{t("Đang hoạt động")}</option>
+            <option value="INACTIVE">{t("Ngừng hoạt động")}</option>
+            <option value="MAINTENANCE">{t("Đang bảo trì")}</option>
           </select>
 
           <select
             value={regionFilter}
             onChange={(event) => setRegionFilter(event.target.value)}
           >
-            <option value="ALL">Tất cả khu vực</option>
+            <option value="ALL">{t("Tất cả khu vực")}</option>
 
             {regions.map((region) => (
               <option key={region} value={region}>
@@ -414,7 +404,7 @@ const MobilityHubManagement = () => {
           <button
             className="hub-reset-button"
             onClick={resetFilters}
-            title="Đặt lại bộ lọc"
+            title={t("Đặt lại bộ lọc")}
           >
             <RotateCcw size={17} />
           </button>
@@ -423,31 +413,38 @@ const MobilityHubManagement = () => {
         <div className="hub-table-heading">
           <div>
             <h3>Mobility Hub</h3>
-            <p>
-              Hiển thị {filteredHubs.length} / {hubs.length} Hub
+            <p>{t("Hiển thị ")}{filteredHubs.length} / {hubs.length} Hub
             </p>
           </div>
         </div>
 
         <div className="hub-table-wrapper">
           <table className="hub-table">
+            <colgroup>
+              <col style={{ width: "8%" }} />
+              <col style={{ width: "22%" }} />
+              <col style={{ width: "20%" }} />
+              <col style={{ width: "20%" }} />
+              <col style={{ width: "10%" }} />
+              <col style={{ width: "12%" }} />
+              <col style={{ width: "8%" }} />
+            </colgroup>
             <thead>
               <tr>
-                <th>Mã Hub</th>
-                <th>Tên Mobility Hub</th>
-                <th>Địa chỉ</th>
-                <th>Khu vực</th>
-                <th>Trạng thái</th>
-                <th>Thao tác</th>
+                <th>{t("Mã Hub")}</th>
+                <th>{t("Tên Mobility Hub")}</th>
+                <th>{t("Ghi chú")}</th>
+                <th>{t("Địa chỉ")}</th>
+                <th>{t("Khu vực")}</th>
+                <th>{t("Trạng thái")}</th>
+                <th>{t("Thao tác")}</th>
               </tr>
             </thead>
 
             <tbody>
               {filteredHubs.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="hub-empty-state">
-                    Không tìm thấy Mobility Hub phù hợp.
-                  </td>
+                  <td colSpan={7} className="hub-empty-state">{t("Không tìm thấy Mobility Hub phù hợp.")}</td>
                 </tr>
               ) : (
                 filteredHubs.map((hub) => (
@@ -464,13 +461,13 @@ const MobilityHubManagement = () => {
                           <MapPin size={18} />
                         </div>
 
-                        <div>
-                          <strong>{hub.name}</strong>
-                          <span>{hub.description}</span>
-                        </div>
+                        <strong>{hub.name}</strong>
                       </div>
                     </td>
 
+                    <td className="hub-notes-cell">
+                      {hub.description.trim() || "—"}
+                    </td>
                     <td>{hub.address}</td>
                     <td>{hub.region}</td>
 
@@ -481,7 +478,7 @@ const MobilityHubManagement = () => {
                         )}`}
                       >
                         <i />
-                        {statusLabels[hub.status]}
+                        {t(statusLabels[hub.status])}
                       </span>
                     </td>
 
@@ -490,7 +487,7 @@ const MobilityHubManagement = () => {
                         <button
                           className="hub-edit-button"
                           onClick={() => openEditModal(hub)}
-                          title="Chỉnh sửa"
+                          title={t("Chỉnh sửa")}
                         >
                           <Edit size={17} />
                         </button>
@@ -498,7 +495,7 @@ const MobilityHubManagement = () => {
                         <button
                           className="hub-delete-button"
                           onClick={() => setDeleteTarget(hub)}
-                          title="Xóa"
+                          title={t("Xóa")}
                         >
                           <Trash2 size={17} />
                         </button>
@@ -530,13 +527,11 @@ const MobilityHubManagement = () => {
               <div>
                 <h2>
                   {editingHub
-                    ? "Chỉnh sửa Mobility Hub"
-                    : "Thêm Mobility Hub"}
+                    ? t("Chỉnh sửa Mobility Hub")
+                    : t("Thêm Mobility Hub")}
                 </h2>
 
-                <p>
-                  Nhập thông tin cơ bản của Mobility Hub.
-                </p>
+                <p>{t("Nhập thông tin cơ bản của Mobility Hub.")}</p>
               </div>
 
               <button
@@ -550,18 +545,14 @@ const MobilityHubManagement = () => {
 
             <form onSubmit={handleSubmit}>
               <div className="hub-form-grid">
-                <label>
-                  Mã Hub
-                  <input
+                <label>{t("Mã Hub")}<input
                     value={formData.id}
                     disabled
-                    placeholder="Mã Hub"
+                    placeholder={t("Mã Hub")}
                   />
                 </label>
 
-                <label>
-                  Tên Mobility Hub
-                  <input
+                <label>{t("Tên Mobility Hub")}<input
                     value={formData.name}
                     onChange={(event) =>
                       setFormData((previous) => ({
@@ -569,14 +560,12 @@ const MobilityHubManagement = () => {
                         name: event.target.value,
                       }))
                     }
-                    placeholder="Nhập tên Hub"
+                    placeholder={t("Nhập tên Hub")}
                     required
                   />
                 </label>
 
-                <label className="hub-form-full">
-                  Địa chỉ
-                  <input
+                <label className="hub-form-full">{t("Địa chỉ")}<input
                     value={formData.address}
                     onChange={(event) =>
                       setFormData((previous) => ({
@@ -584,14 +573,12 @@ const MobilityHubManagement = () => {
                         address: event.target.value,
                       }))
                     }
-                    placeholder="Nhập địa chỉ Hub"
+                    placeholder={t("Nhập địa chỉ Hub")}
                     required
                   />
                 </label>
 
-                <label>
-                  Khu vực
-                  <input
+                <label>{t("Khu vực")}<input
                     value={formData.region}
                     onChange={(event) =>
                       setFormData((previous) => ({
@@ -599,14 +586,12 @@ const MobilityHubManagement = () => {
                         region: event.target.value,
                       }))
                     }
-                    placeholder="Ví dụ: Quận 1"
+                    placeholder={t("Ví dụ: Quận 1")}
                     required
                   />
                 </label>
 
-                <label>
-                  Trạng thái
-                  <select
+                <label>{t("Trạng thái")}<select
                     value={formData.status}
                     onChange={(event) =>
                       setFormData((previous) => ({
@@ -615,21 +600,13 @@ const MobilityHubManagement = () => {
                       }))
                     }
                   >
-                    <option value="ACTIVE">
-                      Đang hoạt động
-                    </option>
-                    <option value="INACTIVE">
-                      Ngừng hoạt động
-                    </option>
-                    <option value="MAINTENANCE">
-                      Đang bảo trì
-                    </option>
+                    <option value="ACTIVE">{t("Đang hoạt động")}</option>
+                    <option value="INACTIVE">{t("Ngừng hoạt động")}</option>
+                    <option value="MAINTENANCE">{t("Đang bảo trì")}</option>
                   </select>
                 </label>
 
-                <label className="hub-form-full">
-                  Mô tả
-                  <textarea
+                <label className="hub-form-full">{t("Ghi chú")}<textarea
                     value={formData.description}
                     onChange={(event) =>
                       setFormData((previous) => ({
@@ -637,7 +614,7 @@ const MobilityHubManagement = () => {
                         description: event.target.value,
                       }))
                     }
-                    placeholder="Nhập mô tả Hub..."
+                    placeholder={t("Nhập ghi chú cho Hub...")}
                     rows={3}
                   />
                 </label>
@@ -648,16 +625,14 @@ const MobilityHubManagement = () => {
                   type="button"
                   className="hub-cancel-button"
                   onClick={closeModal}
-                >
-                  Hủy
-                </button>
+                >{t("Hủy")}</button>
 
                 <button
                   type="submit"
                   className="hub-save-button"
                 >
                   <Save size={17} />
-                  {editingHub ? "Lưu thay đổi" : "Thêm Hub"}
+                  {editingHub ? t("Lưu thay đổi") : t("Thêm Hub")}
                 </button>
               </div>
             </form>
@@ -676,29 +651,22 @@ const MobilityHubManagement = () => {
               <Trash2 size={25} />
             </div>
 
-            <h2>Xóa Mobility Hub?</h2>
+            <h2>{t("Xóa Mobility Hub?")}</h2>
 
-            <p>
-              Bạn có chắc chắn muốn xóa{" "}
-              <strong>{deleteTarget.name}</strong> không? Thao tác
-              này không thể hoàn tác.
-            </p>
+            <p>{t("Bạn có chắc chắn muốn xóa")}{" "}
+              <strong>{deleteTarget.name}</strong>{t(" không? Thao tác này không thể hoàn tác.")}</p>
 
             <div className="hub-modal-actions">
               <button
                 className="hub-cancel-button"
                 onClick={() => setDeleteTarget(null)}
-              >
-                Hủy
-              </button>
+              >{t("Hủy")}</button>
 
               <button
                 className="hub-confirm-delete-button"
                 onClick={handleDelete}
               >
-                <Trash2 size={17} />
-                Xác nhận xóa
-              </button>
+                <Trash2 size={17} />{t("Xác nhận xóa")}</button>
             </div>
           </div>
         </div>

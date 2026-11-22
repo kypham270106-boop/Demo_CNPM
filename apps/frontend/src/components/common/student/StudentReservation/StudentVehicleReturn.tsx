@@ -1,3 +1,4 @@
+import { usePreferences } from "../../../../preferences/PreferencesContext";
 
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -78,6 +79,8 @@ const unwrapData = (response: any) =>
   response?.data?.data ?? response?.data ?? response;
 
 const StudentVehicleReturn = () => {
+  const { t } = usePreferences();
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -179,11 +182,11 @@ const StudentVehicleReturn = () => {
         if (defaultHub) {
           setSelectedHubID(defaultHub.id);
         } else {
-          setErrorMessage("Hiện không có Hub phù hợp để trả xe.");
+          setErrorMessage(t("Hiện không có Hub phù hợp để trả xe."));
         }
       } catch (error) {
         console.error("Load return screen error:", error);
-        setErrorMessage("Không thể tải thông tin trả xe.");
+        setErrorMessage(t("Không thể tải thông tin trả xe."));
       } finally {
         setLoading(false);
       }
@@ -236,7 +239,7 @@ const StudentVehicleReturn = () => {
           start = {
             latitude: destination.latitude + 0.008,
             longitude: destination.longitude + 0.008,
-            label: "Vị trí hiện tại (demo)",
+            label: t("Vị trí hiện tại (demo)"),
           };
         }
 
@@ -266,7 +269,7 @@ const StudentVehicleReturn = () => {
           setCurrentLocation({
             latitude: selectedHub.latitude! + 0.008,
             longitude: selectedHub.longitude! + 0.008,
-            label: "Vị trí hiện tại (demo)",
+            label: t("Vị trí hiện tại (demo)"),
           });
           setRouteCoordinates([]);
         }
@@ -288,14 +291,14 @@ const StudentVehicleReturn = () => {
     const remainingSeconds = seconds % 60;
 
     if (hours > 0) {
-      return `${hours} giờ ${minutes} phút`;
+      return `${hours} ${t("giờ")} ${minutes} ${t("phút")}`;
     }
 
     if (minutes > 0) {
-      return `${minutes} phút ${remainingSeconds} giây`;
+      return `${minutes} ${t("phút")} ${remainingSeconds} ${t("giây")}`;
     }
 
-    return `${remainingSeconds} giây`;
+    return `${remainingSeconds} ${t("giây")}`;
   };
 
   const mapPoints = useMemo(() => {
@@ -334,7 +337,7 @@ const StudentVehicleReturn = () => {
 
   const handleReturnVehicle = async () => {
     if (!reservationID || !selectedHubID) {
-      setErrorMessage("Vui lòng chọn Hub trả xe.");
+      setErrorMessage(t("Vui lòng chọn Hub trả xe."));
       return;
     }
 
@@ -365,7 +368,7 @@ const StudentVehicleReturn = () => {
     return (
       <div className="vehicle-return-loading">
         <LoaderCircle className="spinning" size={32} />
-        <p>Đang tải thông tin chuyến đi...</p>
+        <p>{t("Đang tải thông tin chuyến đi...")}</p>
       </div>
     );
   }
@@ -374,10 +377,8 @@ const StudentVehicleReturn = () => {
     return (
       <div className="vehicle-return-loading">
         <AlertCircle size={32} />
-        <p>Không tìm thấy thông tin chuyến đi.</p>
-        <button onClick={() => navigate("/student")}>
-          Quay lại Dashboard
-        </button>
+        <p>{t("Không tìm thấy thông tin chuyến đi.")}</p>
+        <button onClick={() => navigate("/student")}>{t("Quay lại Dashboard")}</button>
       </div>
     );
   }
@@ -394,8 +395,8 @@ const StudentVehicleReturn = () => {
         </button>
 
         <div className="return-header-title">
-          <h1>Trả xe</h1>
-          <p>Hoàn tất chuyến đi của bạn</p>
+          <h1>{t("Trả xe")}</h1>
+          <p>{t("Hoàn tất chuyến đi của bạn")}</p>
         </div>
       </header>
 
@@ -403,10 +404,8 @@ const StudentVehicleReturn = () => {
         <section className="return-welcome">
           <div>
             <span className="return-eyebrow">SMART E-MOBILITY HUB</span>
-            <h2>Đã đến lúc trả xe?</h2>
-            <p>
-              Chọn Hub phù hợp để hoàn tất chuyến đi của bạn.
-            </p>
+            <h2>{t("Đã đến lúc trả xe?")}</h2>
+            <p>{t("Chọn Hub phù hợp để hoàn tất chuyến đi của bạn.")}</p>
           </div>
 
           <div className="return-welcome-icon">
@@ -417,13 +416,11 @@ const StudentVehicleReturn = () => {
         <section className="return-trip-card">
           <div className="return-section-heading">
             <div>
-              <h3>Thông tin chuyến đi</h3>
-              <p>Thông tin sử dụng xe hiện tại</p>
+              <h3>{t("Thông tin chuyến đi")}</h3>
+              <p>{t("Thông tin sử dụng xe hiện tại")}</p>
             </div>
             <span className="return-status">
-              <span />
-              Đang sử dụng
-            </span>
+              <span />{t("Đang sử dụng")}</span>
           </div>
 
           <div className="return-vehicle-info">
@@ -433,10 +430,10 @@ const StudentVehicleReturn = () => {
 
             <div>
               <strong>
-                {reservation.vehicle?.name || "Phương tiện của bạn"}
+                {reservation.vehicle?.name || t("Phương tiện của bạn")}
               </strong>
               <span>
-                {reservation.vehicle?.code || "Xe điện"}
+                {reservation.vehicle?.code || t("Xe điện")}
               </span>
             </div>
           </div>
@@ -447,7 +444,7 @@ const StudentVehicleReturn = () => {
                 <Clock size={19} />
               </span>
               <div>
-                <small>Thời gian sử dụng</small>
+                <small>{t("Thời gian sử dụng")}</small>
                 <strong>{formatDuration(elapsedSeconds)}</strong>
               </div>
             </div>
@@ -457,7 +454,7 @@ const StudentVehicleReturn = () => {
                 <Navigation size={19} />
               </span>
               <div>
-                <small>Quãng đường demo</small>
+                <small>{t("Quãng đường demo")}</small>
                 <strong>2.4 km</strong>
               </div>
             </div>
@@ -467,22 +464,20 @@ const StudentVehicleReturn = () => {
                 <BatteryCharging size={19} />
               </span>
               <div>
-                <small>Dung lượng pin</small>
+                <small>{t("Dung lượng pin")}</small>
                 <strong>{batteryLevel}%</strong>
               </div>
             </div>
           </div>
 
-          <p className="return-demo-note">
-            * Thời gian được tính từ lúc nhận xe. Quãng đường là dữ liệu demo.
-          </p>
+          <p className="return-demo-note">{t("* Thời gian được tính từ lúc nhận xe. Quãng đường là dữ liệu demo.")}</p>
         </section>
 
         <section className="return-hub-section">
           <div className="return-section-heading">
             <div>
-              <h3>Chọn Hub trả xe</h3>
-              <p>Chọn địa điểm bạn muốn trả phương tiện</p>
+              <h3>{t("Chọn Hub trả xe")}</h3>
+              <p>{t("Chọn địa điểm bạn muốn trả phương tiện")}</p>
             </div>
             <ParkingSquare size={24} />
           </div>
@@ -503,7 +498,7 @@ const StudentVehicleReturn = () => {
                 <span className="return-hub-details">
                   <strong>{hub.name}</strong>
                   <small>
-                    {hub.address || hub.code || "Điểm trả xe"}
+                    {hub.address || hub.code || t("Điểm trả xe")}
                   </small>
                 </span>
 
@@ -520,9 +515,9 @@ const StudentVehicleReturn = () => {
         <section className="return-map-section">
           <div className="return-section-heading">
             <div>
-              <h3>Đường đến Hub trả xe</h3>
+              <h3>{t("Đường đến Hub trả xe")}</h3>
               <p>
-                {selectedHub?.name || "Chưa chọn Hub"}
+                {selectedHub?.name || t("Chưa chọn Hub")}
               </p>
             </div>
             <Navigation size={23} />
@@ -532,7 +527,7 @@ const StudentVehicleReturn = () => {
             {routeLoading ? (
               <div className="return-map-loading">
                 <LoaderCircle className="spinning" size={28} />
-                <span>Đang tìm đường đến Hub...</span>
+                <span>{t("Đang tìm đường đến Hub...")}</span>
               </div>
             ) : (
               <>
@@ -571,26 +566,22 @@ const StudentVehicleReturn = () => {
                 {currentLocation && (
                   <div className="return-map-marker current-marker">
                     <span />
-                    <small>Vị trí của bạn</small>
+                    <small>{t("Vị trí của bạn")}</small>
                   </div>
                 )}
 
                 {selectedHub && (
                   <div className="return-map-marker destination-marker">
                     <MapPin size={25} />
-                    <small>Hub trả xe</small>
+                    <small>{t("Hub trả xe")}</small>
                   </div>
                 )}
 
                 <div className="return-map-caption">
                   <span>
-                    <i className="current-dot" />
-                    Vị trí hiện tại
-                  </span>
+                    <i className="current-dot" />{t("Vị trí hiện tại")}</span>
                   <span>
-                    <i className="destination-dot" />
-                    Hub trả xe
-                  </span>
+                    <i className="destination-dot" />{t("Hub trả xe")}</span>
                 </div>
               </>
             )}
@@ -599,7 +590,7 @@ const StudentVehicleReturn = () => {
           <p className="return-map-note">
             <MapPin size={15} />
             {currentLocation?.label ||
-              "Bản đồ hiển thị tuyến đường đến Hub được chọn."}
+              t("Bản đồ hiển thị tuyến đường đến Hub được chọn.")}
           </p>
         </section>
 
@@ -612,11 +603,8 @@ const StudentVehicleReturn = () => {
 
         <section className="return-confirm-section">
           <div>
-            <h3>Sẵn sàng hoàn tất chuyến đi?</h3>
-            <p>
-              Sau khi xác nhận, hệ thống sẽ ghi nhận việc trả xe
-              tại Hub đã chọn.
-            </p>
+            <h3>{t("Sẵn sàng hoàn tất chuyến đi?")}</h3>
+            <p>{t("Sau khi xác nhận, hệ thống sẽ ghi nhận việc trả xe tại Hub đã chọn.")}</p>
           </div>
 
           <button
@@ -626,13 +614,9 @@ const StudentVehicleReturn = () => {
           >
             {returnLoading ? (
               <>
-                <LoaderCircle className="spinning" size={19} />
-                Đang xử lý...
-              </>
+                <LoaderCircle className="spinning" size={19} />{t("Đang xử lý...")}</>
             ) : (
-              <>
-                Xác nhận trả xe
-                <ArrowRight size={19} />
+              <>{t("Xác nhận trả xe")}<ArrowRight size={19} />
               </>
             )}
           </button>

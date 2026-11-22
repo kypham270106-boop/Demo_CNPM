@@ -18,10 +18,12 @@ import StudentChargingReservation from "./components/common/student/Charging/Stu
 import StudentReservationConfirmation from "./components/common/student/StudentReservation/StudentReservationConfirmation";
 
 import OperatorDashboard from "./components/common/operator/Dashboard/OperatorDashboard";
+import { PreferencesProvider } from "./preferences/PreferencesContext";
 
 function App() {
   return (
     <BrowserRouter>
+      <PreferencesProvider>
       <Routes>
         {/* Authentication */}
         <Route path="/login" element={<Login mode="student" />} />
@@ -29,6 +31,7 @@ function App() {
 
         {/* Student */}
         <Route path="/student" element={<StudentDashboard />} />
+        <Route path="/student/settings" element={<StudentDashboard settingsMode />} />
 
         {/* Student route search */}
         <Route
@@ -74,10 +77,12 @@ function App() {
 
         {/* Operator */}
         <Route path="/operator" element={<OperatorDashboard />} />
+        <Route path="/operator/:page" element={<OperatorDashboard />} />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
+      </PreferencesProvider>
     </BrowserRouter>
   );
 }

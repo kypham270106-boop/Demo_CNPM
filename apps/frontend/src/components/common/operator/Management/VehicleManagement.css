@@ -32,9 +32,9 @@
 
 /* Ô tìm kiếm */
 .vehicle-management .hub-search-box {
-  border: 1.5px solid #cbd9d6;
+  border: 1.5px solid var(--app-border, #cbd9d6);
   border-radius: 10px;
-  background: #ffffff;
+  background: var(--app-surface, #ffffff);
   box-shadow: 0 2px 6px rgba(30, 62, 55, 0.045);
   transition: all 0.2s ease;
 }
@@ -50,7 +50,7 @@
 }
 
 .vehicle-management .hub-search-box > svg {
-  color: #0f8b7d;
+  color: var(--app-accent-text, #0f8b7d);
   flex-shrink: 0;
 }
 
@@ -58,10 +58,10 @@
 .vehicle-management .hub-filter-toolbar > select {
   min-height: 43px;
   padding: 10px 35px 10px 13px;
-  border: 1.5px solid #cbd9d6;
+  border: 1.5px solid var(--app-border, #cbd9d6);
   border-radius: 9px;
-  background-color: #ffffff;
-  color: #36524e;
+  background-color: var(--app-surface, #ffffff);
+  color: var(--app-body, #36524e);
   font-size: 13px;
   font-weight: 600;
   outline: none;
@@ -72,7 +72,7 @@
 
 .vehicle-management .hub-filter-toolbar > select:hover {
   border-color: #8bb8ae;
-  background-color: #f8fcfb;
+  background-color: var(--app-inset, #f8fcfb);
 }
 
 .vehicle-management .hub-filter-toolbar > select:focus {
@@ -86,10 +86,10 @@
   width: 100%;
   min-height: 43px;
   padding: 10px 13px;
-  border: 1.5px solid #cbd9d6;
+  border: 1.5px solid var(--app-border, #cbd9d6);
   border-radius: 9px;
-  background: #ffffff;
-  color: #263b3a;
+  background: var(--app-surface, #ffffff);
+  color: var(--app-text, #263b3a);
   font-size: 13px;
   font-weight: 500;
   outline: none;
@@ -100,7 +100,7 @@
 /* Placeholder */
 .vehicle-management .hub-form-grid input::placeholder,
 .vehicle-management .hub-search-box input::placeholder {
-  color: #9aa9a5;
+  color: var(--app-muted, #9aa9a5);
   font-weight: 400;
 }
 
@@ -108,7 +108,7 @@
 .vehicle-management .hub-form-grid input:hover,
 .vehicle-management .hub-form-grid select:hover {
   border-color: #8bb8ae;
-  background: #fcfefd;
+  background: var(--app-inset, #fcfefd);
 }
 
 /* Focus */
@@ -116,7 +116,7 @@
 .vehicle-management .hub-form-grid select:focus,
 .vehicle-management .hub-search-box input:focus {
   border-color: #0f8b7d;
-  background: #ffffff;
+  background: var(--app-surface, #ffffff);
   box-shadow: 0 0 0 3px rgba(15, 139, 125, 0.13);
 }
 
@@ -129,16 +129,16 @@
 /* Option */
 .vehicle-management select option {
   padding: 10px;
-  background: #ffffff;
-  color: #263b3a;
+  background: var(--app-surface, #ffffff);
+  color: var(--app-text, #263b3a);
 }
 
 /* Input bị khóa khi chỉnh sửa */
 .vehicle-management .hub-form-grid input:disabled,
 .vehicle-management .hub-form-grid select:disabled {
-  background: #edf3f1;
-  border-color: #dce6e3;
-  color: #84938f;
+  background: var(--app-inset, #edf3f1);
+  border-color: var(--app-border, #dce6e3);
+  color: var(--app-muted, #84938f);
   cursor: not-allowed;
   box-shadow: none;
 }
@@ -149,8 +149,8 @@
 }
 
 .vehicle-management .hub-reset-button:hover {
-  color: #0f766e;
-  background: #e7f5f1;
+  color: var(--app-accent-text, #0f766e);
+  background: var(--app-tint, #e7f5f1);
   border-color: #a7d3c8;
 }
 
@@ -199,29 +199,29 @@
 /* Màu pastel từng loại */
 .vehicle-summary-total {
   --summary-color: #168b78;
-  --summary-bg: #e7f5f1;
-  --summary-border: #d5ebe5;
+  --summary-bg: var(--app-tint, #e7f5f1);
+  --summary-border: var(--app-border, #d5ebe5);
   --summary-soft: #d5eee7;
 }
 
 .vehicle-summary-bike {
   --summary-color: #4f75b8;
   --summary-bg: #edf2fb;
-  --summary-border: #dce5f5;
+  --summary-border: var(--app-info-bg, #dce5f5);
   --summary-soft: #dce7f8;
 }
 
 .vehicle-summary-scooter {
   --summary-color: #8b70c9;
-  --summary-bg: #f2edff;
-  --summary-border: #e5dcf8;
+  --summary-bg: var(--app-purple-bg, #f2edff);
+  --summary-border: var(--app-purple-bg, #e5dcf8);
   --summary-soft: #e8dfff;
 }
 
 .vehicle-summary-available {
   --summary-color: #bd892e;
   --summary-bg: #fff6e5;
-  --summary-border: #f2e7ce;
+  --summary-border: var(--app-warning-bg, #f2e7ce);
   --summary-soft: #f8ebcf;
 }
 
@@ -266,14 +266,14 @@
 }
 
 .vehicle-management .hub-summary-value-row strong {
-  color: #263b3a;
+  color: var(--app-text, #263b3a);
   font-size: 31px;
   font-weight: 800;
   line-height: 1;
 }
 
 .vehicle-management .hub-summary-unit {
-  color: #788c87;
+  color: var(--app-muted, #788c87);
   font-size: 11px;
   font-weight: 600;
 }
@@ -309,7 +309,7 @@
   min-height: 20px;
   margin-top: 11px;
 
-  color: #788c87;
+  color: var(--app-muted, #788c87);
   font-size: 10px;
 }
 
@@ -401,7 +401,7 @@
 }
 
 .vehicle-management .hub-filter-toolbar > select:hover {
-  background-color: #f8fcfb;
+  background-color: var(--app-inset, #f8fcfb);
 }
 
 .vehicle-management .hub-filter-toolbar > select:focus {
@@ -427,7 +427,7 @@
 .vehicle-management .hub-form-grid input:hover,
 .vehicle-management .hub-form-grid select:hover,
 .vehicle-management .hub-form-grid textarea:hover {
-  background: #fcfefd;
+  background: var(--app-inset, #fcfefd);
 }
 
 .vehicle-management .hub-form-grid input:focus,

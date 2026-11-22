@@ -6,7 +6,7 @@
 .booking-page {
   min-height: 100vh;
   background: #f5f7fb;
-  color: #263b3a;
+  color: var(--app-text, #263b3a);
   font-family: inherit;
 }
 
@@ -18,8 +18,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #fff;
-  border-bottom: 1px solid #e8efed;
+  background: var(--app-surface, #fff);
+  border-bottom: 1px solid var(--app-border, #e8efed);
 }
 
 .booking-back-button {
@@ -29,7 +29,7 @@
   padding: 9px 14px;
   border: 1px solid #e2e8f0;
   border-radius: 10px;
-  background: #fff;
+  background: var(--app-surface, #fff);
   color: #475569;
   font-size: 13px;
   font-weight: 700;
@@ -39,8 +39,8 @@
 
 .booking-back-button:hover {
   border-color: #009688;
-  background: #e7f6f3;
-  color: #007f75;
+  background: var(--app-tint, #e7f6f3);
+  color: var(--app-accent-text, #007f75);
   transform: translateX(-2px);
 }
 
@@ -48,7 +48,7 @@
   display: flex;
   align-items: center;
   gap: 9px;
-  color: #263b3a;
+  color: var(--app-text, #263b3a);
   font-size: 14px;
   font-weight: 800;
 }
@@ -59,8 +59,8 @@
   display: grid;
   place-items: center;
   border-radius: 11px;
-  background: #e5f8f1;
-  color: #009688;
+  background: var(--app-tint, #e5f8f1);
+  color: var(--app-accent-text, #009688);
 }
 
 /* Main Container */
@@ -78,7 +78,7 @@
 }
 
 .booking-eyebrow {
-  color: #009688;
+  color: var(--app-accent-text, #009688);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 1.5px;
@@ -86,14 +86,14 @@
 
 .booking-results-heading h1 {
   margin: 9px 0;
-  color: #263b3a;
+  color: var(--app-text, #263b3a);
   font-size: clamp(26px, 3vw, 34px);
   font-weight: 800;
 }
 
 .booking-results-heading p {
   margin: 0;
-  color: #82918f;
+  color: var(--app-muted, #82918f);
   font-size: 14px;
   line-height: 1.7;
 }
@@ -106,9 +106,9 @@
   display: flex;
   align-items: center;
   gap: 25px;
-  border: 1px solid #e8efed;
+  border: 1px solid var(--app-border, #e8efed);
   border-radius: 15px;
-  background: #fff;
+  background: var(--app-surface, #fff);
   box-shadow: 0 4px 15px rgba(32, 66, 62, 0.035);
 }
 
@@ -185,7 +185,7 @@
 
 .booking-section-title h2 {
   margin: 0 0 5px;
-  color: #263b3a;
+  color: var(--app-text, #263b3a);
   font-size: 18px;
   font-weight: 800;
 }
@@ -199,8 +199,8 @@
 .booking-result-count {
   padding: 7px 11px;
   border-radius: 20px;
-  background: #e5f8f1;
-  color: #00877b;
+  background: var(--app-tint, #e5f8f1);
+  color: var(--app-accent-text, #00877b);
   font-size: 12px;
   font-weight: 800;
   white-space: nowrap;
@@ -222,8 +222,7 @@
   position: absolute;
   inset: 0;
   opacity: 0.55;
-  background-image:
-    linear-gradient(rgba(130, 155, 145, 0.17) 1px, transparent 1px),
+  background-image: linear-gradient(rgba(130, 155, 145, 0.17) 1px, transparent 1px),
     linear-gradient(90deg, rgba(130, 155, 145, 0.17) 1px, transparent 1px);
   background-size: 34px 34px;
 }
@@ -308,7 +307,7 @@
   padding: 0;
   border: 2px solid #fff;
   border-radius: 50% 50% 50% 5px;
-  background: #82918f;
+  background: var(--app-muted, #82918f);
   color: #fff;
   box-shadow: 0 3px 9px rgba(32, 66, 62, 0.2);
   cursor: pointer;
@@ -343,9 +342,9 @@
   align-items: center;
   gap: 7px;
   padding: 7px 10px;
-  border: 1px solid #e8efed;
+  border: 1px solid var(--app-border, #e8efed);
   border-radius: 8px;
-  background: #fff;
+  background: var(--app-surface, #fff);
   color: #354846;
   font-size: 11px;
   font-weight: 700;
@@ -387,7 +386,7 @@
   display: flex;
   gap: 14px;
   padding: 9px 12px;
-  border: 1px solid #e8efed;
+  border: 1px solid var(--app-border, #e8efed);
   border-radius: 9px;
   background: rgba(255, 255, 255, 0.95);
   box-shadow: 0 2px 8px rgba(32, 66, 62, 0.06);
@@ -402,7 +401,7 @@
 }
 
 .legend-dot.hub {
-  background: #82918f;
+  background: var(--app-muted, #82918f);
 }
 
 .legend-dot.selected {
@@ -418,10 +417,10 @@
   top: 50%;
   left: 50%;
   padding: 12px 16px;
-  border: 1px solid #e8efed;
+  border: 1px solid var(--app-border, #e8efed);
   border-radius: 10px;
-  background: #fff;
-  color: #82918f;
+  background: var(--app-surface, #fff);
+  color: var(--app-muted, #82918f);
   font-size: 12px;
   box-shadow: 0 4px 12px rgba(32, 66, 62, 0.08);
   transform: translate(-50%, -50%);
@@ -444,8 +443,8 @@
   padding: 0 13px;
   border: 1px solid #e2e8e5;
   border-radius: 9px;
-  background: #fff;
-  color: #82918f;
+  background: var(--app-surface, #fff);
+  color: var(--app-muted, #82918f);
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
@@ -455,8 +454,8 @@
 .booking-filter-list button:hover,
 .booking-filter-list button.active {
   border-color: #009688;
-  background: #e7f6f3;
-  color: #00877b;
+  background: var(--app-tint, #e7f6f3);
+  color: var(--app-accent-text, #00877b);
 }
 
 /* Battery Filter */
@@ -468,7 +467,7 @@
   padding: 10px 14px;
   border: 1px solid #dce8e5;
   border-radius: 10px;
-  background: #fff;
+  background: var(--app-surface, #fff);
   color: #287c68;
   font-size: 13px;
   font-weight: 600;
@@ -523,7 +522,7 @@
   justify-content: space-between;
   gap: 12px;
   border-radius: 12px;
-  background: #e7f6f3;
+  background: var(--app-tint, #e7f6f3);
 }
 
 .booking-hub-group-heading.return {
@@ -535,7 +534,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #007f75;
+  color: var(--app-accent-text, #007f75);
   font-size: 14px;
   font-weight: 800;
 }
@@ -546,14 +545,14 @@
 
 .booking-hub-group-heading p {
   margin: 0;
-  color: #82918f;
+  color: var(--app-muted, #82918f);
   font-size: 11px;
   line-height: 1.5;
 }
 
 .booking-hub-group-heading > span {
   flex-shrink: 0;
-  color: #007f75;
+  color: var(--app-accent-text, #007f75);
   font-size: 12px;
   font-weight: 800;
 }
@@ -567,9 +566,9 @@
 .booking-hub-card {
   margin-bottom: 13px;
   padding: 17px;
-  border: 1px solid #e8efed;
+  border: 1px solid var(--app-border, #e8efed);
   border-radius: 15px;
-  background: #fff;
+  background: var(--app-surface, #fff);
   box-shadow: 0 4px 15px rgba(32, 66, 62, 0.035);
   transition: 0.2s ease;
 }
@@ -605,8 +604,8 @@
   display: grid;
   place-items: center;
   border-radius: 11px;
-  background: #e5f8f1;
-  color: #009688;
+  background: var(--app-tint, #e5f8f1);
+  color: var(--app-accent-text, #009688);
 }
 
 .booking-hub-name {
@@ -632,7 +631,7 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #e5f8f1;
+  background: var(--app-tint, #e5f8f1);
   color: #15966c;
 }
 
@@ -644,7 +643,7 @@
   display: flex;
   align-items: flex-start;
   gap: 7px;
-  color: #82918f;
+  color: var(--app-muted, #82918f);
   font-size: 11px;
   line-height: 1.5;
 }
@@ -657,7 +656,7 @@
 
 .booking-hub-distance {
   margin-top: 7px;
-  color: #00877b;
+  color: var(--app-accent-text, #00877b);
   font-weight: 700;
 }
 
@@ -713,7 +712,7 @@
 }
 
 .hub-stat.battery {
-  color: #009688;
+  color: var(--app-accent-text, #009688);
 }
 
 /* Select Hub Buttons */
@@ -724,8 +723,8 @@
   margin-top: 13px;
   border: 1px solid #ccebe3;
   border-radius: 9px;
-  background: #e7f6f3;
-  color: #00877b;
+  background: var(--app-tint, #e7f6f3);
+  color: var(--app-accent-text, #00877b);
   font-size: 12px;
   font-weight: 800;
   cursor: pointer;
@@ -768,7 +767,7 @@
   align-items: center;
   border: 1px dashed #cbdcd6;
   border-radius: 14px;
-  background: #fff;
+  background: var(--app-surface, #fff);
   color: #91a09e;
   text-align: center;
 }
@@ -781,7 +780,7 @@
 
 .booking-no-hubs p {
   max-width: 280px;
-  color: #82918f;
+  color: var(--app-muted, #82918f);
   font-size: 12px;
   line-height: 1.6;
 }
@@ -790,8 +789,8 @@
   padding: 9px 14px;
   border: 0;
   border-radius: 8px;
-  background: #e7f6f3;
-  color: #00877b;
+  background: var(--app-tint, #e7f6f3);
+  color: var(--app-accent-text, #00877b);
   font-weight: 700;
   cursor: pointer;
   transition: 0.2s ease;
@@ -835,7 +834,7 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #e5f8f1;
+  background: var(--app-tint, #e5f8f1);
   color: #15966c;
 }
 
@@ -912,18 +911,18 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: #e5f8f1;
-  color: #009688;
+  background: var(--app-tint, #e5f8f1);
+  color: var(--app-accent-text, #009688);
 }
 
 .booking-empty-state h2 {
   margin: 20px 0 8px;
-  color: #263b3a;
+  color: var(--app-text, #263b3a);
 }
 
 .booking-empty-state p {
   margin-bottom: 20px;
-  color: #82918f;
+  color: var(--app-muted, #82918f);
   font-size: 14px;
 }
 

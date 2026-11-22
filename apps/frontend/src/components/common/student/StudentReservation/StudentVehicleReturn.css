@@ -6,8 +6,8 @@
 .vehicle-return-page {
   min-height: 100vh;
   padding-bottom: 40px;
-  background: #f5f8f7;
-  color: #263b3a;
+  background: var(--app-background, #f5f8f7);
+  color: var(--app-text, #263b3a);
   font-family: inherit;
 }
 
@@ -25,7 +25,7 @@
   display: flex;
   align-items: center;
   gap: 20px;
-  background: #fff;
+  background: var(--app-surface, #fff);
   border-bottom: 1px solid #e9efed;
 }
 
@@ -37,7 +37,7 @@
   gap: 8px;
   border: 1px solid #e0eae6;
   border-radius: 10px;
-  background: #fff;
+  background: var(--app-surface, #fff);
   color: #287e70;
   font-size: 13px;
   font-weight: 650;
@@ -52,7 +52,7 @@
 
 .return-header-title h1 {
   margin: 0;
-  color: #263b3a;
+  color: var(--app-text, #263b3a);
   font-size: 20px;
   font-weight: 750;
 }
@@ -146,9 +146,9 @@
 .return-confirm-section {
   min-width: 0;
   padding: 22px;
-  border: 1px solid #e8efed;
+  border: 1px solid var(--app-border, #e8efed);
   border-radius: 15px;
-  background: #fff;
+  background: var(--app-surface, #fff);
   box-shadow: 0 3px 14px rgba(35, 83, 72, 0.035);
 }
 
@@ -163,7 +163,7 @@
 
 .return-section-heading h3 {
   margin: 0;
-  color: #263b3a;
+  color: var(--app-text, #263b3a);
   font-size: 16px;
   font-weight: 750;
 }
@@ -305,9 +305,9 @@
   display: flex;
   align-items: center;
   gap: 11px;
-  border: 1px solid #e8efed;
+  border: 1px solid var(--app-border, #e8efed);
   border-radius: 12px;
-  background: #fff;
+  background: var(--app-surface, #fff);
   text-align: left;
   cursor: pointer;
   transition: 0.2s ease;
@@ -377,8 +377,7 @@
   border: 1px solid #dcebe5;
   border-radius: 12px;
   background-color: #eaf3ed;
-  background-image:
-    linear-gradient(28deg, transparent 46%, #fff 47%, #fff 49%, transparent 50%),
+  background-image: linear-gradient(28deg, transparent 46%, #fff 47%, #fff 49%, transparent 50%),
     linear-gradient(110deg, transparent 42%, #d5e6dc 43%, #d5e6dc 45%, transparent 46%),
     linear-gradient(0deg, transparent 48%, #fff 49%, #fff 51%, transparent 52%);
   background-size: 170px 150px, 210px 190px, 130px 130px;
@@ -435,7 +434,7 @@
 .return-map-marker small {
   padding: 5px 8px;
   border-radius: 7px;
-  background: #fff;
+  background: var(--app-surface, #fff);
   color: #40534c;
   font-size: 10px;
   font-weight: 700;
@@ -550,7 +549,7 @@
 
 .return-confirm-section h3 {
   margin: 0;
-  color: #263b3a;
+  color: var(--app-text, #263b3a);
   font-size: 15px;
   font-weight: 750;
 }

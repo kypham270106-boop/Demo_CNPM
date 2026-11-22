@@ -1,3 +1,4 @@
+import { usePreferences } from "../../../../preferences/PreferencesContext";
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -34,6 +35,8 @@ const getErrorMessage = (error: any) =>
   "Không thể thực hiện yêu cầu. Vui lòng thử lại.";
 
 function StudentParkingReservation() {
+  const { t } = usePreferences();
+
   const navigate = useNavigate();
 
   const [hubs, setHubs] = useState<Hub[]>([]);
@@ -159,7 +162,7 @@ function StudentParkingReservation() {
     const endDate = getEffectiveEndDate();
 
     if (!hubID || !selectedHub || !slotID || !selectedSlot) {
-      return "Vui lòng chọn Hub và vị trí đỗ xe.";
+      return t("Vui lòng chọn Hub và vị trí đỗ xe.");
     }
 
     if (
@@ -167,11 +170,11 @@ function StudentParkingReservation() {
       Number.isNaN(endDate.getTime()) ||
       endDate <= startDate
     ) {
-      return "Thời gian kết thúc phải sau thời gian bắt đầu.";
+      return t("Thời gian kết thúc phải sau thời gian bắt đầu.");
     }
 
     if (startDate <= new Date()) {
-      return "Thời gian bắt đầu phải ở tương lai.";
+      return t("Thời gian bắt đầu phải ở tương lai.");
     }
 
     return "";
@@ -212,7 +215,7 @@ function StudentParkingReservation() {
         reservation?.id ?? reservation?._id ?? "";
 
       if (!reservationID) {
-        throw new Error("API không trả về mã đặt chỗ đỗ.");
+        throw new Error(t("API không trả về mã đặt chỗ đỗ."));
       }
 
       navigate("/student/reservation/confirmation", {
@@ -226,9 +229,9 @@ function StudentParkingReservation() {
           endTimeMode,
           hubEndTimeNote:
             endTimeMode === "unspecified"
-              ? "Thời hạn kỹ thuật 7 ngày do hệ thống áp dụng, không phải thời điểm người dùng cam kết kết thúc."
+              ? t("Thời hạn kỹ thuật 7 ngày do hệ thống áp dụng, không phải thời điểm người dùng cam kết kết thúc.")
               : "",
-          resourceName: "Chỗ đỗ xe cá nhân",
+          resourceName: t("Chỗ đỗ xe cá nhân"),
           resourceCode: selectedSlot.code,
         },
       });
@@ -244,35 +247,26 @@ function StudentParkingReservation() {
       <header className="service-selection-header">
 
         <div className="service-header-brand">
-          <ParkingSquare size={19} />
-          Đặt chỗ đỗ
-        </div>
+          <ParkingSquare size={19} />{t("Đặt chỗ đỗ")}</div>
       </header>
 
       <main className="service-selection-container">
         <section className="service-intro">
-          <span className="service-eyebrow">
-            DỊCH VỤ BÃI ĐỖ
-          </span>
+          <span className="service-eyebrow">{t("DỊCH VỤ BÃI ĐỖ")}</span>
 
-          <h1>Đặt chỗ đỗ xe cá nhân</h1>
+          <h1>{t("Đặt chỗ đỗ xe cá nhân")}</h1>
 
-          <p>
-            Chọn Hub, thời gian sử dụng và vị trí đỗ phù hợp
-            với phương tiện cá nhân của bạn.
-          </p>
+          <p>{t("Chọn Hub, thời gian sử dụng và vị trí đỗ phù hợp với phương tiện cá nhân của bạn.")}</p>
         </section>
 
         <div className="reservation-form">
           {/* 01. Chọn Hub và thời gian */}
           <section className="reservation-panel">
-            <h2>01. Chọn Hub và thời gian</h2>
+            <h2>{t("01. Chọn Hub và thời gian")}</h2>
 
             <div className="reservation-grid">
               <div className="reservation-field full">
-                <label htmlFor="parking-hub">
-                  Trạm Hub
-                </label>
+                <label htmlFor="parking-hub">{t("Trạm Hub")}</label>
 
                 <select
                   id="parking-hub"
@@ -284,8 +278,8 @@ function StudentParkingReservation() {
                 >
                   <option value="">
                     {loadingHubs
-                      ? "Đang tải Hub..."
-                      : "Chọn trạm Hub"}
+                      ? t("Đang tải Hub...")
+                      : t("Chọn trạm Hub")}
                   </option>
 
                   {hubs.map((hub) => (
@@ -303,7 +297,7 @@ function StudentParkingReservation() {
               </div>
 
               <div className="reservation-field full">
-                <label>Thời gian kết thúc</label>
+                <label>{t("Thời gian kết thúc")}</label>
 
                 <div className="reservation-choice-grid">
                   <button
@@ -317,13 +311,9 @@ function StudentParkingReservation() {
                       setEndTimeMode("specified")
                     }
                   >
-                    <strong>
-                      Có thời gian kết thúc
-                    </strong>
+                    <strong>{t("Có thời gian kết thúc")}</strong>
 
-                    <span>
-                      Chủ động chọn ngày và giờ kết thúc sử dụng.
-                    </span>
+                    <span>{t("Chủ động chọn ngày và giờ kết thúc sử dụng.")}</span>
                   </button>
 
                   <button
@@ -337,21 +327,15 @@ function StudentParkingReservation() {
                       setEndTimeMode("unspecified")
                     }
                   >
-                    <strong>
-                      Chưa xác định thời gian kết thúc
-                    </strong>
+                    <strong>{t("Chưa xác định thời gian kết thúc")}</strong>
 
-                    <span>
-                      Chưa cần chọn trước thời điểm kết thúc sử dụng.
-                    </span>
+                    <span>{t("Chưa cần chọn trước thời điểm kết thúc sử dụng.")}</span>
                   </button>
                 </div>
               </div>
 
               <div className="reservation-field">
-                <label htmlFor="parking-start">
-                  Thời gian bắt đầu
-                </label>
+                <label htmlFor="parking-start">{t("Thời gian bắt đầu")}</label>
 
                 <input
                   id="parking-start"
@@ -365,9 +349,7 @@ function StudentParkingReservation() {
 
               {endTimeMode === "specified" ? (
                 <div className="reservation-field">
-                  <label htmlFor="parking-end">
-                    Thời gian kết thúc
-                  </label>
+                  <label htmlFor="parking-end">{t("Thời gian kết thúc")}</label>
 
                   <input
                     id="parking-end"
@@ -384,12 +366,7 @@ function StudentParkingReservation() {
                   <div className="reservation-time-notice">
                     <Clock size={18} />
 
-                    <span>
-                      Bạn chưa cần xác định thời điểm kết thúc.
-                      Do API hiện tại yêu cầu thời gian kết thúc,
-                      hệ thống sẽ tạm sử dụng thời hạn kỹ thuật
-                      7 ngày kể từ lúc bắt đầu để gửi yêu cầu đặt chỗ.
-                    </span>
+                    <span>{t("Bạn chưa cần xác định thời điểm kết thúc. Do API hiện tại yêu cầu thời gian kết thúc, hệ thống sẽ tạm sử dụng thời hạn kỹ thuật 7 ngày kể từ lúc bắt đầu để gửi yêu cầu đặt chỗ.")}</span>
                   </div>
                 </div>
               )}
@@ -398,21 +375,15 @@ function StudentParkingReservation() {
 
           {/* 02. Chọn vị trí đỗ */}
           <section className="reservation-panel">
-            <h2>02. Chọn vị trí đỗ</h2>
+            <h2>{t("02. Chọn vị trí đỗ")}</h2>
 
             {!hubID ? (
-              <div className="reservation-empty">
-                Vui lòng chọn Hub trước.
-              </div>
+              <div className="reservation-empty">{t("Vui lòng chọn Hub trước.")}</div>
             ) : loadingAvailability ? (
               <div className="reservation-loading">
-                <LoaderCircle size={18} />
-                Đang tải danh sách chỗ đỗ...
-              </div>
+                <LoaderCircle size={18} />{t("Đang tải danh sách chỗ đỗ...")}</div>
             ) : slots.length === 0 ? (
-              <div className="reservation-empty">
-                Không có chỗ đỗ trống trong Hub này.
-              </div>
+              <div className="reservation-empty">{t("Không có chỗ đỗ trống trong Hub này.")}</div>
             ) : (
               <div className="reservation-choice-grid">
                 {slots.map((slot) => (
@@ -425,12 +396,11 @@ function StudentParkingReservation() {
                     onClick={() => setSlotID(slot.id)}
                   >
                     <strong>
-                      <ParkingSquare size={17} />
-                      Chỗ đỗ {slot.code}
+                      <ParkingSquare size={17} />{t("Chỗ đỗ ")}{slot.code}
                     </strong>
 
                     <div className="slot-details">
-                      <span>Trạng thái: Còn trống</span>
+                      <span>{t("Trạng thái: Còn trống")}</span>
                     </div>
                   </button>
                 ))}
@@ -440,7 +410,7 @@ function StudentParkingReservation() {
 
           {error && (
             <div className="reservation-error">
-              {error}
+              {t(error)}
             </div>
           )}
 
@@ -450,9 +420,7 @@ function StudentParkingReservation() {
               onClick={() =>
                 navigate(-1)
               }
-            >
-              Quay lại
-            </button>
+            >{t("Quay lại")}</button>
 
             <button
               className="service-primary-button"
@@ -465,7 +433,7 @@ function StudentParkingReservation() {
                 !selectedSlot
               }
             >
-              {submitting ? "Đang xử lý..." : "Tiếp tục"}
+              {submitting ? t("Đang xử lý...") : t("Tiếp tục")}
 
               <ArrowRight size={18} />
             </button>
