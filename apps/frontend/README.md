@@ -127,7 +127,7 @@ Dựa trên các route và component hiện có (`/operator/login`, `/operator`,
 ### Cấu trúc thư mục (frontend)
 
 ```text
-frontend/
+apps/frontend/
 ├─ public/                         # Tài nguyên tĩnh phục vụ trực tiếp
 │  ├─ favicon.svg
 │  └─ icons.svg
@@ -168,40 +168,69 @@ frontend/
 
 ## Cài đặt và chạy Frontend
 
-### 1. Di chuyển vào thư mục frontend
+### 1. Clone repository
+
+Clone branch `Frontend` từ GitHub:
 
 ```bash
-cd frontend
+git clone -b Frontend https://github.com/kypham270106-boop/Demo_CNPM.git
 ```
 
-### 2. Cài đặt dependencies
+### 2. Di chuyển vào thư mục Frontend
+
+```bash
+cd Demo_CNPM/apps/frontend
+```
+
+### 3. Cài đặt dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Cấu hình biến môi trường
+### 4. Cấu hình biến môi trường
 
-Tạo hoặc cập nhật file `.env` trong thư mục `frontend/` và khai báo biến môi trường cần thiết (xem mục [Biến môi trường](#biến-môi-trường)).
+Tạo file `.env` từ file cấu hình mẫu `.env.example`.
 
-Ví dụ (theo cấu hình hiện có trong mã nguồn/frontend):
+**Windows (PowerShell):**
+
+```powershell
+Copy-Item .env.example .env
+```
+
+**macOS / Linux:**
+
+```bash
+cp .env.example .env
+```
+
+Sau đó kiểm tra nội dung file `.env`:
 
 ```env
 VITE_API_BASE_URL=http://localhost:3000/api
 ```
 
-### 4. Chạy ứng dụng ở chế độ development
+Nếu sử dụng Backend ở địa chỉ khác, hãy cập nhật lại `VITE_API_BASE_URL` cho phù hợp.
+
+### 5. Chạy ứng dụng ở chế độ development
 
 ```bash
 npm run dev
 ```
 
 Theo `vite.config.ts`, dev server được cấu hình chạy tại:
-- **Host mặc định của Vite** (thường `localhost`)
-- **Port**: `3001`
-- **`strictPort: true`** (nếu port 3001 đang bận, Vite sẽ không tự đổi sang port khác)
 
-### 5. Build và preview (tùy chọn)
+- **Host:** `localhost`
+- **Port:** `3001`
+- **strictPort:** `true` (nếu port 3001 đang bận, Vite sẽ không tự đổi sang port khác).
+
+Mở trình duyệt tại:
+
+```text
+http://localhost:3001
+```
+
+### 6. Build và preview (tùy chọn)
 
 Build production:
 
